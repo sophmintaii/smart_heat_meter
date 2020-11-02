@@ -1,0 +1,6 @@
+C:\Users\User\Documents\PSoC Creator\PSoC4-MCU-BLE-Connectivity-Designs-master\PSoC4-MCU-BLE-Connectivity-Designs-master\BLE_Temperature_Measurement\BLE_Temperature_Measurement.cydsn\BLE_Temperature_Measurement.cyprj|d8113585-d22a-4659-8eb1-d7fb419598b3
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|1a89c239-02be-4553-b50f-d1c610bafd34
+C:\Users\User\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|0ee5a15e-87a3-43f4-8898-936d40c7a68f
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|e239580d-7963-4f27-8d9f-a0b07232b6b3
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|1d866c8a-aaf7-4f2a-8dca-ea9d3295a8b1
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|eb6565db-7f12-4e9d-9891-5022828e2bc5

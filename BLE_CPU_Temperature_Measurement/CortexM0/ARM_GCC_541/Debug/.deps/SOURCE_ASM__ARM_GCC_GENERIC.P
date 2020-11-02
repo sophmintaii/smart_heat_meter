@@ -1,0 +1,8 @@
+C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/CortexM0/ARM_GCC_541/Debug/CyBootAsmGnu.o : C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/CyBootAsmGnu.s C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/cydevicegnu_trm.inc C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/cyfittergnu.inc 
+
+C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/CyBootAsmGnu.s : 
+
+C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/cydevicegnu_trm.inc : 
+
+C:/Users/User/Documents/PSoC\ Creator/PSoC4-MCU-BLE-Connectivity-Designs-master/PSoC4-MCU-BLE-Connectivity-Designs-master/BLE_Temperature_Measurement/BLE_Temperature_Measurement.cydsn/Generated_Source/PSoC4/cyfittergnu.inc : 
+

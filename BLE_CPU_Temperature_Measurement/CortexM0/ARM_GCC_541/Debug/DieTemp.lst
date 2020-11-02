@@ -1,0 +1,697 @@
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"DieTemp.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__aeabi_idiv
+  20              		.section	.text.DieTemp_CountsTo_Celsius,"ax",%progbits
+  21              		.align	2
+  22              		.global	DieTemp_CountsTo_Celsius
+  23              		.code	16
+  24              		.thumb_func
+  25              		.type	DieTemp_CountsTo_Celsius, %function
+  26              	DieTemp_CountsTo_Celsius:
+  27              	.LFB2:
+  28              		.file 1 "Generated_Source\\PSoC4\\DieTemp.c"
+   1:Generated_Source\PSoC4/DieTemp.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/DieTemp.c **** * File Name: DieTemp.c
+   3:Generated_Source\PSoC4/DieTemp.c **** * Version 1.0
+   4:Generated_Source\PSoC4/DieTemp.c **** *
+   5:Generated_Source\PSoC4/DieTemp.c **** * Description:
+   6:Generated_Source\PSoC4/DieTemp.c **** *  This file provides the source code of APIs for the DieTemp_P4 component.
+   7:Generated_Source\PSoC4/DieTemp.c **** *
+   8:Generated_Source\PSoC4/DieTemp.c **** *******************************************************************************
+   9:Generated_Source\PSoC4/DieTemp.c **** * Copyright 2013, Cypress Semiconductor Corporation.  All rights reserved.
+  10:Generated_Source\PSoC4/DieTemp.c **** * You may use this file only in accordance with the license, terms, conditions,
+  11:Generated_Source\PSoC4/DieTemp.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  12:Generated_Source\PSoC4/DieTemp.c **** * the software package with which this file was provided.
+  13:Generated_Source\PSoC4/DieTemp.c **** *******************************************************************************/
+  14:Generated_Source\PSoC4/DieTemp.c **** 
+  15:Generated_Source\PSoC4/DieTemp.c **** #include "DieTemp.h"
+  16:Generated_Source\PSoC4/DieTemp.c **** 
+  17:Generated_Source\PSoC4/DieTemp.c **** 
+  18:Generated_Source\PSoC4/DieTemp.c **** /*******************************************************************************
+  19:Generated_Source\PSoC4/DieTemp.c **** * Function Name: DieTemp_CountsTo_Celsius
+  20:Generated_Source\PSoC4/DieTemp.c **** ********************************************************************************
+  21:Generated_Source\PSoC4/DieTemp.c **** *
+  22:Generated_Source\PSoC4/DieTemp.c **** * Summary:
+  23:Generated_Source\PSoC4/DieTemp.c **** *  Converts the ADC output to degrees Celsius.
+  24:Generated_Source\PSoC4/DieTemp.c **** *
+  25:Generated_Source\PSoC4/DieTemp.c **** * Parameters:
+  26:Generated_Source\PSoC4/DieTemp.c **** *  int32 adcCounts:
+  27:Generated_Source\PSoC4/DieTemp.c **** *   Result from the ADC Conversion
+  28:Generated_Source\PSoC4/DieTemp.c **** *
+  29:Generated_Source\PSoC4/DieTemp.c **** * Return:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 2
+
+
+  30:Generated_Source\PSoC4/DieTemp.c **** *  Temperature in degrees Celsius
+  31:Generated_Source\PSoC4/DieTemp.c **** *
+  32:Generated_Source\PSoC4/DieTemp.c **** * Global variables:
+  33:Generated_Source\PSoC4/DieTemp.c **** *  None
+  34:Generated_Source\PSoC4/DieTemp.c **** *
+  35:Generated_Source\PSoC4/DieTemp.c **** *******************************************************************************/
+  36:Generated_Source\PSoC4/DieTemp.c **** int32 DieTemp_CountsTo_Celsius(int32 adcCounts)
+  37:Generated_Source\PSoC4/DieTemp.c **** {
+  29              		.loc 1 37 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 32
+  32              		@ frame_needed = 1, uses_anonymous_args = 0
+  33 0000 80B5     		push	{r7, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 7, -8
+  36              		.cfi_offset 14, -4
+  37 0002 88B0     		sub	sp, sp, #32
+  38              		.cfi_def_cfa_offset 40
+  39 0004 00AF     		add	r7, sp, #0
+  40              		.cfi_def_cfa_register 7
+  41 0006 7860     		str	r0, [r7, #4]
+  38:Generated_Source\PSoC4/DieTemp.c ****     int32 tempCelsius;
+  39:Generated_Source\PSoC4/DieTemp.c ****     int32 tInitial;
+  40:Generated_Source\PSoC4/DieTemp.c ****     int32 tAdjust;
+  41:Generated_Source\PSoC4/DieTemp.c ****     int32 offsetReg;
+  42:Generated_Source\PSoC4/DieTemp.c ****     int32 multReg;
+  43:Generated_Source\PSoC4/DieTemp.c **** 
+  44:Generated_Source\PSoC4/DieTemp.c ****     offsetReg = (int16)DieTemp_SAR_TEMP_OFFSET_REG;
+  42              		.loc 1 44 0
+  43 0008 234B     		ldr	r3, .L8
+  44 000a 1B88     		ldrh	r3, [r3]
+  45 000c 9BB2     		uxth	r3, r3
+  46 000e 1BB2     		sxth	r3, r3
+  47 0010 BB61     		str	r3, [r7, #24]
+  45:Generated_Source\PSoC4/DieTemp.c ****     multReg   = (int16)DieTemp_SAR_TEMP_MULTIPLIER_REG;
+  48              		.loc 1 45 0
+  49 0012 224B     		ldr	r3, .L8+4
+  50 0014 1B88     		ldrh	r3, [r3]
+  51 0016 9BB2     		uxth	r3, r3
+  52 0018 1BB2     		sxth	r3, r3
+  53 001a 7B61     		str	r3, [r7, #20]
+  46:Generated_Source\PSoC4/DieTemp.c ****     /* Calculate tInitial in Q16.16 */
+  47:Generated_Source\PSoC4/DieTemp.c ****     tInitial = (adcCounts * multReg) + (offsetReg * DieTemp_SAR_TEMP_OFFSET_MULT);
+  54              		.loc 1 47 0
+  55 001c 7B68     		ldr	r3, [r7, #4]
+  56 001e 7A69     		ldr	r2, [r7, #20]
+  57 0020 5A43     		muls	r2, r3
+  58 0022 BB69     		ldr	r3, [r7, #24]
+  59 0024 9B02     		lsls	r3, r3, #10
+  60 0026 D318     		adds	r3, r2, r3
+  61 0028 3B61     		str	r3, [r7, #16]
+  48:Generated_Source\PSoC4/DieTemp.c **** 
+  49:Generated_Source\PSoC4/DieTemp.c ****     if(tInitial >= DieTemp_DUAL_SLOPE_CORRECTION)
+  62              		.loc 1 49 0
+  63 002a 3B69     		ldr	r3, [r7, #16]
+  64 002c 1C4A     		ldr	r2, .L8+8
+  65 002e 9342     		cmp	r3, r2
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 3
+
+
+  66 0030 0EDD     		ble	.L2
+  50:Generated_Source\PSoC4/DieTemp.c ****     {
+  51:Generated_Source\PSoC4/DieTemp.c ****         /* Shift (100 - tInitial) by 4 bits to prevent scale-adjustment from overflowing. */
+  52:Generated_Source\PSoC4/DieTemp.c ****         /* Then divide by the integer bits of (100 - cutoff) to end up with a Q16.16 tAdjust */
+  53:Generated_Source\PSoC4/DieTemp.c ****         tAdjust = (DieTemp_SCALE_ADJUSTMENT * (((int32)DieTemp_HIGH_TEMPERATURE - tInitial)
+  67              		.loc 1 53 0
+  68 0032 3B69     		ldr	r3, [r7, #16]
+  69 0034 C822     		movs	r2, #200
+  70 0036 D203     		lsls	r2, r2, #15
+  71 0038 D31A     		subs	r3, r2, r3
+  54:Generated_Source\PSoC4/DieTemp.c ****             / (int32)DieTemp_SCALE_ADJUSTMENT_DIVIDER)) /
+  72              		.loc 1 54 0
+  73 003a 00D5     		bpl	.L3
+  74 003c 0F33     		adds	r3, r3, #15
+  75              	.L3:
+  76 003e 1B11     		asrs	r3, r3, #4
+  53:Generated_Source\PSoC4/DieTemp.c ****             / (int32)DieTemp_SCALE_ADJUSTMENT_DIVIDER)) /
+  77              		.loc 1 53 0
+  78 0040 DB00     		lsls	r3, r3, #3
+  79 0042 5521     		movs	r1, #85
+  80 0044 1800     		movs	r0, r3
+  81 0046 FFF7FEFF 		bl	__aeabi_idiv
+  82 004a 0300     		movs	r3, r0
+  83 004c FB61     		str	r3, [r7, #28]
+  84 004e 0FE0     		b	.L4
+  85              	.L2:
+  55:Generated_Source\PSoC4/DieTemp.c ****             (((int32)DieTemp_HIGH_TEMPERATURE - (int32)DieTemp_DUAL_SLOPE_CORRECTION) /
+  56:Generated_Source\PSoC4/DieTemp.c ****             DieTemp_SAR_TEMP_DIVIDER);
+  57:Generated_Source\PSoC4/DieTemp.c ****     }
+  58:Generated_Source\PSoC4/DieTemp.c ****     else
+  59:Generated_Source\PSoC4/DieTemp.c ****     {
+  60:Generated_Source\PSoC4/DieTemp.c ****         /* Shift (40 + tInitial) by 4 bits to prevent scale-adjustment from overflowing. */
+  61:Generated_Source\PSoC4/DieTemp.c ****         /* Then divide by the integer bits of (40 + cutoff) to end up with a Q16.16 tAdjust */
+  62:Generated_Source\PSoC4/DieTemp.c ****         tAdjust = ((int32)DieTemp_SCALE_ADJUSTMENT * (((int32)DieTemp_LOW_TEMPERATURE + tInitial)
+  86              		.loc 1 62 0
+  87 0050 3B69     		ldr	r3, [r7, #16]
+  88 0052 A022     		movs	r2, #160
+  89 0054 9203     		lsls	r2, r2, #14
+  90 0056 9446     		mov	ip, r2
+  91 0058 6344     		add	r3, r3, ip
+  63:Generated_Source\PSoC4/DieTemp.c ****            / (int32)DieTemp_SCALE_ADJUSTMENT_DIVIDER)) /
+  92              		.loc 1 63 0
+  93 005a 002B     		cmp	r3, #0
+  94 005c 00DA     		bge	.L5
+  95 005e 0F33     		adds	r3, r3, #15
+  96              	.L5:
+  97 0060 1B11     		asrs	r3, r3, #4
+  62:Generated_Source\PSoC4/DieTemp.c ****            / (int32)DieTemp_SCALE_ADJUSTMENT_DIVIDER)) /
+  98              		.loc 1 62 0
+  99 0062 DB00     		lsls	r3, r3, #3
+ 100 0064 3721     		movs	r1, #55
+ 101 0066 1800     		movs	r0, r3
+ 102 0068 FFF7FEFF 		bl	__aeabi_idiv
+ 103 006c 0300     		movs	r3, r0
+ 104 006e FB61     		str	r3, [r7, #28]
+ 105              	.L4:
+  64:Generated_Source\PSoC4/DieTemp.c ****             (((int32)DieTemp_LOW_TEMPERATURE + (int32)DieTemp_DUAL_SLOPE_CORRECTION) /
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 4
+
+
+  65:Generated_Source\PSoC4/DieTemp.c ****             (int32)DieTemp_SAR_TEMP_DIVIDER);
+  66:Generated_Source\PSoC4/DieTemp.c ****     }
+  67:Generated_Source\PSoC4/DieTemp.c **** 
+  68:Generated_Source\PSoC4/DieTemp.c ****     /* Add tInitial + tAdjust + 0.5 to round to nearest int. Shift off frac bits, and return. */
+  69:Generated_Source\PSoC4/DieTemp.c ****     tempCelsius = tInitial + tAdjust + DieTemp_HALF_OF_ONE;
+ 106              		.loc 1 69 0
+ 107 0070 3A69     		ldr	r2, [r7, #16]
+ 108 0072 FB69     		ldr	r3, [r7, #28]
+ 109 0074 D318     		adds	r3, r2, r3
+ 110 0076 8022     		movs	r2, #128
+ 111 0078 1202     		lsls	r2, r2, #8
+ 112 007a 9446     		mov	ip, r2
+ 113 007c 6344     		add	r3, r3, ip
+ 114 007e FB60     		str	r3, [r7, #12]
+  70:Generated_Source\PSoC4/DieTemp.c **** 
+  71:Generated_Source\PSoC4/DieTemp.c ****     return (tempCelsius / DieTemp_SAR_TEMP_OFFSET_DIVIDER);
+ 115              		.loc 1 71 0
+ 116 0080 FB68     		ldr	r3, [r7, #12]
+ 117 0082 002B     		cmp	r3, #0
+ 118 0084 02DA     		bge	.L6
+ 119 0086 074A     		ldr	r2, .L8+12
+ 120 0088 9446     		mov	ip, r2
+ 121 008a 6344     		add	r3, r3, ip
+ 122              	.L6:
+ 123 008c 1B14     		asrs	r3, r3, #16
+  72:Generated_Source\PSoC4/DieTemp.c **** }
+ 124              		.loc 1 72 0
+ 125 008e 1800     		movs	r0, r3
+ 126 0090 BD46     		mov	sp, r7
+ 127 0092 08B0     		add	sp, sp, #32
+ 128              		@ sp needed
+ 129 0094 80BD     		pop	{r7, pc}
+ 130              	.L9:
+ 131 0096 C046     		.align	2
+ 132              	.L8:
+ 133 0098 66F2FF0F 		.word	268431974
+ 134 009c 64F2FF0F 		.word	268431972
+ 135 00a0 FFFF0E00 		.word	983039
+ 136 00a4 FFFF0000 		.word	65535
+ 137              		.cfi_endproc
+ 138              	.LFE2:
+ 139              		.size	DieTemp_CountsTo_Celsius, .-DieTemp_CountsTo_Celsius
+ 140              		.text
+ 141              	.Letext0:
+ 142              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 143              		.section	.debug_info,"",%progbits
+ 144              	.Ldebug_info0:
+ 145 0000 2A010000 		.4byte	0x12a
+ 146 0004 0400     		.2byte	0x4
+ 147 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 148 000a 04       		.byte	0x4
+ 149 000b 01       		.uleb128 0x1
+ 150 000c 3C000000 		.4byte	.LASF23
+ 151 0010 0C       		.byte	0xc
+ 152 0011 1B000000 		.4byte	.LASF24
+ 153 0015 02010000 		.4byte	.LASF25
+ 154 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 5
+
+
+ 155 001d 00000000 		.4byte	0
+ 156 0021 00000000 		.4byte	.Ldebug_line0
+ 157 0025 02       		.uleb128 0x2
+ 158 0026 01       		.byte	0x1
+ 159 0027 06       		.byte	0x6
+ 160 0028 36020000 		.4byte	.LASF0
+ 161 002c 02       		.uleb128 0x2
+ 162 002d 01       		.byte	0x1
+ 163 002e 08       		.byte	0x8
+ 164 002f D2010000 		.4byte	.LASF1
+ 165 0033 02       		.uleb128 0x2
+ 166 0034 02       		.byte	0x2
+ 167 0035 05       		.byte	0x5
+ 168 0036 5C020000 		.4byte	.LASF2
+ 169 003a 02       		.uleb128 0x2
+ 170 003b 02       		.byte	0x2
+ 171 003c 07       		.byte	0x7
+ 172 003d 23020000 		.4byte	.LASF3
+ 173 0041 02       		.uleb128 0x2
+ 174 0042 04       		.byte	0x4
+ 175 0043 05       		.byte	0x5
+ 176 0044 ED010000 		.4byte	.LASF4
+ 177 0048 02       		.uleb128 0x2
+ 178 0049 04       		.byte	0x4
+ 179 004a 07       		.byte	0x7
+ 180 004b CA000000 		.4byte	.LASF5
+ 181 004f 02       		.uleb128 0x2
+ 182 0050 08       		.byte	0x8
+ 183 0051 05       		.byte	0x5
+ 184 0052 00000000 		.4byte	.LASF6
+ 185 0056 02       		.uleb128 0x2
+ 186 0057 08       		.byte	0x8
+ 187 0058 07       		.byte	0x7
+ 188 0059 DC000000 		.4byte	.LASF7
+ 189 005d 03       		.uleb128 0x3
+ 190 005e 04       		.byte	0x4
+ 191 005f 05       		.byte	0x5
+ 192 0060 696E7400 		.ascii	"int\000"
+ 193 0064 02       		.uleb128 0x2
+ 194 0065 04       		.byte	0x4
+ 195 0066 07       		.byte	0x7
+ 196 0067 0E000000 		.4byte	.LASF8
+ 197 006b 04       		.uleb128 0x4
+ 198 006c 66020000 		.4byte	.LASF9
+ 199 0070 02       		.byte	0x2
+ 200 0071 D301     		.2byte	0x1d3
+ 201 0073 3A000000 		.4byte	0x3a
+ 202 0077 04       		.uleb128 0x4
+ 203 0078 56020000 		.4byte	.LASF10
+ 204 007c 02       		.byte	0x2
+ 205 007d D601     		.2byte	0x1d6
+ 206 007f 33000000 		.4byte	0x33
+ 207 0083 04       		.uleb128 0x4
+ 208 0084 76020000 		.4byte	.LASF11
+ 209 0088 02       		.byte	0x2
+ 210 0089 D701     		.2byte	0x1d7
+ 211 008b 41000000 		.4byte	0x41
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 6
+
+
+ 212 008f 02       		.uleb128 0x2
+ 213 0090 04       		.byte	0x4
+ 214 0091 04       		.byte	0x4
+ 215 0092 FC000000 		.4byte	.LASF12
+ 216 0096 02       		.uleb128 0x2
+ 217 0097 08       		.byte	0x8
+ 218 0098 04       		.byte	0x4
+ 219 0099 06020000 		.4byte	.LASF13
+ 220 009d 02       		.uleb128 0x2
+ 221 009e 01       		.byte	0x1
+ 222 009f 08       		.byte	0x8
+ 223 00a0 E0010000 		.4byte	.LASF14
+ 224 00a4 04       		.uleb128 0x4
+ 225 00a5 00020000 		.4byte	.LASF15
+ 226 00a9 02       		.byte	0x2
+ 227 00aa 7D02     		.2byte	0x27d
+ 228 00ac B0000000 		.4byte	0xb0
+ 229 00b0 05       		.uleb128 0x5
+ 230 00b1 6B000000 		.4byte	0x6b
+ 231 00b5 02       		.uleb128 0x2
+ 232 00b6 08       		.byte	0x8
+ 233 00b7 04       		.byte	0x4
+ 234 00b8 4A020000 		.4byte	.LASF16
+ 235 00bc 02       		.uleb128 0x2
+ 236 00bd 04       		.byte	0x4
+ 237 00be 07       		.byte	0x7
+ 238 00bf 6D020000 		.4byte	.LASF17
+ 239 00c3 06       		.uleb128 0x6
+ 240 00c4 B9010000 		.4byte	.LASF26
+ 241 00c8 01       		.byte	0x1
+ 242 00c9 24       		.byte	0x24
+ 243 00ca 83000000 		.4byte	0x83
+ 244 00ce 00000000 		.4byte	.LFB2
+ 245 00d2 A8000000 		.4byte	.LFE2-.LFB2
+ 246 00d6 01       		.uleb128 0x1
+ 247 00d7 9C       		.byte	0x9c
+ 248 00d8 07       		.uleb128 0x7
+ 249 00d9 0D020000 		.4byte	.LASF27
+ 250 00dd 01       		.byte	0x1
+ 251 00de 24       		.byte	0x24
+ 252 00df 83000000 		.4byte	0x83
+ 253 00e3 02       		.uleb128 0x2
+ 254 00e4 91       		.byte	0x91
+ 255 00e5 5C       		.sleb128 -36
+ 256 00e6 08       		.uleb128 0x8
+ 257 00e7 17020000 		.4byte	.LASF18
+ 258 00eb 01       		.byte	0x1
+ 259 00ec 26       		.byte	0x26
+ 260 00ed 83000000 		.4byte	0x83
+ 261 00f1 02       		.uleb128 0x2
+ 262 00f2 91       		.byte	0x91
+ 263 00f3 64       		.sleb128 -28
+ 264 00f4 08       		.uleb128 0x8
+ 265 00f5 F3000000 		.4byte	.LASF19
+ 266 00f9 01       		.byte	0x1
+ 267 00fa 27       		.byte	0x27
+ 268 00fb 83000000 		.4byte	0x83
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 7
+
+
+ 269 00ff 02       		.uleb128 0x2
+ 270 0100 91       		.byte	0x91
+ 271 0101 68       		.sleb128 -24
+ 272 0102 08       		.uleb128 0x8
+ 273 0103 E5010000 		.4byte	.LASF20
+ 274 0107 01       		.byte	0x1
+ 275 0108 28       		.byte	0x28
+ 276 0109 83000000 		.4byte	0x83
+ 277 010d 02       		.uleb128 0x2
+ 278 010e 91       		.byte	0x91
+ 279 010f 74       		.sleb128 -12
+ 280 0110 08       		.uleb128 0x8
+ 281 0111 F6010000 		.4byte	.LASF21
+ 282 0115 01       		.byte	0x1
+ 283 0116 29       		.byte	0x29
+ 284 0117 83000000 		.4byte	0x83
+ 285 011b 02       		.uleb128 0x2
+ 286 011c 91       		.byte	0x91
+ 287 011d 70       		.sleb128 -16
+ 288 011e 08       		.uleb128 0x8
+ 289 011f 42020000 		.4byte	.LASF22
+ 290 0123 01       		.byte	0x1
+ 291 0124 2A       		.byte	0x2a
+ 292 0125 83000000 		.4byte	0x83
+ 293 0129 02       		.uleb128 0x2
+ 294 012a 91       		.byte	0x91
+ 295 012b 6C       		.sleb128 -20
+ 296 012c 00       		.byte	0
+ 297 012d 00       		.byte	0
+ 298              		.section	.debug_abbrev,"",%progbits
+ 299              	.Ldebug_abbrev0:
+ 300 0000 01       		.uleb128 0x1
+ 301 0001 11       		.uleb128 0x11
+ 302 0002 01       		.byte	0x1
+ 303 0003 25       		.uleb128 0x25
+ 304 0004 0E       		.uleb128 0xe
+ 305 0005 13       		.uleb128 0x13
+ 306 0006 0B       		.uleb128 0xb
+ 307 0007 03       		.uleb128 0x3
+ 308 0008 0E       		.uleb128 0xe
+ 309 0009 1B       		.uleb128 0x1b
+ 310 000a 0E       		.uleb128 0xe
+ 311 000b 55       		.uleb128 0x55
+ 312 000c 17       		.uleb128 0x17
+ 313 000d 11       		.uleb128 0x11
+ 314 000e 01       		.uleb128 0x1
+ 315 000f 10       		.uleb128 0x10
+ 316 0010 17       		.uleb128 0x17
+ 317 0011 00       		.byte	0
+ 318 0012 00       		.byte	0
+ 319 0013 02       		.uleb128 0x2
+ 320 0014 24       		.uleb128 0x24
+ 321 0015 00       		.byte	0
+ 322 0016 0B       		.uleb128 0xb
+ 323 0017 0B       		.uleb128 0xb
+ 324 0018 3E       		.uleb128 0x3e
+ 325 0019 0B       		.uleb128 0xb
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 8
+
+
+ 326 001a 03       		.uleb128 0x3
+ 327 001b 0E       		.uleb128 0xe
+ 328 001c 00       		.byte	0
+ 329 001d 00       		.byte	0
+ 330 001e 03       		.uleb128 0x3
+ 331 001f 24       		.uleb128 0x24
+ 332 0020 00       		.byte	0
+ 333 0021 0B       		.uleb128 0xb
+ 334 0022 0B       		.uleb128 0xb
+ 335 0023 3E       		.uleb128 0x3e
+ 336 0024 0B       		.uleb128 0xb
+ 337 0025 03       		.uleb128 0x3
+ 338 0026 08       		.uleb128 0x8
+ 339 0027 00       		.byte	0
+ 340 0028 00       		.byte	0
+ 341 0029 04       		.uleb128 0x4
+ 342 002a 16       		.uleb128 0x16
+ 343 002b 00       		.byte	0
+ 344 002c 03       		.uleb128 0x3
+ 345 002d 0E       		.uleb128 0xe
+ 346 002e 3A       		.uleb128 0x3a
+ 347 002f 0B       		.uleb128 0xb
+ 348 0030 3B       		.uleb128 0x3b
+ 349 0031 05       		.uleb128 0x5
+ 350 0032 49       		.uleb128 0x49
+ 351 0033 13       		.uleb128 0x13
+ 352 0034 00       		.byte	0
+ 353 0035 00       		.byte	0
+ 354 0036 05       		.uleb128 0x5
+ 355 0037 35       		.uleb128 0x35
+ 356 0038 00       		.byte	0
+ 357 0039 49       		.uleb128 0x49
+ 358 003a 13       		.uleb128 0x13
+ 359 003b 00       		.byte	0
+ 360 003c 00       		.byte	0
+ 361 003d 06       		.uleb128 0x6
+ 362 003e 2E       		.uleb128 0x2e
+ 363 003f 01       		.byte	0x1
+ 364 0040 3F       		.uleb128 0x3f
+ 365 0041 19       		.uleb128 0x19
+ 366 0042 03       		.uleb128 0x3
+ 367 0043 0E       		.uleb128 0xe
+ 368 0044 3A       		.uleb128 0x3a
+ 369 0045 0B       		.uleb128 0xb
+ 370 0046 3B       		.uleb128 0x3b
+ 371 0047 0B       		.uleb128 0xb
+ 372 0048 27       		.uleb128 0x27
+ 373 0049 19       		.uleb128 0x19
+ 374 004a 49       		.uleb128 0x49
+ 375 004b 13       		.uleb128 0x13
+ 376 004c 11       		.uleb128 0x11
+ 377 004d 01       		.uleb128 0x1
+ 378 004e 12       		.uleb128 0x12
+ 379 004f 06       		.uleb128 0x6
+ 380 0050 40       		.uleb128 0x40
+ 381 0051 18       		.uleb128 0x18
+ 382 0052 9642     		.uleb128 0x2116
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 9
+
+
+ 383 0054 19       		.uleb128 0x19
+ 384 0055 00       		.byte	0
+ 385 0056 00       		.byte	0
+ 386 0057 07       		.uleb128 0x7
+ 387 0058 05       		.uleb128 0x5
+ 388 0059 00       		.byte	0
+ 389 005a 03       		.uleb128 0x3
+ 390 005b 0E       		.uleb128 0xe
+ 391 005c 3A       		.uleb128 0x3a
+ 392 005d 0B       		.uleb128 0xb
+ 393 005e 3B       		.uleb128 0x3b
+ 394 005f 0B       		.uleb128 0xb
+ 395 0060 49       		.uleb128 0x49
+ 396 0061 13       		.uleb128 0x13
+ 397 0062 02       		.uleb128 0x2
+ 398 0063 18       		.uleb128 0x18
+ 399 0064 00       		.byte	0
+ 400 0065 00       		.byte	0
+ 401 0066 08       		.uleb128 0x8
+ 402 0067 34       		.uleb128 0x34
+ 403 0068 00       		.byte	0
+ 404 0069 03       		.uleb128 0x3
+ 405 006a 0E       		.uleb128 0xe
+ 406 006b 3A       		.uleb128 0x3a
+ 407 006c 0B       		.uleb128 0xb
+ 408 006d 3B       		.uleb128 0x3b
+ 409 006e 0B       		.uleb128 0xb
+ 410 006f 49       		.uleb128 0x49
+ 411 0070 13       		.uleb128 0x13
+ 412 0071 02       		.uleb128 0x2
+ 413 0072 18       		.uleb128 0x18
+ 414 0073 00       		.byte	0
+ 415 0074 00       		.byte	0
+ 416 0075 00       		.byte	0
+ 417              		.section	.debug_aranges,"",%progbits
+ 418 0000 1C000000 		.4byte	0x1c
+ 419 0004 0200     		.2byte	0x2
+ 420 0006 00000000 		.4byte	.Ldebug_info0
+ 421 000a 04       		.byte	0x4
+ 422 000b 00       		.byte	0
+ 423 000c 0000     		.2byte	0
+ 424 000e 0000     		.2byte	0
+ 425 0010 00000000 		.4byte	.LFB2
+ 426 0014 A8000000 		.4byte	.LFE2-.LFB2
+ 427 0018 00000000 		.4byte	0
+ 428 001c 00000000 		.4byte	0
+ 429              		.section	.debug_ranges,"",%progbits
+ 430              	.Ldebug_ranges0:
+ 431 0000 00000000 		.4byte	.LFB2
+ 432 0004 A8000000 		.4byte	.LFE2
+ 433 0008 00000000 		.4byte	0
+ 434 000c 00000000 		.4byte	0
+ 435              		.section	.debug_line,"",%progbits
+ 436              	.Ldebug_line0:
+ 437 0000 68000000 		.section	.debug_str,"MS",%progbits,1
+ 437      02004400 
+ 437      00000201 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 10
+
+
+ 437      FB0E0D00 
+ 437      01010101 
+ 438              	.LASF6:
+ 439 0000 6C6F6E67 		.ascii	"long long int\000"
+ 439      206C6F6E 
+ 439      6720696E 
+ 439      7400
+ 440              	.LASF8:
+ 441 000e 756E7369 		.ascii	"unsigned int\000"
+ 441      676E6564 
+ 441      20696E74 
+ 441      00
+ 442              	.LASF24:
+ 443 001b 47656E65 		.ascii	"Generated_Source\\PSoC4\\DieTemp.c\000"
+ 443      72617465 
+ 443      645F536F 
+ 443      75726365 
+ 443      5C50536F 
+ 444              	.LASF23:
+ 445 003c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 445      43313120 
+ 445      352E342E 
+ 445      31203230 
+ 445      31363036 
+ 446 006f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 446      20726576 
+ 446      6973696F 
+ 446      6E203233 
+ 446      37373135 
+ 447 00a2 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 447      66756E63 
+ 447      74696F6E 
+ 447      2D736563 
+ 447      74696F6E 
+ 448              	.LASF5:
+ 449 00ca 6C6F6E67 		.ascii	"long unsigned int\000"
+ 449      20756E73 
+ 449      69676E65 
+ 449      6420696E 
+ 449      7400
+ 450              	.LASF7:
+ 451 00dc 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 451      206C6F6E 
+ 451      6720756E 
+ 451      7369676E 
+ 451      65642069 
+ 452              	.LASF19:
+ 453 00f3 74496E69 		.ascii	"tInitial\000"
+ 453      7469616C 
+ 453      00
+ 454              	.LASF12:
+ 455 00fc 666C6F61 		.ascii	"float\000"
+ 455      7400
+ 456              	.LASF25:
+ 457 0102 433A5C55 		.ascii	"C:\\Users\\User\\Documents\\PSoC Creator\\PSoC4-MCU"
+ 457      73657273 
+ 457      5C557365 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 11
+
+
+ 457      725C446F 
+ 457      63756D65 
+ 458 0130 2D424C45 		.ascii	"-BLE-Connectivity-Designs-master\\PSoC4-MCU-BLE-Con"
+ 458      2D436F6E 
+ 458      6E656374 
+ 458      69766974 
+ 458      792D4465 
+ 459 0162 6E656374 		.ascii	"nectivity-Designs-master\\BLE_Temperature_Measureme"
+ 459      69766974 
+ 459      792D4465 
+ 459      7369676E 
+ 459      732D6D61 
+ 460 0194 6E745C42 		.ascii	"nt\\BLE_Temperature_Measurement.cydsn\000"
+ 460      4C455F54 
+ 460      656D7065 
+ 460      72617475 
+ 460      72655F4D 
+ 461              	.LASF26:
+ 462 01b9 44696554 		.ascii	"DieTemp_CountsTo_Celsius\000"
+ 462      656D705F 
+ 462      436F756E 
+ 462      7473546F 
+ 462      5F43656C 
+ 463              	.LASF1:
+ 464 01d2 756E7369 		.ascii	"unsigned char\000"
+ 464      676E6564 
+ 464      20636861 
+ 464      7200
+ 465              	.LASF14:
+ 466 01e0 63686172 		.ascii	"char\000"
+ 466      00
+ 467              	.LASF20:
+ 468 01e5 7441646A 		.ascii	"tAdjust\000"
+ 468      75737400 
+ 469              	.LASF4:
+ 470 01ed 6C6F6E67 		.ascii	"long int\000"
+ 470      20696E74 
+ 470      00
+ 471              	.LASF21:
+ 472 01f6 6F666673 		.ascii	"offsetReg\000"
+ 472      65745265 
+ 472      6700
+ 473              	.LASF15:
+ 474 0200 72656731 		.ascii	"reg16\000"
+ 474      3600
+ 475              	.LASF13:
+ 476 0206 646F7562 		.ascii	"double\000"
+ 476      6C6500
+ 477              	.LASF27:
+ 478 020d 61646343 		.ascii	"adcCounts\000"
+ 478      6F756E74 
+ 478      7300
+ 479              	.LASF18:
+ 480 0217 74656D70 		.ascii	"tempCelsius\000"
+ 480      43656C73 
+ 480      69757300 
+ 481              	.LASF3:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc23O6Z7.s 			page 12
+
+
+ 482 0223 73686F72 		.ascii	"short unsigned int\000"
+ 482      7420756E 
+ 482      7369676E 
+ 482      65642069 
+ 482      6E7400
+ 483              	.LASF0:
+ 484 0236 7369676E 		.ascii	"signed char\000"
+ 484      65642063 
+ 484      68617200 
+ 485              	.LASF22:
+ 486 0242 6D756C74 		.ascii	"multReg\000"
+ 486      52656700 
+ 487              	.LASF16:
+ 488 024a 6C6F6E67 		.ascii	"long double\000"
+ 488      20646F75 
+ 488      626C6500 
+ 489              	.LASF10:
+ 490 0256 696E7431 		.ascii	"int16\000"
+ 490      3600
+ 491              	.LASF2:
+ 492 025c 73686F72 		.ascii	"short int\000"
+ 492      7420696E 
+ 492      7400
+ 493              	.LASF9:
+ 494 0266 75696E74 		.ascii	"uint16\000"
+ 494      313600
+ 495              	.LASF17:
+ 496 026d 73697A65 		.ascii	"sizetype\000"
+ 496      74797065 
+ 496      00
+ 497              	.LASF11:
+ 498 0276 696E7433 		.ascii	"int32\000"
+ 498      3200
+ 499              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
