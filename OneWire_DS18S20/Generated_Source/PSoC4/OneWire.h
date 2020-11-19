@@ -2,7 +2,7 @@
  * DS18x8: MAXIM DS18B20 Digital Thermometer component (v 0.0)
  * Read temperature simultaaneously from up to 8 DS18B20 sensors
  *
- * based on original OneWire code by <pavloven>
+ * based on original OneWire code by Evg. Pavlov <pavloven>
  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/temperature-logger/
  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/psoc-user-module-library/
  * ============================================================================
@@ -61,7 +61,7 @@ volatile CYBIT OneWire_DataReady; //semaphore flag
 *        Component parameters 
 ***************************************/
 
-#define OneWire_NumSensors 8
+#define OneWire_NumSensors 1
 
     
 

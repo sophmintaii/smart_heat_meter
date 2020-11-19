@@ -2,7 +2,7 @@
  * DS18x8: MAXIM DS18B20 Digital Thermometer component (v 0.0)
  * Read temperature simultaaneously from up to 8 DS18B20 sensors 
  *
- * based on original OneWire code by <pavloven>
+ * based on original OneWire code by Evg. Pavlov <pavloven>
  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/temperature-logger/
  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/psoc-user-module-library/
  * ============================================================================
@@ -118,7 +118,7 @@ uint8 BusReset() //Pulldown the required "Bus Reset".
     OneWire_ControlReg_SEL_Write(SET_ALL_INP); // set all as inputs [0000000]
     OneWire_ControlReg_DRV_Write(LOW);         // Drive LOW enabled outputs
        
-    CyDelayUs(55);      // check PRESENCE in 15-60usec  (60-240 ?????)
+    CyDelayUs(55);      // check PRESENCE in 15-60usec  (60-240 ÏÍ—ÂÍ)
     
     BusPin = OneWire_StatusReg_BUS_Read();   // Read state: bit=0 if present 1 if unplugged
     
@@ -142,8 +142,8 @@ uint8 OneWire_SendTemperatureRequest() // start temperature conversion
     }
     
     //OneWire_ControlReg_SEL_Write(ALL); // enable all outputs [11111111]
-    Write8(0xCC);       // send command Skip_ROM  (0xCCÕ)  
-    Write8(0x44);       // send command for temperature conversion  (0x44Õ)
+    Write8(0xCC);       // send command Skip_ROM  (0xCCI)  
+    Write8(0x44);       // send command for temperature conversion  (0x44I)
 
     OneWire_Trigger_Write(1);   // trigger Async delayed reading
     
@@ -234,7 +234,7 @@ int16 OneWire_GetTemperatureAsInt100 (uint8 index)
 
 //==============================================================================
 // C++ version 0.4 char* style "itoa":
-// Written by Luk·s Chmela
+// Written by Lukas Chmela
 // Released under GPLv3.
 // http://www.jb.man.ac.uk/~slowe/cpp/itoa.html
 // here: modified for radix 10 only 

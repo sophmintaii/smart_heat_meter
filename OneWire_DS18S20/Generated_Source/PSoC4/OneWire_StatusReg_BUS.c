@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: OneWire_StatusReg_BUS.c  
-* Version 1.80
+* Version 1.90
 *
 * Description:
 *  This file contains API to enable firmware to read the value of a Status 
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -103,7 +103,7 @@ void OneWire_StatusReg_BUS_InterruptDisable(void)
 void OneWire_StatusReg_BUS_WriteMask(uint8 mask) 
 {
     #if(OneWire_StatusReg_BUS_INPUTS < 8u)
-    	mask &= (uint8)((((uint8)1u) << OneWire_StatusReg_BUS_INPUTS) - 1u);
+    	mask &= ((uint8)(1u << OneWire_StatusReg_BUS_INPUTS) - 1u);
 	#endif /* End OneWire_StatusReg_BUS_INPUTS < 8u */
     OneWire_StatusReg_BUS_Status_Mask = mask;
 }

@@ -1,0 +1,1474 @@
+--
+--	Conversion of DS18x8_demo.v to vh2:
+--
+--	Cypress Semiconductor - WARP Version 6.3 IR 41
+--	Tue Nov 03 13:44:25 2020
+--
+
+USE cypress.cypress.all;
+USE cypress.rtlpkg.all;
+ENTITY top_RTL IS
+ATTRIBUTE part_name of top_RTL:TYPE IS "cpsoc3";
+END top_RTL;
+--------------------------------------------------------
+ARCHITECTURE R_T_L OF top_RTL IS
+SIGNAL \OneWire:ControlReg_DRV:clk\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:rst\ : bit;
+SIGNAL \OneWire:Net_1111\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_0\ : bit;
+SIGNAL \OneWire:Net_1113\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_1\ : bit;
+SIGNAL \OneWire:Net_1114\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_2\ : bit;
+SIGNAL \OneWire:Net_1115\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_3\ : bit;
+SIGNAL \OneWire:Net_1116\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_4\ : bit;
+SIGNAL \OneWire:Net_1117\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_5\ : bit;
+SIGNAL \OneWire:Net_1118\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_6\ : bit;
+SIGNAL \OneWire:Net_1119\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_out_7\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_7\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_6\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_5\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_4\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_3\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_2\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_1\ : bit;
+SIGNAL \OneWire:ControlReg_DRV:control_0\ : bit;
+SIGNAL \OneWire:tmpOE__bufoe_1_net_0\ : bit;
+SIGNAL Net_1978_0 : bit;
+SIGNAL \OneWire:Net_807\ : bit;
+SIGNAL \OneWire:Net_820_0\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_7\ : bit;
+SIGNAL \OneWire:Net_959_7\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_6\ : bit;
+SIGNAL \OneWire:Net_959_6\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_5\ : bit;
+SIGNAL \OneWire:Net_959_5\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_4\ : bit;
+SIGNAL \OneWire:Net_959_4\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_3\ : bit;
+SIGNAL \OneWire:Net_959_3\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_2\ : bit;
+SIGNAL \OneWire:Net_959_2\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_1\ : bit;
+SIGNAL \OneWire:Net_959_1\ : bit;
+SIGNAL \OneWire:StatusReg_BUS:status_0\ : bit;
+SIGNAL \OneWire:Net_959_0\ : bit;
+SIGNAL zero : bit;
+SIGNAL \OneWire:Net_280\ : bit;
+SIGNAL \OneWire:Net_522\ : bit;
+SIGNAL one : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:Clk_Ctl_i\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_7\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_6\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_5\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_4\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_3\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_2\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:control_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_enable\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_ten\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_cmode_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_cmode_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_tmode_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_tmode_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_ic_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:ctrl_ic_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:fifo_load_polarized\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capture_last\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capt_fifo_load\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:timer_enable\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:run_mode\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:hwEnable_reg\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_tc\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trigger_enable\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:per_zero\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:tc_i\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:tc_reg_i\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:hwEnable\ : bit;
+SIGNAL LED : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capture_out_reg_i\ : bit;
+SIGNAL \OneWire:Net_913\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capt_fifo_load_int\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:runmode_enable\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_disable\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_last\ : bit;
+SIGNAL \OneWire:Net_527\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_rise_detected\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_fall_detected\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trigger_polarized\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_reg\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_6\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_5\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_4\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_2\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:fifo_full\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:status_3\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:fifo_nempty\ : bit;
+SIGNAL \OneWire:Net_910\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:cs_addr_2\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:cs_addr_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:cs_addr_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:zeros_3\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:zeros_2\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:nc0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:nc3\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:nc4\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z0_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z0_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_bus_stat_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_bus_stat_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_blk_stat_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_blk_stat_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_reg_0\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_reg_0\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:carry\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_right\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_left\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:msb\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_1\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_0\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cfb\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce0_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl0_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z0_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z0_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff0_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ce1_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cl1_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:z1_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ff1_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:ov_msb_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:co_msb_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmsb_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:so_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_bus_stat_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_bus_stat_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_blk_stat_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f0_blk_stat_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_bus_stat_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_reg_1\ : bit;
+ATTRIBUTE port_state_att of \OneWire:TimerDelay:TimerUDB:sT16:timerdp:f1_blk_stat_reg_1\:SIGNAL IS 2;
+SIGNAL \OneWire:ControlReg_SEL:clk\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:rst\ : bit;
+SIGNAL \OneWire:Net_820_7\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_7\ : bit;
+SIGNAL \OneWire:Net_820_6\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_6\ : bit;
+SIGNAL \OneWire:Net_820_5\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_5\ : bit;
+SIGNAL \OneWire:Net_820_4\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_4\ : bit;
+SIGNAL \OneWire:Net_820_3\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_3\ : bit;
+SIGNAL \OneWire:Net_820_2\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_2\ : bit;
+SIGNAL \OneWire:Net_820_1\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_1\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_out_0\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_7\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_6\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_5\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_4\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_3\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_2\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_1\ : bit;
+SIGNAL \OneWire:ControlReg_SEL:control_0\ : bit;
+SIGNAL \OneWire:Trigger:clk\ : bit;
+SIGNAL \OneWire:Trigger:rst\ : bit;
+SIGNAL \OneWire:Trigger:control_out_0\ : bit;
+SIGNAL \OneWire:Net_1132\ : bit;
+SIGNAL \OneWire:Trigger:control_out_1\ : bit;
+SIGNAL \OneWire:Net_1133\ : bit;
+SIGNAL \OneWire:Trigger:control_out_2\ : bit;
+SIGNAL \OneWire:Net_1134\ : bit;
+SIGNAL \OneWire:Trigger:control_out_3\ : bit;
+SIGNAL \OneWire:Net_1135\ : bit;
+SIGNAL \OneWire:Trigger:control_out_4\ : bit;
+SIGNAL \OneWire:Net_1136\ : bit;
+SIGNAL \OneWire:Trigger:control_out_5\ : bit;
+SIGNAL \OneWire:Net_1137\ : bit;
+SIGNAL \OneWire:Trigger:control_out_6\ : bit;
+SIGNAL \OneWire:Net_1138\ : bit;
+SIGNAL \OneWire:Trigger:control_out_7\ : bit;
+SIGNAL \OneWire:Trigger:control_7\ : bit;
+SIGNAL \OneWire:Trigger:control_6\ : bit;
+SIGNAL \OneWire:Trigger:control_5\ : bit;
+SIGNAL \OneWire:Trigger:control_4\ : bit;
+SIGNAL \OneWire:Trigger:control_3\ : bit;
+SIGNAL \OneWire:Trigger:control_2\ : bit;
+SIGNAL \OneWire:Trigger:control_1\ : bit;
+SIGNAL \OneWire:Trigger:control_0\ : bit;
+SIGNAL \OneWire:Net_986\ : bit;
+SIGNAL \OneWire:Net_987\ : bit;
+SIGNAL \OneWire:Net_988\ : bit;
+SIGNAL \OneWire:Net_989\ : bit;
+SIGNAL \OneWire:Net_1072\ : bit;
+SIGNAL \OneWire:Net_1073\ : bit;
+SIGNAL \OneWire:Net_1074\ : bit;
+SIGNAL \OneWire:Net_1075\ : bit;
+SIGNAL tmpOE__Pin_0_net_0 : bit;
+SIGNAL tmpFB_0__Pin_0_net_0 : bit;
+TERMINAL tmpSIOVREF__Pin_0_net_0 : bit;
+TERMINAL Net_1019 : bit;
+SIGNAL tmpINTERRUPT_0__Pin_0_net_0 : bit;
+TERMINAL Net_2187 : bit;
+TERMINAL Net_2185 : bit;
+SIGNAL Net_2188 : bit;
+SIGNAL tmpOE__PinLED_net_0 : bit;
+SIGNAL tmpFB_0__PinLED_net_0 : bit;
+SIGNAL tmpIO_0__PinLED_net_0 : bit;
+TERMINAL tmpSIOVREF__PinLED_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__PinLED_net_0 : bit;
+SIGNAL Net_1071 : bit;
+SIGNAL Net_1070 : bit;
+TERMINAL Net_855 : bit;
+TERMINAL Net_863 : bit;
+TERMINAL Net_864 : bit;
+TERMINAL Net_865 : bit;
+TERMINAL Net_866 : bit;
+TERMINAL Net_867 : bit;
+TERMINAL Net_868 : bit;
+TERMINAL Net_869 : bit;
+TERMINAL Net_870 : bit;
+TERMINAL Net_871 : bit;
+TERMINAL Net_872 : bit;
+TERMINAL Net_873 : bit;
+TERMINAL Net_856 : bit;
+TERMINAL Net_857 : bit;
+TERMINAL Net_858 : bit;
+TERMINAL Net_859 : bit;
+TERMINAL Net_860 : bit;
+TERMINAL Net_861 : bit;
+TERMINAL Net_862 : bit;
+SIGNAL Net_1073 : bit;
+SIGNAL \FreqDiv_1:not_last_reset\ : bit;
+SIGNAL \FreqDiv_1:count_9\ : bit;
+SIGNAL \FreqDiv_1:count_8\ : bit;
+SIGNAL \FreqDiv_1:count_7\ : bit;
+SIGNAL \FreqDiv_1:count_6\ : bit;
+SIGNAL \FreqDiv_1:count_5\ : bit;
+SIGNAL \FreqDiv_1:count_4\ : bit;
+SIGNAL \FreqDiv_1:count_3\ : bit;
+SIGNAL \FreqDiv_1:count_2\ : bit;
+SIGNAL \FreqDiv_1:count_1\ : bit;
+SIGNAL \FreqDiv_1:count_0\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_9\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_8\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_7\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_6\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_5\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_4\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_3\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_2\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_1\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_0\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_31\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_30\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_29\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_28\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_27\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_26\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_25\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_23\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_22\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_21\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_20\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_19\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_18\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_17\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_15\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_14\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_13\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_12\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_11\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_9\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_7\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_6\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_5\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_4\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_3\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_2\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_1\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:b_0\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_31\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_30\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_29\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_28\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_27\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_26\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_25\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_23\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_22\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_21\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_20\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_19\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_18\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_17\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_15\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_14\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_13\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_12\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_11\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_9\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_9\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_8\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_7\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_7\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_6\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_6\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_5\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_5\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_4\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_4\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_3\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_3\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_2\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_2\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_1\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_1\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:a_0\ : bit;
+SIGNAL \FreqDiv_1:MODIN1_0\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_31\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_30\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_29\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_28\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_27\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_26\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_25\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_23\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_22\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_21\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_20\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_19\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_18\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_17\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_15\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_14\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_13\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_12\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_11\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_9\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_7\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_6\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_5\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_4\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_3\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_2\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_1\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:b_0\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_31\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_31\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_30\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_30\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_29\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_29\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_28\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_28\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_27\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_27\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_26\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_26\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_25\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_25\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_24\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_23\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_23\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_22\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_22\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_21\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_21\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_20\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_20\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_19\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_19\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_18\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_18\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_17\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_17\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_16\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_15\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_15\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_14\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_14\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_13\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_13\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_12\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_12\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_11\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_11\ : bit;
+SIGNAL \FreqDiv_1:add_vi_vv_MODGEN_1_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_9\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_7\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_6\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_5\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_4\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_3\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_2\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_1\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:s_0\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_31\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_30\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_29\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_28\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_27\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_26\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_25\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_24\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_23\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_22\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_21\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_20\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_19\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_18\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_17\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_16\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_15\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_14\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_13\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_12\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_11\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_10\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_9\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_8\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_7\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_6\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_5\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_4\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_3\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_2\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_1\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_0\ : bit;
+SIGNAL \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_0\ : bit;
+SIGNAL \UART_DEB:Net_847\ : bit;
+SIGNAL \UART_DEB:select_s_wire\ : bit;
+SIGNAL \UART_DEB:rx_wire\ : bit;
+SIGNAL \UART_DEB:Net_1268\ : bit;
+SIGNAL \UART_DEB:Net_1257\ : bit;
+SIGNAL \UART_DEB:uncfg_rx_irq\ : bit;
+SIGNAL \UART_DEB:Net_1170\ : bit;
+SIGNAL \UART_DEB:sclk_s_wire\ : bit;
+SIGNAL \UART_DEB:mosi_s_wire\ : bit;
+SIGNAL \UART_DEB:miso_m_wire\ : bit;
+SIGNAL \UART_DEB:tmpOE__tx_net_0\ : bit;
+SIGNAL \UART_DEB:tx_wire\ : bit;
+SIGNAL \UART_DEB:tmpFB_0__tx_net_0\ : bit;
+SIGNAL \UART_DEB:tmpIO_0__tx_net_0\ : bit;
+TERMINAL \UART_DEB:tmpSIOVREF__tx_net_0\ : bit;
+SIGNAL \UART_DEB:tmpINTERRUPT_0__tx_net_0\ : bit;
+SIGNAL \UART_DEB:Net_1099\ : bit;
+SIGNAL \UART_DEB:Net_1258\ : bit;
+SIGNAL \UART_DEB:tmpOE__rx_net_0\ : bit;
+SIGNAL \UART_DEB:tmpIO_0__rx_net_0\ : bit;
+TERMINAL \UART_DEB:tmpSIOVREF__rx_net_0\ : bit;
+SIGNAL \UART_DEB:tmpINTERRUPT_0__rx_net_0\ : bit;
+SIGNAL \UART_DEB:cts_wire\ : bit;
+SIGNAL Net_2223 : bit;
+SIGNAL \UART_DEB:rts_wire\ : bit;
+SIGNAL \UART_DEB:mosi_m_wire\ : bit;
+SIGNAL \UART_DEB:select_m_wire_3\ : bit;
+SIGNAL \UART_DEB:select_m_wire_2\ : bit;
+SIGNAL \UART_DEB:select_m_wire_1\ : bit;
+SIGNAL \UART_DEB:select_m_wire_0\ : bit;
+SIGNAL \UART_DEB:sclk_m_wire\ : bit;
+SIGNAL \UART_DEB:miso_s_wire\ : bit;
+SIGNAL Net_2240 : bit;
+SIGNAL Net_2241 : bit;
+SIGNAL Net_2226 : bit;
+SIGNAL Net_2225 : bit;
+SIGNAL \UART_DEB:Net_1000\ : bit;
+SIGNAL Net_2222 : bit;
+SIGNAL Net_2231 : bit;
+SIGNAL Net_2232 : bit;
+SIGNAL Net_2233 : bit;
+SIGNAL Net_2234 : bit;
+SIGNAL Net_2235 : bit;
+SIGNAL Net_2236 : bit;
+SIGNAL Net_2237 : bit;
+SIGNAL Net_2239 : bit;
+SIGNAL Net_2242 : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capture_last\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:hwEnable_reg\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:tc_reg_i\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:capture_out_reg_i\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:runmode_enable\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_disable\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_last\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_rise_detected\\D\ : bit;
+SIGNAL \OneWire:TimerDelay:TimerUDB:trig_fall_detected\\D\ : bit;
+SIGNAL Net_1071D : bit;
+SIGNAL \FreqDiv_1:not_last_reset\\D\ : bit;
+SIGNAL \FreqDiv_1:count_9\\D\ : bit;
+SIGNAL \FreqDiv_1:count_8\\D\ : bit;
+SIGNAL \FreqDiv_1:count_7\\D\ : bit;
+SIGNAL \FreqDiv_1:count_6\\D\ : bit;
+SIGNAL \FreqDiv_1:count_5\\D\ : bit;
+SIGNAL \FreqDiv_1:count_4\\D\ : bit;
+SIGNAL \FreqDiv_1:count_3\\D\ : bit;
+SIGNAL \FreqDiv_1:count_2\\D\ : bit;
+SIGNAL \FreqDiv_1:count_1\\D\ : bit;
+SIGNAL \FreqDiv_1:count_0\\D\ : bit;
+BEGIN
+
+zero <=  ('0') ;
+
+one <=  ('1') ;
+
+\OneWire:TimerDelay:TimerUDB:status_tc\ <= ((\OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:run_mode\ and \OneWire:TimerDelay:TimerUDB:per_zero\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\));
+
+\OneWire:TimerDelay:TimerUDB:runmode_enable\\D\ <= ((not \OneWire:TimerDelay:TimerUDB:per_zero\ and not LED and not \OneWire:TimerDelay:TimerUDB:trig_disable\ and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\)
+	OR (not \OneWire:TimerDelay:TimerUDB:run_mode\ and not LED and not \OneWire:TimerDelay:TimerUDB:trig_disable\ and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\)
+	OR (not \OneWire:TimerDelay:TimerUDB:timer_enable\ and not LED and not \OneWire:TimerDelay:TimerUDB:trig_disable\ and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\));
+
+\OneWire:TimerDelay:TimerUDB:trig_disable\\D\ <= ((not LED and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:timer_enable\ and \OneWire:TimerDelay:TimerUDB:run_mode\ and \OneWire:TimerDelay:TimerUDB:per_zero\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\)
+	OR (not LED and \OneWire:TimerDelay:TimerUDB:trig_disable\));
+
+\OneWire:TimerDelay:TimerUDB:trig_rise_detected\\D\ <= ((not LED and not \OneWire:TimerDelay:TimerUDB:trig_last\ and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:Net_527\)
+	OR (not LED and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\));
+
+\OneWire:TimerDelay:TimerUDB:trig_fall_detected\\D\ <= ((not LED and not \OneWire:Net_527\ and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_last\)
+	OR (not LED and \OneWire:TimerDelay:TimerUDB:control_7\ and \OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:trig_fall_detected\));
+
+\OneWire:TimerDelay:TimerUDB:trig_reg\ <= ((\OneWire:TimerDelay:TimerUDB:control_4\ and \OneWire:TimerDelay:TimerUDB:timer_enable\ and \OneWire:TimerDelay:TimerUDB:trig_rise_detected\));
+
+Net_2188 <= (not LED);
+
+Net_1071D <= ((not \FreqDiv_1:count_4\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_9\ and \FreqDiv_1:count_8\ and \FreqDiv_1:count_7\ and \FreqDiv_1:count_6\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_0\ and Net_1071)
+	OR (not \FreqDiv_1:count_1\ and Net_1071)
+	OR (Net_1071 and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_5\ and Net_1071)
+	OR (not \FreqDiv_1:count_6\ and Net_1071)
+	OR (not \FreqDiv_1:count_7\ and Net_1071)
+	OR (not \FreqDiv_1:count_8\ and Net_1071)
+	OR (Net_1071 and \FreqDiv_1:count_2\)
+	OR (not \FreqDiv_1:count_4\ and Net_1071)
+	OR (Net_1071 and \FreqDiv_1:count_9\)
+	OR not \FreqDiv_1:not_last_reset\);
+
+\FreqDiv_1:count_9\\D\ <= ((not \FreqDiv_1:count_9\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_8\ and \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\)
+	OR (not \FreqDiv_1:count_0\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:count_1\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:count_2\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_5\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:count_6\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:count_7\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:count_8\ and \FreqDiv_1:count_9\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_9\));
+
+\FreqDiv_1:count_8\\D\ <= ((not \FreqDiv_1:count_8\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\)
+	OR (not \FreqDiv_1:count_0\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:count_1\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:count_2\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_5\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:count_6\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:count_7\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:count_9\ and not \FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\ and \FreqDiv_1:count_8\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_8\));
+
+\FreqDiv_1:count_7\\D\ <= ((not \FreqDiv_1:count_9\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_8\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_7\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_6\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_4\ and \FreqDiv_1:count_3\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_4\ and \FreqDiv_1:count_7\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_3\ and \FreqDiv_1:count_7\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_2\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_5\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:count_6\ and \FreqDiv_1:count_7\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_7\));
+
+\FreqDiv_1:count_6\\D\ <= ((not \FreqDiv_1:count_9\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_8\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_7\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_6\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_4\ and \FreqDiv_1:count_3\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_4\ and \FreqDiv_1:count_6\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_3\ and \FreqDiv_1:count_6\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_2\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:count_5\ and \FreqDiv_1:count_6\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_6\));
+
+\FreqDiv_1:count_5\\D\ <= ((not \FreqDiv_1:count_9\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_8\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_7\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_6\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_5\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_4\ and \FreqDiv_1:count_3\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_4\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_3\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:count_2\ and \FreqDiv_1:count_5\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_5\));
+
+\FreqDiv_1:count_4\\D\ <= ((not \FreqDiv_1:count_4\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_3\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_2\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:count_3\ and \FreqDiv_1:count_4\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_4\));
+
+\FreqDiv_1:count_3\\D\ <= ((not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_4\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_5\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_6\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_7\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_8\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_9\ and not \FreqDiv_1:count_3\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:count_2\ and \FreqDiv_1:count_3\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_3\));
+
+\FreqDiv_1:count_2\\D\ <= ((not \FreqDiv_1:count_2\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_2\)
+	OR (not \FreqDiv_1:count_1\ and \FreqDiv_1:count_2\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_2\));
+
+\FreqDiv_1:count_1\\D\ <= ((not \FreqDiv_1:count_1\ and \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_0\)
+	OR (not \FreqDiv_1:count_0\ and \FreqDiv_1:count_1\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_1\));
+
+\FreqDiv_1:count_0\\D\ <= ((not \FreqDiv_1:count_0\ and \FreqDiv_1:not_last_reset\)
+	OR (not \FreqDiv_1:not_last_reset\ and \FreqDiv_1:count_0\));
+
+\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_8\ <= ((\FreqDiv_1:count_7\ and \FreqDiv_1:count_6\ and \FreqDiv_1:count_5\ and \FreqDiv_1:count_4\ and \FreqDiv_1:count_3\ and \FreqDiv_1:count_2\ and \FreqDiv_1:count_1\ and \FreqDiv_1:count_0\));
+
+\OneWire:ControlReg_DRV:Sync:ctrl_reg\:cy_psoc3_control
+	GENERIC MAP(cy_init_value=>"00000001",
+		cy_force_order=>'1',
+		cy_ctrl_mode_1=>"00000000",
+		cy_ctrl_mode_0=>"00000000",
+		cy_ext_reset=>'0')
+	PORT MAP(reset=>zero,
+		clock=>zero,
+		control=>(\OneWire:ControlReg_DRV:control_7\, \OneWire:ControlReg_DRV:control_6\, \OneWire:ControlReg_DRV:control_5\, \OneWire:ControlReg_DRV:control_4\,
+			\OneWire:ControlReg_DRV:control_3\, \OneWire:ControlReg_DRV:control_2\, \OneWire:ControlReg_DRV:control_1\, \OneWire:Net_1111\));
+\OneWire:bufoe_1\:cy_bufoe
+	PORT MAP(x=>\OneWire:Net_1111\,
+		oe=>\OneWire:tmpOE__bufoe_1_net_0\,
+		y=>Net_1978_0,
+		yfb=>\OneWire:Net_807\);
+\OneWire:StatusReg_BUS:sts:sts_reg\:cy_psoc3_status
+	GENERIC MAP(cy_force_order=>'1',
+		cy_md_select=>"00000000")
+	PORT MAP(reset=>zero,
+		clock=>zero,
+		status=>(one, one, one, one,
+			one, one, one, \OneWire:Net_807\));
+\OneWire:TimerDelay:TimerUDB:clock_enable_block\:cy_psoc3_udb_clock_enable_v1_0
+	GENERIC MAP(sync_mode=>'1')
+	PORT MAP(clock_in=>\OneWire:Net_522\,
+		enable=>one,
+		clock_out=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\);
+\OneWire:TimerDelay:TimerUDB:sCTRLReg:SyncCtl:cy_psoc3_udb_Ctl_Clk_Sync\:cy_psoc3_udb_clock_enable_v1_0
+	GENERIC MAP(sync_mode=>'1')
+	PORT MAP(clock_in=>\OneWire:Net_522\,
+		enable=>one,
+		clock_out=>\OneWire:TimerDelay:TimerUDB:Clk_Ctl_i\);
+\OneWire:TimerDelay:TimerUDB:sCTRLReg:SyncCtl:ctrlreg\:cy_psoc3_control
+	GENERIC MAP(cy_init_value=>"00000000",
+		cy_force_order=>'1',
+		cy_ctrl_mode_1=>"00000000",
+		cy_ctrl_mode_0=>"11111111",
+		cy_ext_reset=>'0')
+	PORT MAP(reset=>zero,
+		clock=>\OneWire:TimerDelay:TimerUDB:Clk_Ctl_i\,
+		control=>(\OneWire:TimerDelay:TimerUDB:control_7\, \OneWire:TimerDelay:TimerUDB:control_6\, \OneWire:TimerDelay:TimerUDB:control_5\, \OneWire:TimerDelay:TimerUDB:control_4\,
+			\OneWire:TimerDelay:TimerUDB:control_3\, \OneWire:TimerDelay:TimerUDB:control_2\, \OneWire:TimerDelay:TimerUDB:control_1\, \OneWire:TimerDelay:TimerUDB:control_0\));
+\OneWire:TimerDelay:TimerUDB:rstSts:stsreg\:cy_psoc3_statusi
+	GENERIC MAP(cy_force_order=>'1',
+		cy_md_select=>"0000011",
+		cy_int_mask=>"1111111")
+	PORT MAP(reset=>LED,
+		clock=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		status=>(zero, zero, zero, \OneWire:TimerDelay:TimerUDB:status_3\,
+			\OneWire:TimerDelay:TimerUDB:status_2\, zero, \OneWire:TimerDelay:TimerUDB:status_tc\),
+		interrupt=>\OneWire:Net_910\);
+\OneWire:TimerDelay:TimerUDB:sT16:timerdp:u0\:cy_psoc3_dp
+	GENERIC MAP(cy_dpconfig=>"0000000001000000000000000100000001000000010000000000000010000000000000001000000000000000100000000000000010000000000000001000000011111111000000001111111111111111000000000000000000000001000000000000000000011000",
+		d0_init=>"00000000",
+		d1_init=>"00000000",
+		a0_init=>"00000000",
+		a1_init=>"00000000",
+		ce0_sync=>'1',
+		cl0_sync=>'1',
+		z0_sync=>'1',
+		ff0_sync=>'1',
+		ce1_sync=>'1',
+		cl1_sync=>'1',
+		z1_sync=>'1',
+		ff1_sync=>'1',
+		ov_msb_sync=>'1',
+		co_msb_sync=>'1',
+		cmsb_sync=>'1',
+		so_sync=>'1',
+		f0_bus_sync=>'1',
+		f0_blk_sync=>'1',
+		f1_bus_sync=>'1',
+		f1_blk_sync=>'1')
+	PORT MAP(reset=>zero,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		cs_addr=>(LED, \OneWire:TimerDelay:TimerUDB:trig_reg\, \OneWire:TimerDelay:TimerUDB:per_zero\),
+		route_si=>zero,
+		route_ci=>zero,
+		f0_load=>zero,
+		f1_load=>zero,
+		d0_load=>zero,
+		d1_load=>zero,
+		ce0=>open,
+		cl0=>open,
+		z0=>\OneWire:TimerDelay:TimerUDB:nc0\,
+		ff0=>open,
+		ce1=>open,
+		cl1=>open,
+		z1=>open,
+		ff1=>open,
+		ov_msb=>open,
+		co_msb=>open,
+		cmsb=>open,
+		so=>open,
+		f0_bus_stat=>\OneWire:TimerDelay:TimerUDB:nc3\,
+		f0_blk_stat=>\OneWire:TimerDelay:TimerUDB:nc4\,
+		f1_bus_stat=>open,
+		f1_blk_stat=>open,
+		ce0_reg=>open,
+		cl0_reg=>open,
+		z0_reg=>open,
+		ff0_reg=>open,
+		ce1_reg=>open,
+		cl1_reg=>open,
+		z1_reg=>open,
+		ff1_reg=>open,
+		ov_msb_reg=>open,
+		co_msb_reg=>open,
+		cmsb_reg=>open,
+		so_reg=>open,
+		f0_bus_stat_reg=>open,
+		f0_blk_stat_reg=>open,
+		f1_bus_stat_reg=>open,
+		f1_blk_stat_reg=>open,
+		ci=>zero,
+		co=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:carry\,
+		sir=>zero,
+		sor=>open,
+		sil=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_right\,
+		sol=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_left\,
+		msbi=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:msb\,
+		msbo=>open,
+		cei=>(zero, zero),
+		ceo=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_0\),
+		cli=>(zero, zero),
+		clo=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_0\),
+		zi=>(zero, zero),
+		zo=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_0\),
+		fi=>(zero, zero),
+		fo=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_0\),
+		capi=>(zero, zero),
+		capo=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_0\),
+		cfbi=>zero,
+		cfbo=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cfb\,
+		pi=>(zero, zero, zero, zero,
+			zero, zero, zero, zero),
+		po=>open);
+\OneWire:TimerDelay:TimerUDB:sT16:timerdp:u1\:cy_psoc3_dp
+	GENERIC MAP(cy_dpconfig=>"0000000001000000000000000100000001000000010000000000000010000000000000001000000000000000100000000000000010000000000000001000000011111111000000001111111111111111100000110000000000000001000000110000000000011000",
+		d0_init=>"00000000",
+		d1_init=>"00000000",
+		a0_init=>"00000000",
+		a1_init=>"00000000",
+		ce0_sync=>'1',
+		cl0_sync=>'1',
+		z0_sync=>'1',
+		ff0_sync=>'1',
+		ce1_sync=>'1',
+		cl1_sync=>'1',
+		z1_sync=>'1',
+		ff1_sync=>'1',
+		ov_msb_sync=>'1',
+		co_msb_sync=>'1',
+		cmsb_sync=>'1',
+		so_sync=>'1',
+		f0_bus_sync=>'1',
+		f0_blk_sync=>'1',
+		f1_bus_sync=>'1',
+		f1_blk_sync=>'1')
+	PORT MAP(reset=>zero,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		cs_addr=>(LED, \OneWire:TimerDelay:TimerUDB:trig_reg\, \OneWire:TimerDelay:TimerUDB:per_zero\),
+		route_si=>zero,
+		route_ci=>zero,
+		f0_load=>zero,
+		f1_load=>zero,
+		d0_load=>zero,
+		d1_load=>zero,
+		ce0=>open,
+		cl0=>open,
+		z0=>\OneWire:TimerDelay:TimerUDB:per_zero\,
+		ff0=>open,
+		ce1=>open,
+		cl1=>open,
+		z1=>open,
+		ff1=>open,
+		ov_msb=>open,
+		co_msb=>open,
+		cmsb=>open,
+		so=>open,
+		f0_bus_stat=>\OneWire:TimerDelay:TimerUDB:status_3\,
+		f0_blk_stat=>\OneWire:TimerDelay:TimerUDB:status_2\,
+		f1_bus_stat=>open,
+		f1_blk_stat=>open,
+		ce0_reg=>open,
+		cl0_reg=>open,
+		z0_reg=>open,
+		ff0_reg=>open,
+		ce1_reg=>open,
+		cl1_reg=>open,
+		z1_reg=>open,
+		ff1_reg=>open,
+		ov_msb_reg=>open,
+		co_msb_reg=>open,
+		cmsb_reg=>open,
+		so_reg=>open,
+		f0_bus_stat_reg=>open,
+		f0_blk_stat_reg=>open,
+		f1_bus_stat_reg=>open,
+		f1_blk_stat_reg=>open,
+		ci=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:carry\,
+		co=>open,
+		sir=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_left\,
+		sor=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:sh_right\,
+		sil=>zero,
+		sol=>open,
+		msbi=>zero,
+		msbo=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:msb\,
+		cei=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_eq_0\),
+		ceo=>open,
+		cli=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_lt_0\),
+		clo=>open,
+		zi=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_zero_0\),
+		zo=>open,
+		fi=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cmp_ff_0\),
+		fo=>open,
+		capi=>(\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_1\, \OneWire:TimerDelay:TimerUDB:sT16:timerdp:cap_0\),
+		capo=>open,
+		cfbi=>\OneWire:TimerDelay:TimerUDB:sT16:timerdp:cfb\,
+		cfbo=>open,
+		pi=>(zero, zero, zero, zero,
+			zero, zero, zero, zero),
+		po=>open);
+\OneWire:ControlReg_SEL:Sync:ctrl_reg\:cy_psoc3_control
+	GENERIC MAP(cy_init_value=>"00001111",
+		cy_force_order=>'1',
+		cy_ctrl_mode_1=>"00000000",
+		cy_ctrl_mode_0=>"00000000",
+		cy_ext_reset=>'0')
+	PORT MAP(reset=>zero,
+		clock=>zero,
+		control=>(\OneWire:ControlReg_SEL:control_7\, \OneWire:ControlReg_SEL:control_6\, \OneWire:ControlReg_SEL:control_5\, \OneWire:ControlReg_SEL:control_4\,
+			\OneWire:ControlReg_SEL:control_3\, \OneWire:ControlReg_SEL:control_2\, \OneWire:ControlReg_SEL:control_1\, \OneWire:tmpOE__bufoe_1_net_0\));
+\OneWire:clock_delay\:cy_clock_v1_0
+	GENERIC MAP(cy_registers=>"",
+		id=>"79556935-0691-47e8-9174-518b628186cb/c0fb34bd-1044-4931-9788-16b01ce89812",
+		source_clock_id=>"",
+		divisor=>0,
+		period=>"1000000000000",
+		is_direct=>'0',
+		is_digital=>'0')
+	PORT MAP(clock_out=>\OneWire:Net_522\,
+		dig_domain_out=>open);
+\OneWire:Trigger:Sync:ctrl_reg\:cy_psoc3_control
+	GENERIC MAP(cy_init_value=>"00000000",
+		cy_force_order=>'1',
+		cy_ctrl_mode_1=>"00000001",
+		cy_ctrl_mode_0=>"00000001",
+		cy_ext_reset=>'1')
+	PORT MAP(reset=>zero,
+		clock=>\OneWire:Net_522\,
+		control=>(\OneWire:Trigger:control_7\, \OneWire:Trigger:control_6\, \OneWire:Trigger:control_5\, \OneWire:Trigger:control_4\,
+			\OneWire:Trigger:control_3\, \OneWire:Trigger:control_2\, \OneWire:Trigger:control_1\, \OneWire:Net_527\));
+\OneWire:isr_DataReady\:cy_isr_v1_0
+	GENERIC MAP(int_type=>"10",
+		is_nmi=>'0')
+	PORT MAP(int_signal=>LED);
+Pin_0:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"4a70367c-d65b-4b20-9eca-2d1b35eceea8",
+		drive_mode=>"010",
+		ibuf_enabled=>"1",
+		init_dr_st=>"1",
+		input_sync=>"1",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"0",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"sen0",
+		pin_mode=>"B",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"00",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"1",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>(zero),
+		fb=>(tmpFB_0__Pin_0_net_0),
+		analog=>(open),
+		io=>Net_1978_0,
+		siovref=>(tmpSIOVREF__Pin_0_net_0),
+		annotation=>Net_1019,
+		in_clock=>zero,
+		in_clock_en=>one,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>one,
+		out_reset=>zero,
+		interrupt=>tmpINTERRUPT_0__Pin_0_net_0);
+D_1:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"LED_v1_0",
+		port_names=>"A, K",
+		width=>2)
+	PORT MAP(connect=>(Net_2187, Net_2185));
+PinLED:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"72150f30-abec-4aaf-9ef1-42e05aed1f3b",
+		drive_mode=>"110",
+		ibuf_enabled=>"1",
+		init_dr_st=>"1",
+		input_sync=>"1",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"1",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"LED",
+		pin_mode=>"O",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"10",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"1",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>Net_2188,
+		fb=>(tmpFB_0__PinLED_net_0),
+		analog=>(open),
+		io=>(tmpIO_0__PinLED_net_0),
+		siovref=>(tmpSIOVREF__PinLED_net_0),
+		annotation=>Net_2185,
+		in_clock=>zero,
+		in_clock_en=>one,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>one,
+		out_reset=>zero,
+		interrupt=>tmpINTERRUPT_0__PinLED_net_0);
+PWR_2:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"Power_v1_0",
+		port_names=>"T1",
+		width=>1)
+	PORT MAP(connect=>Net_2187);
+isr_Timer:cy_isr_v1_0
+	GENERIC MAP(int_type=>"00",
+		is_nmi=>'0')
+	PORT MAP(int_signal=>Net_1071);
+DS18B20:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"Connector20_v1_0",
+		port_names=>"T1, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T2, T20, T3, T4, T5, T6, T7, T8, T9",
+		width=>20)
+	PORT MAP(connect=>(Net_855, Net_863, Net_864, Net_865,
+			Net_866, Net_867, Net_868, Net_869,
+			Net_870, Net_871, Net_872, Net_1019,
+			Net_873, Net_856, Net_857, Net_858,
+			Net_859, Net_860, Net_861, Net_862));
+GND_2:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"Gnd_v1_0",
+		port_names=>"T1",
+		width=>1)
+	PORT MAP(connect=>Net_855);
+PWR_1:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"Power_v1_0",
+		port_names=>"T1",
+		width=>1)
+	PORT MAP(connect=>Net_856);
+R_3:cy_annotation_universal_v1_0
+	GENERIC MAP(comp_name=>"Resistor_v1_0",
+		port_names=>"T1, T2",
+		width=>2)
+	PORT MAP(connect=>(Net_1019, Net_856));
+Clock_ReportTimer:cy_clock_v1_0
+	GENERIC MAP(cy_registers=>"",
+		id=>"3b1ccd86-9d4f-4aa0-a031-6a5764b2f419",
+		source_clock_id=>"413DE2EF-D9F2-4233-A808-DFAF137FD877",
+		divisor=>48000,
+		period=>"0",
+		is_direct=>'0',
+		is_digital=>'0')
+	PORT MAP(clock_out=>Net_1073,
+		dig_domain_out=>open);
+\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:gs(24):g2:g3:ub\:cy_buf
+	PORT MAP(x=>zero,
+		y=>\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_24\);
+\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:gs(16):g2:g3:ub\:cy_buf
+	PORT MAP(x=>zero,
+		y=>\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_16\);
+\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:gs(8):g2:g3:ub\:cy_buf
+	PORT MAP(x=>\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:b_8\,
+		y=>\FreqDiv_1:MODULE_1:g2:a0:g1:z1:s0:g1:u0:c_8\);
+\UART_DEB:SCBCLK\:cy_clock_v1_0
+	GENERIC MAP(cy_registers=>"",
+		id=>"43ec2fa1-bf22-4b71-9477-b6ca7b97f0b0/2dc2d7a8-ce2b-43c7-af4a-821c8cd73ccf",
+		source_clock_id=>"",
+		divisor=>0,
+		period=>"723379629.62963",
+		is_direct=>'0',
+		is_digital=>'0')
+	PORT MAP(clock_out=>\UART_DEB:Net_847\,
+		dig_domain_out=>open);
+\UART_DEB:tx\:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"43ec2fa1-bf22-4b71-9477-b6ca7b97f0b0/23b8206d-1c77-4e61-be4a-b4037d5de5fc",
+		drive_mode=>"110",
+		ibuf_enabled=>"0",
+		init_dr_st=>"1",
+		input_sync=>"0",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"1",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"B",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"00",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>\UART_DEB:tx_wire\,
+		fb=>(\UART_DEB:tmpFB_0__tx_net_0\),
+		analog=>(open),
+		io=>(\UART_DEB:tmpIO_0__tx_net_0\),
+		siovref=>(\UART_DEB:tmpSIOVREF__tx_net_0\),
+		annotation=>(open),
+		in_clock=>zero,
+		in_clock_en=>one,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>one,
+		out_reset=>zero,
+		interrupt=>\UART_DEB:tmpINTERRUPT_0__tx_net_0\);
+\UART_DEB:rx\:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"43ec2fa1-bf22-4b71-9477-b6ca7b97f0b0/78e33e5d-45ea-4b75-88d5-73274e8a7ce4",
+		drive_mode=>"001",
+		ibuf_enabled=>"1",
+		init_dr_st=>"0",
+		input_sync=>"0",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"0",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"I",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"00",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>(zero),
+		fb=>\UART_DEB:rx_wire\,
+		analog=>(open),
+		io=>(\UART_DEB:tmpIO_0__rx_net_0\),
+		siovref=>(\UART_DEB:tmpSIOVREF__rx_net_0\),
+		annotation=>(open),
+		in_clock=>zero,
+		in_clock_en=>one,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>one,
+		out_reset=>zero,
+		interrupt=>\UART_DEB:tmpINTERRUPT_0__rx_net_0\);
+\UART_DEB:SCB\:cy_m0s8_scb_v2_0
+	GENERIC MAP(cy_registers=>"",
+		scb_mode=>2)
+	PORT MAP(clock=>\UART_DEB:Net_847\,
+		interrupt=>Net_2223,
+		rx=>\UART_DEB:rx_wire\,
+		tx=>\UART_DEB:tx_wire\,
+		cts=>zero,
+		rts=>\UART_DEB:rts_wire\,
+		mosi_m=>\UART_DEB:mosi_m_wire\,
+		miso_m=>zero,
+		select_m=>(\UART_DEB:select_m_wire_3\, \UART_DEB:select_m_wire_2\, \UART_DEB:select_m_wire_1\, \UART_DEB:select_m_wire_0\),
+		sclk_m=>\UART_DEB:sclk_m_wire\,
+		mosi_s=>zero,
+		miso_s=>\UART_DEB:miso_s_wire\,
+		select_s=>zero,
+		sclk_s=>zero,
+		scl=>Net_2240,
+		sda=>Net_2241,
+		tx_req=>Net_2226,
+		rx_req=>Net_2225);
+\OneWire:TimerDelay:TimerUDB:capture_last\:cy_dff
+	PORT MAP(d=>zero,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:capture_last\);
+\OneWire:TimerDelay:TimerUDB:hwEnable_reg\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:control_7\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:run_mode\);
+\OneWire:TimerDelay:TimerUDB:tc_reg_i\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:status_tc\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>LED);
+\OneWire:TimerDelay:TimerUDB:capture_out_reg_i\:cy_dff
+	PORT MAP(d=>zero,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:capture_out_reg_i\);
+\OneWire:TimerDelay:TimerUDB:runmode_enable\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:runmode_enable\\D\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:timer_enable\);
+\OneWire:TimerDelay:TimerUDB:trig_disable\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:trig_disable\\D\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:trig_disable\);
+\OneWire:TimerDelay:TimerUDB:trig_last\:cy_dff
+	PORT MAP(d=>\OneWire:Net_527\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:trig_last\);
+\OneWire:TimerDelay:TimerUDB:trig_rise_detected\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:trig_rise_detected\\D\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:trig_rise_detected\);
+\OneWire:TimerDelay:TimerUDB:trig_fall_detected\:cy_dff
+	PORT MAP(d=>\OneWire:TimerDelay:TimerUDB:trig_fall_detected\\D\,
+		clk=>\OneWire:TimerDelay:TimerUDB:ClockOutFromEnBlock\,
+		q=>\OneWire:TimerDelay:TimerUDB:trig_fall_detected\);
+Net_1071:cy_dff
+	PORT MAP(d=>Net_1071D,
+		clk=>Net_1073,
+		q=>Net_1071);
+\FreqDiv_1:not_last_reset\:cy_dff
+	PORT MAP(d=>one,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:not_last_reset\);
+\FreqDiv_1:count_9\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_9\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_9\);
+\FreqDiv_1:count_8\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_8\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_8\);
+\FreqDiv_1:count_7\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_7\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_7\);
+\FreqDiv_1:count_6\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_6\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_6\);
+\FreqDiv_1:count_5\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_5\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_5\);
+\FreqDiv_1:count_4\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_4\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_4\);
+\FreqDiv_1:count_3\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_3\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_3\);
+\FreqDiv_1:count_2\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_2\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_2\);
+\FreqDiv_1:count_1\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_1\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_1\);
+\FreqDiv_1:count_0\:cy_dff
+	PORT MAP(d=>\FreqDiv_1:count_0\\D\,
+		clk=>Net_1073,
+		q=>\FreqDiv_1:count_0\);
+
+END R_T_L;
