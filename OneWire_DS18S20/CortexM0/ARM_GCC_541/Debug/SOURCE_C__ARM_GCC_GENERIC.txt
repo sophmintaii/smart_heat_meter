@@ -1,1 +1,0 @@
-'C:\Users\User\Desktop\Hi\Demo1\DS18x8_demo.cydsn\main.c' -o .o -T SOURCE_C__ARM_GCC_GENERIC -I 'C:\Users\User\Desktop\Hi\Demo1\DS18x8_demo.cydsn' -I 'C:\Users\User\Desktop\Hi\Demo1\DS18x8_demo.cydsn\Generated_Source\PSoC4' -f 'C:\Users\User\Desktop\Hi\Demo1\DS18x8_demo.cydsn\CortexM0\ARM_GCC_541\Debug\.deps\SOURCE_C__ARM_GCC_GENERIC.d'

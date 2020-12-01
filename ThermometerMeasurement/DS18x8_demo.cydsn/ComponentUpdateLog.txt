@@ -1,0 +1,30 @@
+Last Modified Date & Time: 11/03/2020 13:17:50
+
+DS18x8_demo: DS18x8.cysch
+	ControlReg_DRV [v1.70] to [v1.80]
+	ControlReg_SEL [v1.70] to [v1.80]
+	Trigger [v1.70] to [v1.80]
+	StatusReg_BUS [v1.80] to [v1.90]
+	TimerDelay [v2.70] to [v2.80]
+
+DS18x8_demo: DS18x8_demo.cydwr
+	cy_boot [v4.20] to [v5.70]
+
+DS18x8_demo: TopDesign.cysch
+	Pin_0 [v2.10] to [v2.20]
+	PinLED [v2.10] to [v2.20]
+	Tx_06 [v2.10] to [v2.20]
+	UART_1 [v2.30] to [v2.50]
+
+
+Last Modified Date & Time: 12/01/2020 18:38:03
+
+DS18x8_demo: DS18x8_demo.cydwr
+	cy_boot [v5.70] to [v5.81]
+	Em_EEPROM_Dynamic [v2.0] to [v2.20]
+	LIN_Dynamic [v4.0] to [v5.0]
+
+DS18x8_demo: TopDesign.cysch
+	BLE [v3.50] to [v3.66]
+
+
