@@ -1,0 +1,4203 @@
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"OneWire.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	OneWire_Sensor,32,4
+  20              		.comm	OneWire_DataReady,1,1
+  21              		.comm	BusPresence,1,1
+  22              		.section	.text.OneWire_IRQDataReady,"ax",%progbits
+  23              		.align	2
+  24              		.global	OneWire_IRQDataReady
+  25              		.code	16
+  26              		.thumb_func
+  27              		.type	OneWire_IRQDataReady, %function
+  28              	OneWire_IRQDataReady:
+  29              	.LFB35:
+  30              		.file 1 "Generated_Source\\PSoC4\\OneWire.c"
+   1:Generated_Source\PSoC4/OneWire.c **** /* ============================================================================
+   2:Generated_Source\PSoC4/OneWire.c ****  * DS18x8: MAXIM DS18B20 Digital Thermometer component (v 0.0)
+   3:Generated_Source\PSoC4/OneWire.c ****  * Read temperature simultaaneously from up to 8 DS18B20 sensors 
+   4:Generated_Source\PSoC4/OneWire.c ****  *
+   5:Generated_Source\PSoC4/OneWire.c ****  * based on original OneWire code by Evg. Pavlov <pavloven>
+   6:Generated_Source\PSoC4/OneWire.c ****  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/temperature-logger/
+   7:Generated_Source\PSoC4/OneWire.c ****  * http://mylab.wmsite.ru/moi-razrab/cypress-psoc/psoc-user-module-library/
+   8:Generated_Source\PSoC4/OneWire.c ****  * ============================================================================
+   9:Generated_Source\PSoC4/OneWire.c ****  * PROVIDED AS-IS, NO WARRANTY OF ANY KIND, INCLUDING, BUT NOT LIMITED TO, THE
+  10:Generated_Source\PSoC4/OneWire.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  11:Generated_Source\PSoC4/OneWire.c ****  * FREE TO SHARE, USE AND MODIFY UNDER TERMS: CREATIVE COMMONS - SHARE ALIKE
+  12:Generated_Source\PSoC4/OneWire.c ****  * ============================================================================
+  13:Generated_Source\PSoC4/OneWire.c **** */
+  14:Generated_Source\PSoC4/OneWire.c **** 
+  15:Generated_Source\PSoC4/OneWire.c **** 
+  16:Generated_Source\PSoC4/OneWire.c **** #include <OneWire.h>
+  17:Generated_Source\PSoC4/OneWire.c **** #include <project.h>
+  18:Generated_Source\PSoC4/OneWire.c **** 
+  19:Generated_Source\PSoC4/OneWire.c **** 
+  20:Generated_Source\PSoC4/OneWire.c **** #define GetBit(Value, BitNo) ((Value >> BitNo) & (uint8)0x01)   //macro to read a bit,  returns 0 o
+  21:Generated_Source\PSoC4/OneWire.c **** 
+  22:Generated_Source\PSoC4/OneWire.c **** uint8 BusPresence; // 8-bit bus state: 1-sensor present, 0-sensor read failure
+  23:Generated_Source\PSoC4/OneWire.c ****   
+  24:Generated_Source\PSoC4/OneWire.c **** 
+  25:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  26:Generated_Source\PSoC4/OneWire.c **** //                  ISR Timer data ready to read
+  27:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 2
+
+
+  28:Generated_Source\PSoC4/OneWire.c **** 
+  29:Generated_Source\PSoC4/OneWire.c **** //CY_ISR_PROTO(OneWire_IRQDataReady); //ISR proto
+  30:Generated_Source\PSoC4/OneWire.c **** CY_ISR(OneWire_IRQDataReady) // ISR Timer data ready to read
+  31:Generated_Source\PSoC4/OneWire.c **** {
+  31              		.loc 1 31 0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 1, uses_anonymous_args = 0
+  35 0000 80B5     		push	{r7, lr}
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 7, -8
+  38              		.cfi_offset 14, -4
+  39 0002 00AF     		add	r7, sp, #0
+  40              		.cfi_def_cfa_register 7
+  32:Generated_Source\PSoC4/OneWire.c ****     OneWire_DataReady = 1;
+  41              		.loc 1 32 0
+  42 0004 024B     		ldr	r3, .L2
+  43 0006 0122     		movs	r2, #1
+  44 0008 1A70     		strb	r2, [r3]
+  33:Generated_Source\PSoC4/OneWire.c **** }
+  45              		.loc 1 33 0
+  46 000a C046     		nop
+  47 000c BD46     		mov	sp, r7
+  48              		@ sp needed
+  49 000e 80BD     		pop	{r7, pc}
+  50              	.L3:
+  51              		.align	2
+  52              	.L2:
+  53 0010 00000000 		.word	OneWire_DataReady
+  54              		.cfi_endproc
+  55              	.LFE35:
+  56              		.size	OneWire_IRQDataReady, .-OneWire_IRQDataReady
+  57              		.section	.text.R_BitBus,"ax",%progbits
+  58              		.align	2
+  59              		.global	R_BitBus
+  60              		.code	16
+  61              		.thumb_func
+  62              		.type	R_BitBus, %function
+  63              	R_BitBus:
+  64              	.LFB36:
+  34:Generated_Source\PSoC4/OneWire.c **** 
+  35:Generated_Source\PSoC4/OneWire.c **** 
+  36:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  37:Generated_Source\PSoC4/OneWire.c **** //                              Read Bit
+  38:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  39:Generated_Source\PSoC4/OneWire.c **** 
+  40:Generated_Source\PSoC4/OneWire.c **** uint8 R_BitBus(void) //  Read a single bit off the 1-WIRE bus
+  41:Generated_Source\PSoC4/OneWire.c **** {  
+  65              		.loc 1 41 0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 8
+  68              		@ frame_needed = 1, uses_anonymous_args = 0
+  69 0000 90B5     		push	{r4, r7, lr}
+  70              		.cfi_def_cfa_offset 12
+  71              		.cfi_offset 4, -12
+  72              		.cfi_offset 7, -8
+  73              		.cfi_offset 14, -4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 3
+
+
+  74 0002 83B0     		sub	sp, sp, #12
+  75              		.cfi_def_cfa_offset 24
+  76 0004 00AF     		add	r7, sp, #0
+  77              		.cfi_def_cfa_register 7
+  42:Generated_Source\PSoC4/OneWire.c ****     CyDelayUs(Tinact);  // Inactive before next signal. =20us
+  78              		.loc 1 42 0
+  79 0006 1420     		movs	r0, #20
+  80 0008 FFF7FEFF 		bl	CyDelayUs
+  43:Generated_Source\PSoC4/OneWire.c ****     
+  44:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_SEL_Write(SET_ALL_OUT);
+  81              		.loc 1 44 0
+  82 000c FF20     		movs	r0, #255
+  83 000e FFF7FEFF 		bl	OneWire_ControlReg_SEL_Write
+  45:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(LOW);  //Drive LOW selected pin
+  84              		.loc 1 45 0
+  85 0012 0020     		movs	r0, #0
+  86 0014 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+  46:Generated_Source\PSoC4/OneWire.c **** 
+  47:Generated_Source\PSoC4/OneWire.c ****     CyDelayUs(TMtr1);   // read 1us, write 1-15us
+  87              		.loc 1 47 0
+  88 0018 0A20     		movs	r0, #10
+  89 001a FFF7FEFF 		bl	CyDelayUs
+  48:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(HIGH);  //Drive HIGH selected pin
+  90              		.loc 1 48 0
+  91 001e 0120     		movs	r0, #1
+  92 0020 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+  49:Generated_Source\PSoC4/OneWire.c ****     
+  50:Generated_Source\PSoC4/OneWire.c **** 	CyDelayUs(5);       // check in 5 usec
+  93              		.loc 1 50 0
+  94 0024 0520     		movs	r0, #5
+  95 0026 FFF7FEFF 		bl	CyDelayUs
+  51:Generated_Source\PSoC4/OneWire.c ****     
+  52:Generated_Source\PSoC4/OneWire.c ****     //prepare read
+  53:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_SEL_Write(SET_ALL_INP);   // all outputs disable
+  96              		.loc 1 53 0
+  97 002a 0020     		movs	r0, #0
+  98 002c FFF7FEFF 		bl	OneWire_ControlReg_SEL_Write
+  54:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(LOW); // Drive LOW 
+  99              		.loc 1 54 0
+ 100 0030 0020     		movs	r0, #0
+ 101 0032 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+  55:Generated_Source\PSoC4/OneWire.c ****     
+  56:Generated_Source\PSoC4/OneWire.c ****     uint8 result = OneWire_StatusReg_BUS_Read();
+ 102              		.loc 1 56 0
+ 103 0036 FC1D     		adds	r4, r7, #7
+ 104 0038 FFF7FEFF 		bl	OneWire_StatusReg_BUS_Read
+ 105 003c 0300     		movs	r3, r0
+ 106 003e 2370     		strb	r3, [r4]
+  57:Generated_Source\PSoC4/OneWire.c ****     return (result);
+ 107              		.loc 1 57 0
+ 108 0040 FB1D     		adds	r3, r7, #7
+ 109 0042 1B78     		ldrb	r3, [r3]
+  58:Generated_Source\PSoC4/OneWire.c **** }
+ 110              		.loc 1 58 0
+ 111 0044 1800     		movs	r0, r3
+ 112 0046 BD46     		mov	sp, r7
+ 113 0048 03B0     		add	sp, sp, #12
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 4
+
+
+ 114              		@ sp needed
+ 115 004a 90BD     		pop	{r4, r7, pc}
+ 116              		.cfi_endproc
+ 117              	.LFE36:
+ 118              		.size	R_BitBus, .-R_BitBus
+ 119              		.section	.text.W_Bit,"ax",%progbits
+ 120              		.align	2
+ 121              		.global	W_Bit
+ 122              		.code	16
+ 123              		.thumb_func
+ 124              		.type	W_Bit, %function
+ 125              	W_Bit:
+ 126              	.LFB37:
+  59:Generated_Source\PSoC4/OneWire.c **** 
+  60:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  61:Generated_Source\PSoC4/OneWire.c **** //                              Write Bit
+  62:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  63:Generated_Source\PSoC4/OneWire.c **** 
+  64:Generated_Source\PSoC4/OneWire.c **** void W_Bit(uint8 payload) // Write a single bit to the 1-WIRE bus. 
+  65:Generated_Source\PSoC4/OneWire.c **** {
+ 127              		.loc 1 65 0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 8
+ 130              		@ frame_needed = 1, uses_anonymous_args = 0
+ 131 0000 80B5     		push	{r7, lr}
+ 132              		.cfi_def_cfa_offset 8
+ 133              		.cfi_offset 7, -8
+ 134              		.cfi_offset 14, -4
+ 135 0002 82B0     		sub	sp, sp, #8
+ 136              		.cfi_def_cfa_offset 16
+ 137 0004 00AF     		add	r7, sp, #0
+ 138              		.cfi_def_cfa_register 7
+ 139 0006 0200     		movs	r2, r0
+ 140 0008 FB1D     		adds	r3, r7, #7
+ 141 000a 1A70     		strb	r2, [r3]
+  66:Generated_Source\PSoC4/OneWire.c **** 	CyDelayUs(Tinact);  //Inactive before next signal.
+ 142              		.loc 1 66 0
+ 143 000c 1420     		movs	r0, #20
+ 144 000e FFF7FEFF 		bl	CyDelayUs
+  67:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(LOW); // Drive LOW enabled outputs
+ 145              		.loc 1 67 0
+ 146 0012 0020     		movs	r0, #0
+ 147 0014 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+  68:Generated_Source\PSoC4/OneWire.c **** 
+  69:Generated_Source\PSoC4/OneWire.c ****     if(payload==0)	CyDelayUs(TMtr0); //If its a 0 to write, TMtr0 = 50us
+ 148              		.loc 1 69 0
+ 149 0018 FB1D     		adds	r3, r7, #7
+ 150 001a 1B78     		ldrb	r3, [r3]
+ 151 001c 002B     		cmp	r3, #0
+ 152 001e 03D1     		bne	.L7
+ 153              		.loc 1 69 0 is_stmt 0 discriminator 1
+ 154 0020 3220     		movs	r0, #50
+ 155 0022 FFF7FEFF 		bl	CyDelayUs
+ 156 0026 02E0     		b	.L8
+ 157              	.L7:
+  70:Generated_Source\PSoC4/OneWire.c **** 	else     		CyDelayUs(TMtr1); //If its a 1 to write, TMtr1 = 10us
+ 158              		.loc 1 70 0 is_stmt 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 5
+
+
+ 159 0028 0A20     		movs	r0, #10
+ 160 002a FFF7FEFF 		bl	CyDelayUs
+ 161              	.L8:
+  71:Generated_Source\PSoC4/OneWire.c ****         
+  72:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(HIGH); // Drive HIGH enabled outputs
+ 162              		.loc 1 72 0
+ 163 002e 0120     		movs	r0, #1
+ 164 0030 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+  73:Generated_Source\PSoC4/OneWire.c **** }
+ 165              		.loc 1 73 0
+ 166 0034 C046     		nop
+ 167 0036 BD46     		mov	sp, r7
+ 168 0038 02B0     		add	sp, sp, #8
+ 169              		@ sp needed
+ 170 003a 80BD     		pop	{r7, pc}
+ 171              		.cfi_endproc
+ 172              	.LFE37:
+ 173              		.size	W_Bit, .-W_Bit
+ 174              		.section	.text.Write8,"ax",%progbits
+ 175              		.align	2
+ 176              		.global	Write8
+ 177              		.code	16
+ 178              		.thumb_func
+ 179              		.type	Write8, %function
+ 180              	Write8:
+ 181              	.LFB38:
+  74:Generated_Source\PSoC4/OneWire.c ****  
+  75:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  76:Generated_Source\PSoC4/OneWire.c **** //                              Write a byte
+  77:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  78:Generated_Source\PSoC4/OneWire.c **** 
+  79:Generated_Source\PSoC4/OneWire.c **** void Write8(uint8 payload) //Write a byte to the slave.
+  80:Generated_Source\PSoC4/OneWire.c **** {
+ 182              		.loc 1 80 0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 16
+ 185              		@ frame_needed = 1, uses_anonymous_args = 0
+ 186 0000 80B5     		push	{r7, lr}
+ 187              		.cfi_def_cfa_offset 8
+ 188              		.cfi_offset 7, -8
+ 189              		.cfi_offset 14, -4
+ 190 0002 84B0     		sub	sp, sp, #16
+ 191              		.cfi_def_cfa_offset 24
+ 192 0004 00AF     		add	r7, sp, #0
+ 193              		.cfi_def_cfa_register 7
+ 194 0006 0200     		movs	r2, r0
+ 195 0008 FB1D     		adds	r3, r7, #7
+ 196 000a 1A70     		strb	r2, [r3]
+  81:Generated_Source\PSoC4/OneWire.c **** 	uint8 BitPayload,  shiftcount;
+  82:Generated_Source\PSoC4/OneWire.c ****     
+  83:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_SEL_Write(SET_ALL_OUT); // enable all outputs [11]
+ 197              		.loc 1 83 0
+ 198 000c FF20     		movs	r0, #255
+ 199 000e FFF7FEFF 		bl	OneWire_ControlReg_SEL_Write
+  84:Generated_Source\PSoC4/OneWire.c ****     
+  85:Generated_Source\PSoC4/OneWire.c **** 	for (shiftcount=0; shiftcount<=7;shiftcount++) 
+ 200              		.loc 1 85 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 6
+
+
+ 201 0012 0F23     		movs	r3, #15
+ 202 0014 FB18     		adds	r3, r7, r3
+ 203 0016 0022     		movs	r2, #0
+ 204 0018 1A70     		strb	r2, [r3]
+ 205 001a 19E0     		b	.L10
+ 206              	.L11:
+  86:Generated_Source\PSoC4/OneWire.c ****     {
+  87:Generated_Source\PSoC4/OneWire.c ****         BitPayload = (payload >> shiftcount) & 0x01; //starting with LSB
+ 207              		.loc 1 87 0 discriminator 3
+ 208 001c FB1D     		adds	r3, r7, #7
+ 209 001e 1A78     		ldrb	r2, [r3]
+ 210 0020 0F23     		movs	r3, #15
+ 211 0022 FB18     		adds	r3, r7, r3
+ 212 0024 1B78     		ldrb	r3, [r3]
+ 213 0026 1A41     		asrs	r2, r2, r3
+ 214 0028 1300     		movs	r3, r2
+ 215 002a DAB2     		uxtb	r2, r3
+ 216 002c 0E23     		movs	r3, #14
+ 217 002e FB18     		adds	r3, r7, r3
+ 218 0030 0121     		movs	r1, #1
+ 219 0032 0A40     		ands	r2, r1
+ 220 0034 1A70     		strb	r2, [r3]
+  88:Generated_Source\PSoC4/OneWire.c ****         W_Bit(BitPayload);
+ 221              		.loc 1 88 0 discriminator 3
+ 222 0036 0E23     		movs	r3, #14
+ 223 0038 FB18     		adds	r3, r7, r3
+ 224 003a 1B78     		ldrb	r3, [r3]
+ 225 003c 1800     		movs	r0, r3
+ 226 003e FFF7FEFF 		bl	W_Bit
+  85:Generated_Source\PSoC4/OneWire.c ****     {
+ 227              		.loc 1 85 0 discriminator 3
+ 228 0042 0F23     		movs	r3, #15
+ 229 0044 FB18     		adds	r3, r7, r3
+ 230 0046 1A78     		ldrb	r2, [r3]
+ 231 0048 0F23     		movs	r3, #15
+ 232 004a FB18     		adds	r3, r7, r3
+ 233 004c 0132     		adds	r2, r2, #1
+ 234 004e 1A70     		strb	r2, [r3]
+ 235              	.L10:
+  85:Generated_Source\PSoC4/OneWire.c ****     {
+ 236              		.loc 1 85 0 is_stmt 0 discriminator 1
+ 237 0050 0F23     		movs	r3, #15
+ 238 0052 FB18     		adds	r3, r7, r3
+ 239 0054 1B78     		ldrb	r3, [r3]
+ 240 0056 072B     		cmp	r3, #7
+ 241 0058 E0D9     		bls	.L11
+  89:Generated_Source\PSoC4/OneWire.c ****     }
+  90:Generated_Source\PSoC4/OneWire.c **** }  
+ 242              		.loc 1 90 0 is_stmt 1
+ 243 005a C046     		nop
+ 244 005c BD46     		mov	sp, r7
+ 245 005e 04B0     		add	sp, sp, #16
+ 246              		@ sp needed
+ 247 0060 80BD     		pop	{r7, pc}
+ 248              		.cfi_endproc
+ 249              	.LFE38:
+ 250              		.size	Write8, .-Write8
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 7
+
+
+ 251 0062 C046     		.section	.text.BusReset,"ax",%progbits
+ 252              		.align	2
+ 253              		.global	BusReset
+ 254              		.code	16
+ 255              		.thumb_func
+ 256              		.type	BusReset, %function
+ 257              	BusReset:
+ 258              	.LFB39:
+  91:Generated_Source\PSoC4/OneWire.c **** 
+  92:Generated_Source\PSoC4/OneWire.c **** 
+  93:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  94:Generated_Source\PSoC4/OneWire.c **** //                              Bus Reset
+  95:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+  96:Generated_Source\PSoC4/OneWire.c ****    
+  97:Generated_Source\PSoC4/OneWire.c **** uint8 BusReset() //Pulldown the required "Bus Reset". 
+  98:Generated_Source\PSoC4/OneWire.c **** {
+ 259              		.loc 1 98 0
+ 260              		.cfi_startproc
+ 261              		@ args = 0, pretend = 0, frame = 8
+ 262              		@ frame_needed = 1, uses_anonymous_args = 0
+ 263 0000 90B5     		push	{r4, r7, lr}
+ 264              		.cfi_def_cfa_offset 12
+ 265              		.cfi_offset 4, -12
+ 266              		.cfi_offset 7, -8
+ 267              		.cfi_offset 14, -4
+ 268 0002 83B0     		sub	sp, sp, #12
+ 269              		.cfi_def_cfa_offset 24
+ 270 0004 00AF     		add	r7, sp, #0
+ 271              		.cfi_def_cfa_register 7
+  99:Generated_Source\PSoC4/OneWire.c ****     static struct OneWire_TSensor Sensor_off = {T_OFF, 0};
+ 100:Generated_Source\PSoC4/OneWire.c ****     uint8 i;
+ 101:Generated_Source\PSoC4/OneWire.c ****     
+ 102:Generated_Source\PSoC4/OneWire.c ****     // reset all sensor Temerature and presence
+ 103:Generated_Source\PSoC4/OneWire.c ****     for (i=0; i<8; i++) {OneWire_Sensor[i] = Sensor_off;}
+ 272              		.loc 1 103 0
+ 273 0006 FB1D     		adds	r3, r7, #7
+ 274 0008 0022     		movs	r2, #0
+ 275 000a 1A70     		strb	r2, [r3]
+ 276 000c 0EE0     		b	.L13
+ 277              	.L14:
+ 278              		.loc 1 103 0 is_stmt 0 discriminator 3
+ 279 000e FB1D     		adds	r3, r7, #7
+ 280 0010 1B78     		ldrb	r3, [r3]
+ 281 0012 1F4A     		ldr	r2, .L16
+ 282 0014 9B00     		lsls	r3, r3, #2
+ 283 0016 1F49     		ldr	r1, .L16+4
+ 284 0018 D318     		adds	r3, r2, r3
+ 285 001a 0422     		movs	r2, #4
+ 286 001c 1800     		movs	r0, r3
+ 287 001e FFF7FEFF 		bl	memcpy
+ 288 0022 FB1D     		adds	r3, r7, #7
+ 289 0024 1A78     		ldrb	r2, [r3]
+ 290 0026 FB1D     		adds	r3, r7, #7
+ 291 0028 0132     		adds	r2, r2, #1
+ 292 002a 1A70     		strb	r2, [r3]
+ 293              	.L13:
+ 294              		.loc 1 103 0 discriminator 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 8
+
+
+ 295 002c FB1D     		adds	r3, r7, #7
+ 296 002e 1B78     		ldrb	r3, [r3]
+ 297 0030 072B     		cmp	r3, #7
+ 298 0032 ECD9     		bls	.L14
+ 104:Generated_Source\PSoC4/OneWire.c ****     
+ 105:Generated_Source\PSoC4/OneWire.c ****     
+ 106:Generated_Source\PSoC4/OneWire.c ****     uint8 BusPin=0;    //bus state
+ 299              		.loc 1 106 0 is_stmt 1
+ 300 0034 BB1D     		adds	r3, r7, #6
+ 301 0036 0022     		movs	r2, #0
+ 302 0038 1A70     		strb	r2, [r3]
+ 107:Generated_Source\PSoC4/OneWire.c **** 
+ 108:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(LOW);         // Drive LOW enabled outputs
+ 303              		.loc 1 108 0
+ 304 003a 0020     		movs	r0, #0
+ 305 003c FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+ 109:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_SEL_Write(SET_ALL_OUT); // enable all outputs [11111111]
+ 306              		.loc 1 109 0
+ 307 0040 FF20     		movs	r0, #255
+ 308 0042 FFF7FEFF 		bl	OneWire_ControlReg_SEL_Write
+ 110:Generated_Source\PSoC4/OneWire.c ****     
+ 111:Generated_Source\PSoC4/OneWire.c ****  
+ 112:Generated_Source\PSoC4/OneWire.c **** 	CyDelayUs(RST_MAX); // send RESET pulse, 480usec min
+ 309              		.loc 1 112 0
+ 310 0046 F023     		movs	r3, #240
+ 311 0048 5B00     		lsls	r3, r3, #1
+ 312 004a 1800     		movs	r0, r3
+ 313 004c FFF7FEFF 		bl	CyDelayUs
+ 113:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(HIGH); // Drive HIGH enabled outputs
+ 314              		.loc 1 113 0
+ 315 0050 0120     		movs	r0, #1
+ 316 0052 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+ 114:Generated_Source\PSoC4/OneWire.c ****     
+ 115:Generated_Source\PSoC4/OneWire.c ****     CyDelayUs(5);       // check bus shorted
+ 317              		.loc 1 115 0
+ 318 0056 0520     		movs	r0, #5
+ 319 0058 FFF7FEFF 		bl	CyDelayUs
+ 116:Generated_Source\PSoC4/OneWire.c ****     
+ 117:Generated_Source\PSoC4/OneWire.c ****     //prepare to read
+ 118:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_SEL_Write(SET_ALL_INP); // set all as inputs [0000000]
+ 320              		.loc 1 118 0
+ 321 005c 0020     		movs	r0, #0
+ 322 005e FFF7FEFF 		bl	OneWire_ControlReg_SEL_Write
+ 119:Generated_Source\PSoC4/OneWire.c ****     OneWire_ControlReg_DRV_Write(LOW);         // Drive LOW enabled outputs
+ 323              		.loc 1 119 0
+ 324 0062 0020     		movs	r0, #0
+ 325 0064 FFF7FEFF 		bl	OneWire_ControlReg_DRV_Write
+ 120:Generated_Source\PSoC4/OneWire.c ****        
+ 121:Generated_Source\PSoC4/OneWire.c ****     CyDelayUs(55);      // check PRESENCE in 15-60usec  (60-240 ìêÑåê)
+ 326              		.loc 1 121 0
+ 327 0068 3720     		movs	r0, #55
+ 328 006a FFF7FEFF 		bl	CyDelayUs
+ 122:Generated_Source\PSoC4/OneWire.c ****     
+ 123:Generated_Source\PSoC4/OneWire.c ****     BusPin = OneWire_StatusReg_BUS_Read();   // Read state: bit=0 if present 1 if unplugged
+ 329              		.loc 1 123 0
+ 330 006e BC1D     		adds	r4, r7, #6
+ 331 0070 FFF7FEFF 		bl	OneWire_StatusReg_BUS_Read
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 9
+
+
+ 332 0074 0300     		movs	r3, r0
+ 333 0076 2370     		strb	r3, [r4]
+ 124:Generated_Source\PSoC4/OneWire.c ****     
+ 125:Generated_Source\PSoC4/OneWire.c ****     CyDelayUs(200);     // wait for DS18 to transmit PRESENCE  (60-240 usec) 
+ 334              		.loc 1 125 0
+ 335 0078 C820     		movs	r0, #200
+ 336 007a FFF7FEFF 		bl	CyDelayUs
+ 126:Generated_Source\PSoC4/OneWire.c ****     
+ 127:Generated_Source\PSoC4/OneWire.c ****     return((~BusPin) & 255u);     // Return bus state: 1-present, 0-absent  (originally 0-present, 
+ 337              		.loc 1 127 0
+ 338 007e BB1D     		adds	r3, r7, #6
+ 339 0080 1B78     		ldrb	r3, [r3]
+ 340 0082 DB43     		mvns	r3, r3
+ 341 0084 DBB2     		uxtb	r3, r3
+ 128:Generated_Source\PSoC4/OneWire.c **** }
+ 342              		.loc 1 128 0
+ 343 0086 1800     		movs	r0, r3
+ 344 0088 BD46     		mov	sp, r7
+ 345 008a 03B0     		add	sp, sp, #12
+ 346              		@ sp needed
+ 347 008c 90BD     		pop	{r4, r7, pc}
+ 348              	.L17:
+ 349 008e C046     		.align	2
+ 350              	.L16:
+ 351 0090 00000000 		.word	OneWire_Sensor
+ 352 0094 00000000 		.word	Sensor_off.7893
+ 353              		.cfi_endproc
+ 354              	.LFE39:
+ 355              		.size	BusReset, .-BusReset
+ 356              		.section	.text.OneWire_SendTemperatureRequest,"ax",%progbits
+ 357              		.align	2
+ 358              		.global	OneWire_SendTemperatureRequest
+ 359              		.code	16
+ 360              		.thumb_func
+ 361              		.type	OneWire_SendTemperatureRequest, %function
+ 362              	OneWire_SendTemperatureRequest:
+ 363              	.LFB40:
+ 129:Generated_Source\PSoC4/OneWire.c **** 
+ 130:Generated_Source\PSoC4/OneWire.c **** 
+ 131:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 132:Generated_Source\PSoC4/OneWire.c **** //                         start temperature conversion
+ 133:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 134:Generated_Source\PSoC4/OneWire.c **** 
+ 135:Generated_Source\PSoC4/OneWire.c **** uint8 OneWire_SendTemperatureRequest() // start temperature conversion 
+ 136:Generated_Source\PSoC4/OneWire.c **** {   
+ 364              		.loc 1 136 0
+ 365              		.cfi_startproc
+ 366              		@ args = 0, pretend = 0, frame = 0
+ 367              		@ frame_needed = 1, uses_anonymous_args = 0
+ 368 0000 80B5     		push	{r7, lr}
+ 369              		.cfi_def_cfa_offset 8
+ 370              		.cfi_offset 7, -8
+ 371              		.cfi_offset 14, -4
+ 372 0002 00AF     		add	r7, sp, #0
+ 373              		.cfi_def_cfa_register 7
+ 137:Generated_Source\PSoC4/OneWire.c ****     BusPresence = BusReset(); // Reset ( > 480 usec ) 
+ 374              		.loc 1 137 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 10
+
+
+ 375 0004 FFF7FEFF 		bl	BusReset
+ 376 0008 0300     		movs	r3, r0
+ 377 000a 1A00     		movs	r2, r3
+ 378 000c 0C4B     		ldr	r3, .L21
+ 379 000e 1A70     		strb	r2, [r3]
+ 138:Generated_Source\PSoC4/OneWire.c ****     
+ 139:Generated_Source\PSoC4/OneWire.c ****     if (BusPresence == 0) {
+ 380              		.loc 1 139 0
+ 381 0010 0B4B     		ldr	r3, .L21
+ 382 0012 1B78     		ldrb	r3, [r3]
+ 383 0014 002B     		cmp	r3, #0
+ 384 0016 04D1     		bne	.L19
+ 140:Generated_Source\PSoC4/OneWire.c ****         OneWire_DataReady = 1; //proceed directly to reporting
+ 385              		.loc 1 140 0
+ 386 0018 0A4B     		ldr	r3, .L21+4
+ 387 001a 0122     		movs	r2, #1
+ 388 001c 1A70     		strb	r2, [r3]
+ 141:Generated_Source\PSoC4/OneWire.c ****         return (0);                     // no sensors found
+ 389              		.loc 1 141 0
+ 390 001e 0023     		movs	r3, #0
+ 391 0020 0AE0     		b	.L20
+ 392              	.L19:
+ 142:Generated_Source\PSoC4/OneWire.c ****     }
+ 143:Generated_Source\PSoC4/OneWire.c ****     
+ 144:Generated_Source\PSoC4/OneWire.c ****     //OneWire_ControlReg_SEL_Write(ALL); // enable all outputs [11111111]
+ 145:Generated_Source\PSoC4/OneWire.c ****     Write8(0xCC);       // send command Skip_ROM  (0xCCI)  
+ 393              		.loc 1 145 0
+ 394 0022 CC20     		movs	r0, #204
+ 395 0024 FFF7FEFF 		bl	Write8
+ 146:Generated_Source\PSoC4/OneWire.c ****     Write8(0x44);       // send command for temperature conversion  (0x44I)
+ 396              		.loc 1 146 0
+ 397 0028 4420     		movs	r0, #68
+ 398 002a FFF7FEFF 		bl	Write8
+ 147:Generated_Source\PSoC4/OneWire.c **** 
+ 148:Generated_Source\PSoC4/OneWire.c ****     OneWire_Trigger_Write(1);   // trigger Async delayed reading
+ 399              		.loc 1 148 0
+ 400 002e 0120     		movs	r0, #1
+ 401 0030 FFF7FEFF 		bl	OneWire_Trigger_Write
+ 149:Generated_Source\PSoC4/OneWire.c ****     
+ 150:Generated_Source\PSoC4/OneWire.c ****     return (BusPresence);
+ 402              		.loc 1 150 0
+ 403 0034 024B     		ldr	r3, .L21
+ 404 0036 1B78     		ldrb	r3, [r3]
+ 405              	.L20:
+ 151:Generated_Source\PSoC4/OneWire.c **** }
+ 406              		.loc 1 151 0
+ 407 0038 1800     		movs	r0, r3
+ 408 003a BD46     		mov	sp, r7
+ 409              		@ sp needed
+ 410 003c 80BD     		pop	{r7, pc}
+ 411              	.L22:
+ 412 003e C046     		.align	2
+ 413              	.L21:
+ 414 0040 00000000 		.word	BusPresence
+ 415 0044 00000000 		.word	OneWire_DataReady
+ 416              		.cfi_endproc
+ 417              	.LFE40:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 11
+
+
+ 418              		.size	OneWire_SendTemperatureRequest, .-OneWire_SendTemperatureRequest
+ 419              		.section	.text.OneWire_ReadTemperature,"ax",%progbits
+ 420              		.align	2
+ 421              		.global	OneWire_ReadTemperature
+ 422              		.code	16
+ 423              		.thumb_func
+ 424              		.type	OneWire_ReadTemperature, %function
+ 425              	OneWire_ReadTemperature:
+ 426              	.LFB41:
+ 152:Generated_Source\PSoC4/OneWire.c **** 
+ 153:Generated_Source\PSoC4/OneWire.c **** 
+ 154:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 155:Generated_Source\PSoC4/OneWire.c **** // Read sensor Temperature
+ 156:Generated_Source\PSoC4/OneWire.c **** // data is ready - read sensor's Temperature LSB & MSB 
+ 157:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 158:Generated_Source\PSoC4/OneWire.c **** 
+ 159:Generated_Source\PSoC4/OneWire.c **** uint8 OneWire_ReadTemperature() 
+ 160:Generated_Source\PSoC4/OneWire.c **** {
+ 427              		.loc 1 160 0
+ 428              		.cfi_startproc
+ 429              		@ args = 0, pretend = 0, frame = 40
+ 430              		@ frame_needed = 1, uses_anonymous_args = 0
+ 431 0000 90B5     		push	{r4, r7, lr}
+ 432              		.cfi_def_cfa_offset 12
+ 433              		.cfi_offset 4, -12
+ 434              		.cfi_offset 7, -8
+ 435              		.cfi_offset 14, -4
+ 436 0002 8BB0     		sub	sp, sp, #44
+ 437              		.cfi_def_cfa_offset 56
+ 438 0004 00AF     		add	r7, sp, #0
+ 439              		.cfi_def_cfa_register 7
+ 161:Generated_Source\PSoC4/OneWire.c ****     uint8 Bus;              // read state of bus  
+ 162:Generated_Source\PSoC4/OneWire.c ****     uint8 mask;             // sensor presence mask
+ 163:Generated_Source\PSoC4/OneWire.c ****     uint8 i, shiftcount;
+ 164:Generated_Source\PSoC4/OneWire.c ****     struct OneWire_TSensor s[8]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}; //array of senso
+ 440              		.loc 1 164 0
+ 441 0006 3B1D     		adds	r3, r7, #4
+ 442 0008 1800     		movs	r0, r3
+ 443 000a 2023     		movs	r3, #32
+ 444 000c 1A00     		movs	r2, r3
+ 445 000e 0021     		movs	r1, #0
+ 446 0010 FFF7FEFF 		bl	memset
+ 165:Generated_Source\PSoC4/OneWire.c ****     
+ 166:Generated_Source\PSoC4/OneWire.c ****     if (!OneWire_DataReady) return  (0);   // sensor not ready for temperature reading
+ 447              		.loc 1 166 0
+ 448 0014 784B     		ldr	r3, .L41
+ 449 0016 1B78     		ldrb	r3, [r3]
+ 450 0018 DBB2     		uxtb	r3, r3
+ 451 001a 002B     		cmp	r3, #0
+ 452 001c 01D1     		bne	.L24
+ 453              		.loc 1 166 0 is_stmt 0 discriminator 1
+ 454 001e 0023     		movs	r3, #0
+ 455 0020 E6E0     		b	.L40
+ 456              	.L24:
+ 167:Generated_Source\PSoC4/OneWire.c ****     OneWire_DataReady = 0;                 // reset flag
+ 457              		.loc 1 167 0 is_stmt 1
+ 458 0022 754B     		ldr	r3, .L41
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 12
+
+
+ 459 0024 0022     		movs	r2, #0
+ 460 0026 1A70     		strb	r2, [r3]
+ 168:Generated_Source\PSoC4/OneWire.c ****     
+ 169:Generated_Source\PSoC4/OneWire.c ****   
+ 170:Generated_Source\PSoC4/OneWire.c ****     if (BusPresence == 0) return (0); // no sensors found on temperature request, exit 
+ 461              		.loc 1 170 0
+ 462 0028 744B     		ldr	r3, .L41+4
+ 463 002a 1B78     		ldrb	r3, [r3]
+ 464 002c 002B     		cmp	r3, #0
+ 465 002e 01D1     		bne	.L26
+ 466              		.loc 1 170 0 is_stmt 0 discriminator 1
+ 467 0030 0023     		movs	r3, #0
+ 468 0032 DDE0     		b	.L40
+ 469              	.L26:
+ 171:Generated_Source\PSoC4/OneWire.c ****     
+ 172:Generated_Source\PSoC4/OneWire.c ****     
+ 173:Generated_Source\PSoC4/OneWire.c ****     BusPresence = BusReset();  // Reset  ( > 480 usec )
+ 470              		.loc 1 173 0 is_stmt 1
+ 471 0034 FFF7FEFF 		bl	BusReset
+ 472 0038 0300     		movs	r3, r0
+ 473 003a 1A00     		movs	r2, r3
+ 474 003c 6F4B     		ldr	r3, .L41+4
+ 475 003e 1A70     		strb	r2, [r3]
+ 174:Generated_Source\PSoC4/OneWire.c ****     if (BusPresence == 0) return (0); // no sensors found 
+ 476              		.loc 1 174 0
+ 477 0040 6E4B     		ldr	r3, .L41+4
+ 478 0042 1B78     		ldrb	r3, [r3]
+ 479 0044 002B     		cmp	r3, #0
+ 480 0046 01D1     		bne	.L27
+ 481              		.loc 1 174 0 is_stmt 0 discriminator 1
+ 482 0048 0023     		movs	r3, #0
+ 483 004a D1E0     		b	.L40
+ 484              	.L27:
+ 175:Generated_Source\PSoC4/OneWire.c ****     
+ 176:Generated_Source\PSoC4/OneWire.c ****     
+ 177:Generated_Source\PSoC4/OneWire.c ****     mask = BusPresence;
+ 485              		.loc 1 177 0 is_stmt 1
+ 486 004c 2523     		movs	r3, #37
+ 487 004e FB18     		adds	r3, r7, r3
+ 488 0050 6A4A     		ldr	r2, .L41+4
+ 489 0052 1278     		ldrb	r2, [r2]
+ 490 0054 1A70     		strb	r2, [r3]
+ 178:Generated_Source\PSoC4/OneWire.c ****         
+ 179:Generated_Source\PSoC4/OneWire.c ****     for (i=0; i<OneWire_NumSensors; i++) {s[i].present = GetBit(mask, i);} //
+ 491              		.loc 1 179 0
+ 492 0056 2723     		movs	r3, #39
+ 493 0058 FB18     		adds	r3, r7, r3
+ 494 005a 0022     		movs	r2, #0
+ 495 005c 1A70     		strb	r2, [r3]
+ 496 005e 1BE0     		b	.L28
+ 497              	.L29:
+ 498              		.loc 1 179 0 is_stmt 0 discriminator 3
+ 499 0060 2723     		movs	r3, #39
+ 500 0062 FB18     		adds	r3, r7, r3
+ 501 0064 1B78     		ldrb	r3, [r3]
+ 502 0066 2522     		movs	r2, #37
+ 503 0068 BA18     		adds	r2, r7, r2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 13
+
+
+ 504 006a 1178     		ldrb	r1, [r2]
+ 505 006c 2722     		movs	r2, #39
+ 506 006e BA18     		adds	r2, r7, r2
+ 507 0070 1278     		ldrb	r2, [r2]
+ 508 0072 1141     		asrs	r1, r1, r2
+ 509 0074 0A00     		movs	r2, r1
+ 510 0076 D2B2     		uxtb	r2, r2
+ 511 0078 0121     		movs	r1, #1
+ 512 007a 0A40     		ands	r2, r1
+ 513 007c D1B2     		uxtb	r1, r2
+ 514 007e 3A1D     		adds	r2, r7, #4
+ 515 0080 9B00     		lsls	r3, r3, #2
+ 516 0082 D318     		adds	r3, r2, r3
+ 517 0084 0233     		adds	r3, r3, #2
+ 518 0086 0A1C     		adds	r2, r1, #0
+ 519 0088 1A70     		strb	r2, [r3]
+ 520 008a 2723     		movs	r3, #39
+ 521 008c FB18     		adds	r3, r7, r3
+ 522 008e 1A78     		ldrb	r2, [r3]
+ 523 0090 2723     		movs	r3, #39
+ 524 0092 FB18     		adds	r3, r7, r3
+ 525 0094 0132     		adds	r2, r2, #1
+ 526 0096 1A70     		strb	r2, [r3]
+ 527              	.L28:
+ 528              		.loc 1 179 0 discriminator 1
+ 529 0098 2723     		movs	r3, #39
+ 530 009a FB18     		adds	r3, r7, r3
+ 531 009c 1B78     		ldrb	r3, [r3]
+ 532 009e 002B     		cmp	r3, #0
+ 533 00a0 DED0     		beq	.L29
+ 180:Generated_Source\PSoC4/OneWire.c ****     
+ 181:Generated_Source\PSoC4/OneWire.c ****     
+ 182:Generated_Source\PSoC4/OneWire.c ****     //OneWire_ControlReg_SEL_Write(SET_ALL_OUT); // enable all for outputs [1111] - can use as sele
+ 183:Generated_Source\PSoC4/OneWire.c ****     Write8(0xCC);   // send command Skip_ROM  (0xCC)    
+ 534              		.loc 1 183 0 is_stmt 1
+ 535 00a2 CC20     		movs	r0, #204
+ 536 00a4 FFF7FEFF 		bl	Write8
+ 184:Generated_Source\PSoC4/OneWire.c ****     Write8(0xBE);   // send command to read buffer memory (0xBE)
+ 537              		.loc 1 184 0
+ 538 00a8 BE20     		movs	r0, #190
+ 539 00aa FFF7FEFF 		bl	Write8
+ 185:Generated_Source\PSoC4/OneWire.c ****     
+ 186:Generated_Source\PSoC4/OneWire.c ****     // read first two bytes of the memory DS18B20
+ 187:Generated_Source\PSoC4/OneWire.c ****     for (shiftcount=0; shiftcount<=11; shiftcount++) // read bytes 0 to 11
+ 540              		.loc 1 187 0
+ 541 00ae 2623     		movs	r3, #38
+ 542 00b0 FB18     		adds	r3, r7, r3
+ 543 00b2 0022     		movs	r2, #0
+ 544 00b4 1A70     		strb	r2, [r3]
+ 545 00b6 47E0     		b	.L30
+ 546              	.L34:
+ 188:Generated_Source\PSoC4/OneWire.c ****     {
+ 189:Generated_Source\PSoC4/OneWire.c ****         Bus = R_BitBus(); //read all sensors in parallel
+ 547              		.loc 1 189 0
+ 548 00b8 2423     		movs	r3, #36
+ 549 00ba FC18     		adds	r4, r7, r3
+ 550 00bc FFF7FEFF 		bl	R_BitBus
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 14
+
+
+ 551 00c0 0300     		movs	r3, r0
+ 552 00c2 2370     		strb	r3, [r4]
+ 190:Generated_Source\PSoC4/OneWire.c ****         
+ 191:Generated_Source\PSoC4/OneWire.c ****         for (i=0; i<OneWire_NumSensors; i++) //
+ 553              		.loc 1 191 0
+ 554 00c4 2723     		movs	r3, #39
+ 555 00c6 FB18     		adds	r3, r7, r3
+ 556 00c8 0022     		movs	r2, #0
+ 557 00ca 1A70     		strb	r2, [r3]
+ 558 00cc 30E0     		b	.L31
+ 559              	.L33:
+ 192:Generated_Source\PSoC4/OneWire.c ****         {
+ 193:Generated_Source\PSoC4/OneWire.c ****             if (s[i].present) //ignore channels without sensor
+ 560              		.loc 1 193 0
+ 561 00ce 2723     		movs	r3, #39
+ 562 00d0 FB18     		adds	r3, r7, r3
+ 563 00d2 1B78     		ldrb	r3, [r3]
+ 564 00d4 3A1D     		adds	r2, r7, #4
+ 565 00d6 9B00     		lsls	r3, r3, #2
+ 566 00d8 D318     		adds	r3, r2, r3
+ 567 00da 0233     		adds	r3, r3, #2
+ 568 00dc 1B78     		ldrb	r3, [r3]
+ 569 00de 002B     		cmp	r3, #0
+ 570 00e0 1FD0     		beq	.L32
+ 194:Generated_Source\PSoC4/OneWire.c ****                 s[i].Temperature |= GetBit(Bus, i) << shiftcount; // staff Temperature begining wit
+ 571              		.loc 1 194 0
+ 572 00e2 2723     		movs	r3, #39
+ 573 00e4 FB18     		adds	r3, r7, r3
+ 574 00e6 1A78     		ldrb	r2, [r3]
+ 575 00e8 2723     		movs	r3, #39
+ 576 00ea FB18     		adds	r3, r7, r3
+ 577 00ec 1978     		ldrb	r1, [r3]
+ 578 00ee 3B1D     		adds	r3, r7, #4
+ 579 00f0 8900     		lsls	r1, r1, #2
+ 580 00f2 CB5A     		ldrh	r3, [r1, r3]
+ 581 00f4 19B2     		sxth	r1, r3
+ 582 00f6 2423     		movs	r3, #36
+ 583 00f8 FB18     		adds	r3, r7, r3
+ 584 00fa 1878     		ldrb	r0, [r3]
+ 585 00fc 2723     		movs	r3, #39
+ 586 00fe FB18     		adds	r3, r7, r3
+ 587 0100 1B78     		ldrb	r3, [r3]
+ 588 0102 1841     		asrs	r0, r0, r3
+ 589 0104 0300     		movs	r3, r0
+ 590 0106 0120     		movs	r0, #1
+ 591 0108 1840     		ands	r0, r3
+ 592 010a 2623     		movs	r3, #38
+ 593 010c FB18     		adds	r3, r7, r3
+ 594 010e 1B78     		ldrb	r3, [r3]
+ 595 0110 9840     		lsls	r0, r0, r3
+ 596 0112 0300     		movs	r3, r0
+ 597 0114 1BB2     		sxth	r3, r3
+ 598 0116 0B43     		orrs	r3, r1
+ 599 0118 1BB2     		sxth	r3, r3
+ 600 011a 99B2     		uxth	r1, r3
+ 601 011c 3B1D     		adds	r3, r7, #4
+ 602 011e 9200     		lsls	r2, r2, #2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 15
+
+
+ 603 0120 D152     		strh	r1, [r2, r3]
+ 604              	.L32:
+ 191:Generated_Source\PSoC4/OneWire.c ****         {
+ 605              		.loc 1 191 0 discriminator 2
+ 606 0122 2723     		movs	r3, #39
+ 607 0124 FB18     		adds	r3, r7, r3
+ 608 0126 1A78     		ldrb	r2, [r3]
+ 609 0128 2723     		movs	r3, #39
+ 610 012a FB18     		adds	r3, r7, r3
+ 611 012c 0132     		adds	r2, r2, #1
+ 612 012e 1A70     		strb	r2, [r3]
+ 613              	.L31:
+ 191:Generated_Source\PSoC4/OneWire.c ****         {
+ 614              		.loc 1 191 0 is_stmt 0 discriminator 1
+ 615 0130 2723     		movs	r3, #39
+ 616 0132 FB18     		adds	r3, r7, r3
+ 617 0134 1B78     		ldrb	r3, [r3]
+ 618 0136 002B     		cmp	r3, #0
+ 619 0138 C9D0     		beq	.L33
+ 187:Generated_Source\PSoC4/OneWire.c ****     {
+ 620              		.loc 1 187 0 is_stmt 1 discriminator 2
+ 621 013a 2623     		movs	r3, #38
+ 622 013c FB18     		adds	r3, r7, r3
+ 623 013e 1A78     		ldrb	r2, [r3]
+ 624 0140 2623     		movs	r3, #38
+ 625 0142 FB18     		adds	r3, r7, r3
+ 626 0144 0132     		adds	r2, r2, #1
+ 627 0146 1A70     		strb	r2, [r3]
+ 628              	.L30:
+ 187:Generated_Source\PSoC4/OneWire.c ****     {
+ 629              		.loc 1 187 0 is_stmt 0 discriminator 1
+ 630 0148 2623     		movs	r3, #38
+ 631 014a FB18     		adds	r3, r7, r3
+ 632 014c 1B78     		ldrb	r3, [r3]
+ 633 014e 0B2B     		cmp	r3, #11
+ 634 0150 B2D9     		bls	.L34
+ 195:Generated_Source\PSoC4/OneWire.c ****         }
+ 196:Generated_Source\PSoC4/OneWire.c ****     }
+ 197:Generated_Source\PSoC4/OneWire.c ****     
+ 198:Generated_Source\PSoC4/OneWire.c ****     for (i=0; i<8; i++) //8-is maximum number of sensors in current implementation
+ 635              		.loc 1 198 0 is_stmt 1
+ 636 0152 2723     		movs	r3, #39
+ 637 0154 FB18     		adds	r3, r7, r3
+ 638 0156 0022     		movs	r2, #0
+ 639 0158 1A70     		strb	r2, [r3]
+ 640 015a 41E0     		b	.L35
+ 641              	.L39:
+ 199:Generated_Source\PSoC4/OneWire.c ****     {
+ 200:Generated_Source\PSoC4/OneWire.c ****         if (s[i].present)   
+ 642              		.loc 1 200 0
+ 643 015c 2723     		movs	r3, #39
+ 644 015e FB18     		adds	r3, r7, r3
+ 645 0160 1B78     		ldrb	r3, [r3]
+ 646 0162 3A1D     		adds	r2, r7, #4
+ 647 0164 9B00     		lsls	r3, r3, #2
+ 648 0166 D318     		adds	r3, r2, r3
+ 649 0168 0233     		adds	r3, r3, #2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 16
+
+
+ 650 016a 1B78     		ldrb	r3, [r3]
+ 651 016c 002B     		cmp	r3, #0
+ 652 016e 19D0     		beq	.L36
+ 201:Generated_Source\PSoC4/OneWire.c ****             {if (s[i].Temperature >= 2048) s[i].Temperature -= 4096;} // roll over for negative tem
+ 653              		.loc 1 201 0
+ 654 0170 2723     		movs	r3, #39
+ 655 0172 FB18     		adds	r3, r7, r3
+ 656 0174 1A78     		ldrb	r2, [r3]
+ 657 0176 3B1D     		adds	r3, r7, #4
+ 658 0178 9200     		lsls	r2, r2, #2
+ 659 017a D35A     		ldrh	r3, [r2, r3]
+ 660 017c 204A     		ldr	r2, .L41+8
+ 661 017e 9342     		cmp	r3, r2
+ 662 0180 17D9     		bls	.L38
+ 663              		.loc 1 201 0 is_stmt 0 discriminator 1
+ 664 0182 2723     		movs	r3, #39
+ 665 0184 FB18     		adds	r3, r7, r3
+ 666 0186 1A78     		ldrb	r2, [r3]
+ 667 0188 2723     		movs	r3, #39
+ 668 018a FB18     		adds	r3, r7, r3
+ 669 018c 1978     		ldrb	r1, [r3]
+ 670 018e 3B1D     		adds	r3, r7, #4
+ 671 0190 8900     		lsls	r1, r1, #2
+ 672 0192 CB5A     		ldrh	r3, [r1, r3]
+ 673 0194 1B49     		ldr	r1, .L41+12
+ 674 0196 8C46     		mov	ip, r1
+ 675 0198 6344     		add	r3, r3, ip
+ 676 019a 99B2     		uxth	r1, r3
+ 677 019c 3B1D     		adds	r3, r7, #4
+ 678 019e 9200     		lsls	r2, r2, #2
+ 679 01a0 D152     		strh	r1, [r2, r3]
+ 680 01a2 06E0     		b	.L38
+ 681              	.L36:
+ 202:Generated_Source\PSoC4/OneWire.c ****         else
+ 203:Generated_Source\PSoC4/OneWire.c ****             {s[i].Temperature = T_OFF;} // set some "defunct" value if sensor absent 
+ 682              		.loc 1 203 0 is_stmt 1
+ 683 01a4 2723     		movs	r3, #39
+ 684 01a6 FB18     		adds	r3, r7, r3
+ 685 01a8 1A78     		ldrb	r2, [r3]
+ 686 01aa 3B1D     		adds	r3, r7, #4
+ 687 01ac 9200     		lsls	r2, r2, #2
+ 688 01ae 1549     		ldr	r1, .L41+12
+ 689 01b0 D152     		strh	r1, [r2, r3]
+ 690              	.L38:
+ 204:Generated_Source\PSoC4/OneWire.c ****         
+ 205:Generated_Source\PSoC4/OneWire.c ****         OneWire_Sensor[i] = s[i]; //record Temperature and presence
+ 691              		.loc 1 205 0 discriminator 2
+ 692 01b2 2723     		movs	r3, #39
+ 693 01b4 FB18     		adds	r3, r7, r3
+ 694 01b6 1A78     		ldrb	r2, [r3]
+ 695 01b8 2723     		movs	r3, #39
+ 696 01ba FB18     		adds	r3, r7, r3
+ 697 01bc 1B78     		ldrb	r3, [r3]
+ 698 01be 1248     		ldr	r0, .L41+16
+ 699 01c0 9100     		lsls	r1, r2, #2
+ 700 01c2 3A1D     		adds	r2, r7, #4
+ 701 01c4 9B00     		lsls	r3, r3, #2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 17
+
+
+ 702 01c6 4018     		adds	r0, r0, r1
+ 703 01c8 D318     		adds	r3, r2, r3
+ 704 01ca 0422     		movs	r2, #4
+ 705 01cc 1900     		movs	r1, r3
+ 706 01ce FFF7FEFF 		bl	memcpy
+ 198:Generated_Source\PSoC4/OneWire.c ****     {
+ 707              		.loc 1 198 0 discriminator 2
+ 708 01d2 2723     		movs	r3, #39
+ 709 01d4 FB18     		adds	r3, r7, r3
+ 710 01d6 1A78     		ldrb	r2, [r3]
+ 711 01d8 2723     		movs	r3, #39
+ 712 01da FB18     		adds	r3, r7, r3
+ 713 01dc 0132     		adds	r2, r2, #1
+ 714 01de 1A70     		strb	r2, [r3]
+ 715              	.L35:
+ 198:Generated_Source\PSoC4/OneWire.c ****     {
+ 716              		.loc 1 198 0 is_stmt 0 discriminator 1
+ 717 01e0 2723     		movs	r3, #39
+ 718 01e2 FB18     		adds	r3, r7, r3
+ 719 01e4 1B78     		ldrb	r3, [r3]
+ 720 01e6 072B     		cmp	r3, #7
+ 721 01e8 B8D9     		bls	.L39
+ 206:Generated_Source\PSoC4/OneWire.c ****     }
+ 207:Generated_Source\PSoC4/OneWire.c ****     
+ 208:Generated_Source\PSoC4/OneWire.c ****     return(mask); //return BusPresence
+ 722              		.loc 1 208 0 is_stmt 1
+ 723 01ea 2523     		movs	r3, #37
+ 724 01ec FB18     		adds	r3, r7, r3
+ 725 01ee 1B78     		ldrb	r3, [r3]
+ 726              	.L40:
+ 209:Generated_Source\PSoC4/OneWire.c **** }
+ 727              		.loc 1 209 0 discriminator 1
+ 728 01f0 1800     		movs	r0, r3
+ 729 01f2 BD46     		mov	sp, r7
+ 730 01f4 0BB0     		add	sp, sp, #44
+ 731              		@ sp needed
+ 732 01f6 90BD     		pop	{r4, r7, pc}
+ 733              	.L42:
+ 734              		.align	2
+ 735              	.L41:
+ 736 01f8 00000000 		.word	OneWire_DataReady
+ 737 01fc 00000000 		.word	BusPresence
+ 738 0200 FF070000 		.word	2047
+ 739 0204 00F0FFFF 		.word	-4096
+ 740 0208 00000000 		.word	OneWire_Sensor
+ 741              		.cfi_endproc
+ 742              	.LFE41:
+ 743              		.size	OneWire_ReadTemperature, .-OneWire_ReadTemperature
+ 744              		.global	__aeabi_i2f
+ 745              		.global	__aeabi_fmul
+ 746              		.section	.text.OneWire_GetTemperatureAsFloat,"ax",%progbits
+ 747              		.align	2
+ 748              		.global	OneWire_GetTemperatureAsFloat
+ 749              		.code	16
+ 750              		.thumb_func
+ 751              		.type	OneWire_GetTemperatureAsFloat, %function
+ 752              	OneWire_GetTemperatureAsFloat:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 18
+
+
+ 753              	.LFB42:
+ 210:Generated_Source\PSoC4/OneWire.c **** 
+ 211:Generated_Source\PSoC4/OneWire.c **** 
+ 212:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 213:Generated_Source\PSoC4/OneWire.c **** // Convert DS18B20 encoded temperature to float value (degC)
+ 214:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 215:Generated_Source\PSoC4/OneWire.c **** 
+ 216:Generated_Source\PSoC4/OneWire.c **** float OneWire_GetTemperatureAsFloat (uint8 index) // 
+ 217:Generated_Source\PSoC4/OneWire.c **** {    
+ 754              		.loc 1 217 0
+ 755              		.cfi_startproc
+ 756              		@ args = 0, pretend = 0, frame = 16
+ 757              		@ frame_needed = 1, uses_anonymous_args = 0
+ 758 0000 80B5     		push	{r7, lr}
+ 759              		.cfi_def_cfa_offset 8
+ 760              		.cfi_offset 7, -8
+ 761              		.cfi_offset 14, -4
+ 762 0002 84B0     		sub	sp, sp, #16
+ 763              		.cfi_def_cfa_offset 24
+ 764 0004 00AF     		add	r7, sp, #0
+ 765              		.cfi_def_cfa_register 7
+ 766 0006 0200     		movs	r2, r0
+ 767 0008 FB1D     		adds	r3, r7, #7
+ 768 000a 1A70     		strb	r2, [r3]
+ 218:Generated_Source\PSoC4/OneWire.c ****     int16 Val = OneWire_Sensor[index].Temperature;
+ 769              		.loc 1 218 0
+ 770 000c FB1D     		adds	r3, r7, #7
+ 771 000e 1A78     		ldrb	r2, [r3]
+ 772 0010 0B4B     		ldr	r3, .L45
+ 773 0012 9200     		lsls	r2, r2, #2
+ 774 0014 D25A     		ldrh	r2, [r2, r3]
+ 775 0016 0E23     		movs	r3, #14
+ 776 0018 FB18     		adds	r3, r7, r3
+ 777 001a 1A80     		strh	r2, [r3]
+ 219:Generated_Source\PSoC4/OneWire.c ****     return ( (float) Val * 0.0625f);
+ 778              		.loc 1 219 0
+ 779 001c 0E23     		movs	r3, #14
+ 780 001e FB18     		adds	r3, r7, r3
+ 781 0020 0022     		movs	r2, #0
+ 782 0022 9B5E     		ldrsh	r3, [r3, r2]
+ 783 0024 1800     		movs	r0, r3
+ 784 0026 FFF7FEFF 		bl	__aeabi_i2f
+ 785 002a 031C     		adds	r3, r0, #0
+ 786 002c F621     		movs	r1, #246
+ 787 002e 8905     		lsls	r1, r1, #22
+ 788 0030 181C     		adds	r0, r3, #0
+ 789 0032 FFF7FEFF 		bl	__aeabi_fmul
+ 790 0036 031C     		adds	r3, r0, #0
+ 220:Generated_Source\PSoC4/OneWire.c **** }
+ 791              		.loc 1 220 0
+ 792 0038 181C     		adds	r0, r3, #0
+ 793 003a BD46     		mov	sp, r7
+ 794 003c 04B0     		add	sp, sp, #16
+ 795              		@ sp needed
+ 796 003e 80BD     		pop	{r7, pc}
+ 797              	.L46:
+ 798              		.align	2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 19
+
+
+ 799              	.L45:
+ 800 0040 00000000 		.word	OneWire_Sensor
+ 801              		.cfi_endproc
+ 802              	.LFE42:
+ 803              		.size	OneWire_GetTemperatureAsFloat, .-OneWire_GetTemperatureAsFloat
+ 804              		.section	.text.OneWire_GetTemperatureAsInt100,"ax",%progbits
+ 805              		.align	2
+ 806              		.global	OneWire_GetTemperatureAsInt100
+ 807              		.code	16
+ 808              		.thumb_func
+ 809              		.type	OneWire_GetTemperatureAsInt100, %function
+ 810              	OneWire_GetTemperatureAsInt100:
+ 811              	.LFB43:
+ 221:Generated_Source\PSoC4/OneWire.c **** 
+ 222:Generated_Source\PSoC4/OneWire.c **** 
+ 223:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 224:Generated_Source\PSoC4/OneWire.c **** // Convert DS18B20 temperature (degC) as *100 value rounded to integer
+ 225:Generated_Source\PSoC4/OneWire.c **** // e.g. -38.0625 -> "-3806" 
+ 226:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 227:Generated_Source\PSoC4/OneWire.c **** 
+ 228:Generated_Source\PSoC4/OneWire.c **** int16 OneWire_GetTemperatureAsInt100 (uint8 index) 
+ 229:Generated_Source\PSoC4/OneWire.c **** {
+ 812              		.loc 1 229 0
+ 813              		.cfi_startproc
+ 814              		@ args = 0, pretend = 0, frame = 16
+ 815              		@ frame_needed = 1, uses_anonymous_args = 0
+ 816 0000 80B5     		push	{r7, lr}
+ 817              		.cfi_def_cfa_offset 8
+ 818              		.cfi_offset 7, -8
+ 819              		.cfi_offset 14, -4
+ 820 0002 84B0     		sub	sp, sp, #16
+ 821              		.cfi_def_cfa_offset 24
+ 822 0004 00AF     		add	r7, sp, #0
+ 823              		.cfi_def_cfa_register 7
+ 824 0006 0200     		movs	r2, r0
+ 825 0008 FB1D     		adds	r3, r7, #7
+ 826 000a 1A70     		strb	r2, [r3]
+ 230:Generated_Source\PSoC4/OneWire.c ****     int16 Val = OneWire_Sensor[index].Temperature;
+ 827              		.loc 1 230 0
+ 828 000c FB1D     		adds	r3, r7, #7
+ 829 000e 1A78     		ldrb	r2, [r3]
+ 830 0010 094B     		ldr	r3, .L49
+ 831 0012 9200     		lsls	r2, r2, #2
+ 832 0014 D25A     		ldrh	r2, [r2, r3]
+ 833 0016 0E23     		movs	r3, #14
+ 834 0018 FB18     		adds	r3, r7, r3
+ 835 001a 1A80     		strh	r2, [r3]
+ 231:Generated_Source\PSoC4/OneWire.c ****     return ((Val * 100u + 8u) >> 4); //rounding
+ 836              		.loc 1 231 0
+ 837 001c 0E23     		movs	r3, #14
+ 838 001e FB18     		adds	r3, r7, r3
+ 839 0020 0022     		movs	r2, #0
+ 840 0022 9B5E     		ldrsh	r3, [r3, r2]
+ 841 0024 6422     		movs	r2, #100
+ 842 0026 5343     		muls	r3, r2
+ 843 0028 0833     		adds	r3, r3, #8
+ 844 002a 1B09     		lsrs	r3, r3, #4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 20
+
+
+ 845 002c 1BB2     		sxth	r3, r3
+ 232:Generated_Source\PSoC4/OneWire.c **** }
+ 846              		.loc 1 232 0
+ 847 002e 1800     		movs	r0, r3
+ 848 0030 BD46     		mov	sp, r7
+ 849 0032 04B0     		add	sp, sp, #16
+ 850              		@ sp needed
+ 851 0034 80BD     		pop	{r7, pc}
+ 852              	.L50:
+ 853 0036 C046     		.align	2
+ 854              	.L49:
+ 855 0038 00000000 		.word	OneWire_Sensor
+ 856              		.cfi_endproc
+ 857              	.LFE43:
+ 858              		.size	OneWire_GetTemperatureAsInt100, .-OneWire_GetTemperatureAsInt100
+ 859              		.global	__aeabi_idiv
+ 860              		.section	.rodata
+ 861              		.align	2
+ 862              	.LC10:
+ 863 0000 39383736 		.ascii	"9876543210123456789\000"
+ 863      35343332 
+ 863      31303132 
+ 863      33343536 
+ 863      37383900 
+ 864              		.section	.text.itoa10,"ax",%progbits
+ 865              		.align	2
+ 866              		.global	itoa10
+ 867              		.code	16
+ 868              		.thumb_func
+ 869              		.type	itoa10, %function
+ 870              	itoa10:
+ 871              	.LFB44:
+ 233:Generated_Source\PSoC4/OneWire.c **** 
+ 234:Generated_Source\PSoC4/OneWire.c **** 
+ 235:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 236:Generated_Source\PSoC4/OneWire.c **** // C++ version 0.4 char* style "itoa":
+ 237:Generated_Source\PSoC4/OneWire.c **** // Written by Lukas Chmela
+ 238:Generated_Source\PSoC4/OneWire.c **** // Released under GPLv3.
+ 239:Generated_Source\PSoC4/OneWire.c **** // http://www.jb.man.ac.uk/~slowe/cpp/itoa.html
+ 240:Generated_Source\PSoC4/OneWire.c **** // here: modified for radix 10 only 
+ 241:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 242:Generated_Source\PSoC4/OneWire.c **** 
+ 243:Generated_Source\PSoC4/OneWire.c **** char* itoa10(int value, char* result)
+ 244:Generated_Source\PSoC4/OneWire.c **** {
+ 872              		.loc 1 244 0
+ 873              		.cfi_startproc
+ 874              		@ args = 0, pretend = 0, frame = 32
+ 875              		@ frame_needed = 1, uses_anonymous_args = 0
+ 876 0000 80B5     		push	{r7, lr}
+ 877              		.cfi_def_cfa_offset 8
+ 878              		.cfi_offset 7, -8
+ 879              		.cfi_offset 14, -4
+ 880 0002 88B0     		sub	sp, sp, #32
+ 881              		.cfi_def_cfa_offset 40
+ 882 0004 00AF     		add	r7, sp, #0
+ 883              		.cfi_def_cfa_register 7
+ 884 0006 7860     		str	r0, [r7, #4]
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 21
+
+
+ 885 0008 3960     		str	r1, [r7]
+ 245:Generated_Source\PSoC4/OneWire.c ****     const uint8 base = 10u;
+ 886              		.loc 1 245 0
+ 887 000a 1723     		movs	r3, #23
+ 888 000c FB18     		adds	r3, r7, r3
+ 889 000e 0A22     		movs	r2, #10
+ 890 0010 1A70     		strb	r2, [r3]
+ 246:Generated_Source\PSoC4/OneWire.c **** 	char* ptr = result, *ptr1 = result, tmp_char;
+ 891              		.loc 1 246 0
+ 892 0012 3B68     		ldr	r3, [r7]
+ 893 0014 FB61     		str	r3, [r7, #28]
+ 894 0016 3B68     		ldr	r3, [r7]
+ 895 0018 BB61     		str	r3, [r7, #24]
+ 896              	.L52:
+ 247:Generated_Source\PSoC4/OneWire.c **** 	int tmp_value;
+ 248:Generated_Source\PSoC4/OneWire.c **** 	
+ 249:Generated_Source\PSoC4/OneWire.c **** 	do {
+ 250:Generated_Source\PSoC4/OneWire.c **** 		tmp_value = value;
+ 897              		.loc 1 250 0 discriminator 1
+ 898 001a 7B68     		ldr	r3, [r7, #4]
+ 899 001c 3B61     		str	r3, [r7, #16]
+ 251:Generated_Source\PSoC4/OneWire.c **** 		value /= base;
+ 900              		.loc 1 251 0 discriminator 1
+ 901 001e 1723     		movs	r3, #23
+ 902 0020 FB18     		adds	r3, r7, r3
+ 903 0022 1B78     		ldrb	r3, [r3]
+ 904 0024 1900     		movs	r1, r3
+ 905 0026 7868     		ldr	r0, [r7, #4]
+ 906 0028 FFF7FEFF 		bl	__aeabi_idiv
+ 907 002c 0300     		movs	r3, r0
+ 908 002e 7B60     		str	r3, [r7, #4]
+ 252:Generated_Source\PSoC4/OneWire.c **** 		*ptr++ = "9876543210123456789" [9 + tmp_value - value * base];
+ 909              		.loc 1 252 0 discriminator 1
+ 910 0030 FB69     		ldr	r3, [r7, #28]
+ 911 0032 5A1C     		adds	r2, r3, #1
+ 912 0034 FA61     		str	r2, [r7, #28]
+ 913 0036 3A69     		ldr	r2, [r7, #16]
+ 914 0038 0932     		adds	r2, r2, #9
+ 915 003a 1100     		movs	r1, r2
+ 916 003c 1722     		movs	r2, #23
+ 917 003e BA18     		adds	r2, r7, r2
+ 918 0040 1278     		ldrb	r2, [r2]
+ 919 0042 7868     		ldr	r0, [r7, #4]
+ 920 0044 4243     		muls	r2, r0
+ 921 0046 8A1A     		subs	r2, r1, r2
+ 922 0048 1749     		ldr	r1, .L57
+ 923 004a 8A5C     		ldrb	r2, [r1, r2]
+ 924 004c 1A70     		strb	r2, [r3]
+ 253:Generated_Source\PSoC4/OneWire.c **** 	} while ( value );
+ 925              		.loc 1 253 0 discriminator 1
+ 926 004e 7B68     		ldr	r3, [r7, #4]
+ 927 0050 002B     		cmp	r3, #0
+ 928 0052 E2D1     		bne	.L52
+ 254:Generated_Source\PSoC4/OneWire.c **** 	
+ 255:Generated_Source\PSoC4/OneWire.c **** 	// Apply negative sign
+ 256:Generated_Source\PSoC4/OneWire.c **** 	if (tmp_value < 0) *ptr++ = '-';
+ 929              		.loc 1 256 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 22
+
+
+ 930 0054 3B69     		ldr	r3, [r7, #16]
+ 931 0056 002B     		cmp	r3, #0
+ 932 0058 04DA     		bge	.L53
+ 933              		.loc 1 256 0 is_stmt 0 discriminator 1
+ 934 005a FB69     		ldr	r3, [r7, #28]
+ 935 005c 5A1C     		adds	r2, r3, #1
+ 936 005e FA61     		str	r2, [r7, #28]
+ 937 0060 2D22     		movs	r2, #45
+ 938 0062 1A70     		strb	r2, [r3]
+ 939              	.L53:
+ 257:Generated_Source\PSoC4/OneWire.c **** 	*ptr-- = '\0';
+ 940              		.loc 1 257 0 is_stmt 1
+ 941 0064 FB69     		ldr	r3, [r7, #28]
+ 942 0066 5A1E     		subs	r2, r3, #1
+ 943 0068 FA61     		str	r2, [r7, #28]
+ 944 006a 0022     		movs	r2, #0
+ 945 006c 1A70     		strb	r2, [r3]
+ 258:Generated_Source\PSoC4/OneWire.c **** 	while(ptr1 < ptr) {
+ 946              		.loc 1 258 0
+ 947 006e 11E0     		b	.L54
+ 948              	.L55:
+ 259:Generated_Source\PSoC4/OneWire.c **** 		tmp_char = *ptr;
+ 949              		.loc 1 259 0
+ 950 0070 0F23     		movs	r3, #15
+ 951 0072 FB18     		adds	r3, r7, r3
+ 952 0074 FA69     		ldr	r2, [r7, #28]
+ 953 0076 1278     		ldrb	r2, [r2]
+ 954 0078 1A70     		strb	r2, [r3]
+ 260:Generated_Source\PSoC4/OneWire.c **** 		*ptr--= *ptr1;
+ 955              		.loc 1 260 0
+ 956 007a FB69     		ldr	r3, [r7, #28]
+ 957 007c 5A1E     		subs	r2, r3, #1
+ 958 007e FA61     		str	r2, [r7, #28]
+ 959 0080 BA69     		ldr	r2, [r7, #24]
+ 960 0082 1278     		ldrb	r2, [r2]
+ 961 0084 1A70     		strb	r2, [r3]
+ 261:Generated_Source\PSoC4/OneWire.c **** 		*ptr1++ = tmp_char;
+ 962              		.loc 1 261 0
+ 963 0086 BB69     		ldr	r3, [r7, #24]
+ 964 0088 5A1C     		adds	r2, r3, #1
+ 965 008a BA61     		str	r2, [r7, #24]
+ 966 008c 0F22     		movs	r2, #15
+ 967 008e BA18     		adds	r2, r7, r2
+ 968 0090 1278     		ldrb	r2, [r2]
+ 969 0092 1A70     		strb	r2, [r3]
+ 970              	.L54:
+ 258:Generated_Source\PSoC4/OneWire.c **** 		tmp_char = *ptr;
+ 971              		.loc 1 258 0
+ 972 0094 BA69     		ldr	r2, [r7, #24]
+ 973 0096 FB69     		ldr	r3, [r7, #28]
+ 974 0098 9A42     		cmp	r2, r3
+ 975 009a E9D3     		bcc	.L55
+ 262:Generated_Source\PSoC4/OneWire.c **** 	}
+ 263:Generated_Source\PSoC4/OneWire.c **** 	return result;
+ 976              		.loc 1 263 0
+ 977 009c 3B68     		ldr	r3, [r7]
+ 264:Generated_Source\PSoC4/OneWire.c **** }
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 23
+
+
+ 978              		.loc 1 264 0
+ 979 009e 1800     		movs	r0, r3
+ 980 00a0 BD46     		mov	sp, r7
+ 981 00a2 08B0     		add	sp, sp, #32
+ 982              		@ sp needed
+ 983 00a4 80BD     		pop	{r7, pc}
+ 984              	.L58:
+ 985 00a6 C046     		.align	2
+ 986              	.L57:
+ 987 00a8 00000000 		.word	.LC10
+ 988              		.cfi_endproc
+ 989              	.LFE44:
+ 990              		.size	itoa10, .-itoa10
+ 991              		.section	.rodata
+ 992              		.align	2
+ 993              	.LC13:
+ 994 0014 2D00     		.ascii	"-\000"
+ 995              		.section	.text.OneWire_GetTemperatureAsString,"ax",%progbits
+ 996              		.align	2
+ 997              		.global	OneWire_GetTemperatureAsString
+ 998              		.code	16
+ 999              		.thumb_func
+ 1000              		.type	OneWire_GetTemperatureAsString, %function
+ 1001              	OneWire_GetTemperatureAsString:
+ 1002              	.LFB45:
+ 265:Generated_Source\PSoC4/OneWire.c **** 
+ 266:Generated_Source\PSoC4/OneWire.c **** 
+ 267:Generated_Source\PSoC4/OneWire.c **** 
+ 268:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 269:Generated_Source\PSoC4/OneWire.c **** // Convert DS18B20 temperature (degC) as string
+ 270:Generated_Source\PSoC4/OneWire.c **** // e.g. -38.0625 <-> "-38.0625"
+ 271:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 272:Generated_Source\PSoC4/OneWire.c **** 
+ 273:Generated_Source\PSoC4/OneWire.c **** char* OneWire_GetTemperatureAsString (uint8 index) 
+ 274:Generated_Source\PSoC4/OneWire.c **** {
+ 1003              		.loc 1 274 0
+ 1004              		.cfi_startproc
+ 1005              		@ args = 0, pretend = 0, frame = 48
+ 1006              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1007 0000 80B5     		push	{r7, lr}
+ 1008              		.cfi_def_cfa_offset 8
+ 1009              		.cfi_offset 7, -8
+ 1010              		.cfi_offset 14, -4
+ 1011 0002 8CB0     		sub	sp, sp, #48
+ 1012              		.cfi_def_cfa_offset 56
+ 1013 0004 00AF     		add	r7, sp, #0
+ 1014              		.cfi_def_cfa_register 7
+ 1015 0006 0200     		movs	r2, r0
+ 1016 0008 FB1D     		adds	r3, r7, #7
+ 1017 000a 1A70     		strb	r2, [r3]
+ 275:Generated_Source\PSoC4/OneWire.c ****     char TempStr[13]={};    // buffer string for current temperature //warning
+ 1018              		.loc 1 275 0
+ 1019 000c 1423     		movs	r3, #20
+ 1020 000e FB18     		adds	r3, r7, r3
+ 1021 0010 1800     		movs	r0, r3
+ 1022 0012 0D23     		movs	r3, #13
+ 1023 0014 1A00     		movs	r2, r3
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 24
+
+
+ 1024 0016 0021     		movs	r1, #0
+ 1025 0018 FFF7FEFF 		bl	memset
+ 276:Generated_Source\PSoC4/OneWire.c ****     char* result = TempStr; //
+ 1026              		.loc 1 276 0
+ 1027 001c 1423     		movs	r3, #20
+ 1028 001e FB18     		adds	r3, r7, r3
+ 1029 0020 BB62     		str	r3, [r7, #40]
+ 277:Generated_Source\PSoC4/OneWire.c ****     char buf[8];            // buffer
+ 278:Generated_Source\PSoC4/OneWire.c ****     CYBIT sign;             // Temp sign
+ 279:Generated_Source\PSoC4/OneWire.c ****     int grad;               // integer portion w/o sign
+ 280:Generated_Source\PSoC4/OneWire.c ****     uint8 frac;             // fractional portion
+ 281:Generated_Source\PSoC4/OneWire.c ****     
+ 282:Generated_Source\PSoC4/OneWire.c ****     static const char *str[] = {".00", ".06", ".13", ".19", ".25", ".31", ".38", ".44", ".50", ".56
+ 283:Generated_Source\PSoC4/OneWire.c ****      
+ 284:Generated_Source\PSoC4/OneWire.c ****     // exit and return pre-defined string if no sensor present
+ 285:Generated_Source\PSoC4/OneWire.c ****     if (!OneWire_Sensor[index].present) return (Str_OFF);
+ 1030              		.loc 1 285 0
+ 1031 0022 FB1D     		adds	r3, r7, #7
+ 1032 0024 1B78     		ldrb	r3, [r3]
+ 1033 0026 344A     		ldr	r2, .L67
+ 1034 0028 9B00     		lsls	r3, r3, #2
+ 1035 002a D318     		adds	r3, r2, r3
+ 1036 002c 0233     		adds	r3, r3, #2
+ 1037 002e 1B78     		ldrb	r3, [r3]
+ 1038 0030 002B     		cmp	r3, #0
+ 1039 0032 01D1     		bne	.L60
+ 1040              		.loc 1 285 0 is_stmt 0 discriminator 1
+ 1041 0034 314B     		ldr	r3, .L67+4
+ 1042 0036 5AE0     		b	.L66
+ 1043              	.L60:
+ 286:Generated_Source\PSoC4/OneWire.c **** 
+ 287:Generated_Source\PSoC4/OneWire.c ****         
+ 288:Generated_Source\PSoC4/OneWire.c ****     int16 Val = OneWire_Sensor[index].Temperature;
+ 1044              		.loc 1 288 0 is_stmt 1
+ 1045 0038 FB1D     		adds	r3, r7, #7
+ 1046 003a 1A78     		ldrb	r2, [r3]
+ 1047 003c 2E4B     		ldr	r3, .L67
+ 1048 003e 9200     		lsls	r2, r2, #2
+ 1049 0040 D25A     		ldrh	r2, [r2, r3]
+ 1050 0042 2623     		movs	r3, #38
+ 1051 0044 FB18     		adds	r3, r7, r3
+ 1052 0046 1A80     		strh	r2, [r3]
+ 289:Generated_Source\PSoC4/OneWire.c ****     sign = (Val < 0);                       // remember sign prior to shift     
+ 1053              		.loc 1 289 0
+ 1054 0048 2623     		movs	r3, #38
+ 1055 004a FB18     		adds	r3, r7, r3
+ 1056 004c 1B88     		ldrh	r3, [r3]
+ 1057 004e DB0B     		lsrs	r3, r3, #15
+ 1058 0050 DAB2     		uxtb	r2, r3
+ 1059 0052 2523     		movs	r3, #37
+ 1060 0054 FB18     		adds	r3, r7, r3
+ 1061 0056 1A70     		strb	r2, [r3]
+ 290:Generated_Source\PSoC4/OneWire.c ****     if (sign) grad = -Val; else grad = Val; //grad = abs(Temp); no need for stdlib.h
+ 1062              		.loc 1 290 0
+ 1063 0058 2523     		movs	r3, #37
+ 1064 005a FB18     		adds	r3, r7, r3
+ 1065 005c 1B78     		ldrb	r3, [r3]
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 25
+
+
+ 1066 005e 002B     		cmp	r3, #0
+ 1067 0060 06D0     		beq	.L62
+ 1068              		.loc 1 290 0 is_stmt 0 discriminator 1
+ 1069 0062 2623     		movs	r3, #38
+ 1070 0064 FB18     		adds	r3, r7, r3
+ 1071 0066 0022     		movs	r2, #0
+ 1072 0068 9B5E     		ldrsh	r3, [r3, r2]
+ 1073 006a 5B42     		rsbs	r3, r3, #0
+ 1074 006c FB62     		str	r3, [r7, #44]
+ 1075 006e 04E0     		b	.L63
+ 1076              	.L62:
+ 1077              		.loc 1 290 0 discriminator 2
+ 1078 0070 2623     		movs	r3, #38
+ 1079 0072 FB18     		adds	r3, r7, r3
+ 1080 0074 0022     		movs	r2, #0
+ 1081 0076 9B5E     		ldrsh	r3, [r3, r2]
+ 1082 0078 FB62     		str	r3, [r7, #44]
+ 1083              	.L63:
+ 291:Generated_Source\PSoC4/OneWire.c ****     frac = grad & 15;                       //index for fractional part
+ 1084              		.loc 1 291 0 is_stmt 1
+ 1085 007a FB6A     		ldr	r3, [r7, #44]
+ 1086 007c DAB2     		uxtb	r2, r3
+ 1087 007e 2423     		movs	r3, #36
+ 1088 0080 FB18     		adds	r3, r7, r3
+ 1089 0082 0F21     		movs	r1, #15
+ 1090 0084 0A40     		ands	r2, r1
+ 1091 0086 1A70     		strb	r2, [r3]
+ 292:Generated_Source\PSoC4/OneWire.c ****     grad = grad >> 4;                       //get integer portion
+ 1092              		.loc 1 292 0
+ 1093 0088 FB6A     		ldr	r3, [r7, #44]
+ 1094 008a 1B11     		asrs	r3, r3, #4
+ 1095 008c FB62     		str	r3, [r7, #44]
+ 293:Generated_Source\PSoC4/OneWire.c ****     
+ 294:Generated_Source\PSoC4/OneWire.c ****     if (sign) strcat(TempStr, itoa10(-grad, buf)); 
+ 1096              		.loc 1 294 0
+ 1097 008e 2523     		movs	r3, #37
+ 1098 0090 FB18     		adds	r3, r7, r3
+ 1099 0092 1B78     		ldrb	r3, [r3]
+ 1100 0094 002B     		cmp	r3, #0
+ 1101 0096 0FD0     		beq	.L64
+ 1102              		.loc 1 294 0 is_stmt 0 discriminator 1
+ 1103 0098 FB6A     		ldr	r3, [r7, #44]
+ 1104 009a 5B42     		rsbs	r3, r3, #0
+ 1105 009c 0C22     		movs	r2, #12
+ 1106 009e BA18     		adds	r2, r7, r2
+ 1107 00a0 1100     		movs	r1, r2
+ 1108 00a2 1800     		movs	r0, r3
+ 1109 00a4 FFF7FEFF 		bl	itoa10
+ 1110 00a8 0200     		movs	r2, r0
+ 1111 00aa 1423     		movs	r3, #20
+ 1112 00ac FB18     		adds	r3, r7, r3
+ 1113 00ae 1100     		movs	r1, r2
+ 1114 00b0 1800     		movs	r0, r3
+ 1115 00b2 FFF7FEFF 		bl	strcat
+ 1116 00b6 0DE0     		b	.L65
+ 1117              	.L64:
+ 295:Generated_Source\PSoC4/OneWire.c ****     else      strcat(TempStr, itoa10( grad, buf));
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 26
+
+
+ 1118              		.loc 1 295 0 is_stmt 1
+ 1119 00b8 0C23     		movs	r3, #12
+ 1120 00ba FA18     		adds	r2, r7, r3
+ 1121 00bc FB6A     		ldr	r3, [r7, #44]
+ 1122 00be 1100     		movs	r1, r2
+ 1123 00c0 1800     		movs	r0, r3
+ 1124 00c2 FFF7FEFF 		bl	itoa10
+ 1125 00c6 0200     		movs	r2, r0
+ 1126 00c8 1423     		movs	r3, #20
+ 1127 00ca FB18     		adds	r3, r7, r3
+ 1128 00cc 1100     		movs	r1, r2
+ 1129 00ce 1800     		movs	r0, r3
+ 1130 00d0 FFF7FEFF 		bl	strcat
+ 1131              	.L65:
+ 296:Generated_Source\PSoC4/OneWire.c ****     
+ 297:Generated_Source\PSoC4/OneWire.c ****     strcat(TempStr, str[frac]); //add fractional part
+ 1132              		.loc 1 297 0
+ 1133 00d4 2423     		movs	r3, #36
+ 1134 00d6 FB18     		adds	r3, r7, r3
+ 1135 00d8 1A78     		ldrb	r2, [r3]
+ 1136 00da 094B     		ldr	r3, .L67+8
+ 1137 00dc 9200     		lsls	r2, r2, #2
+ 1138 00de D258     		ldr	r2, [r2, r3]
+ 1139 00e0 1423     		movs	r3, #20
+ 1140 00e2 FB18     		adds	r3, r7, r3
+ 1141 00e4 1100     		movs	r1, r2
+ 1142 00e6 1800     		movs	r0, r3
+ 1143 00e8 FFF7FEFF 		bl	strcat
+ 298:Generated_Source\PSoC4/OneWire.c ****     
+ 299:Generated_Source\PSoC4/OneWire.c ****     return (result);
+ 1144              		.loc 1 299 0
+ 1145 00ec BB6A     		ldr	r3, [r7, #40]
+ 1146              	.L66:
+ 300:Generated_Source\PSoC4/OneWire.c **** }
+ 1147              		.loc 1 300 0 discriminator 1
+ 1148 00ee 1800     		movs	r0, r3
+ 1149 00f0 BD46     		mov	sp, r7
+ 1150 00f2 0CB0     		add	sp, sp, #48
+ 1151              		@ sp needed
+ 1152 00f4 80BD     		pop	{r7, pc}
+ 1153              	.L68:
+ 1154 00f6 C046     		.align	2
+ 1155              	.L67:
+ 1156 00f8 00000000 		.word	OneWire_Sensor
+ 1157 00fc 14000000 		.word	.LC13
+ 1158 0100 04000000 		.word	str.7951
+ 1159              		.cfi_endproc
+ 1160              	.LFE45:
+ 1161              		.size	OneWire_GetTemperatureAsString, .-OneWire_GetTemperatureAsString
+ 1162              		.section	.text.OneWire_Start,"ax",%progbits
+ 1163              		.align	2
+ 1164              		.global	OneWire_Start
+ 1165              		.code	16
+ 1166              		.thumb_func
+ 1167              		.type	OneWire_Start, %function
+ 1168              	OneWire_Start:
+ 1169              	.LFB46:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 27
+
+
+ 301:Generated_Source\PSoC4/OneWire.c **** 
+ 302:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 303:Generated_Source\PSoC4/OneWire.c **** // Initialize and Start component
+ 304:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 305:Generated_Source\PSoC4/OneWire.c **** 
+ 306:Generated_Source\PSoC4/OneWire.c **** void OneWire_Start() 
+ 307:Generated_Source\PSoC4/OneWire.c **** {
+ 1170              		.loc 1 307 0
+ 1171              		.cfi_startproc
+ 1172              		@ args = 0, pretend = 0, frame = 0
+ 1173              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1174 0000 80B5     		push	{r7, lr}
+ 1175              		.cfi_def_cfa_offset 8
+ 1176              		.cfi_offset 7, -8
+ 1177              		.cfi_offset 14, -4
+ 1178 0002 00AF     		add	r7, sp, #0
+ 1179              		.cfi_def_cfa_register 7
+ 308:Generated_Source\PSoC4/OneWire.c ****     OneWire_isr_DataReady_StartEx(OneWire_IRQDataReady); //set interrupt
+ 1180              		.loc 1 308 0
+ 1181 0004 074B     		ldr	r3, .L70
+ 1182 0006 1800     		movs	r0, r3
+ 1183 0008 FFF7FEFF 		bl	OneWire_isr_DataReady_StartEx
+ 309:Generated_Source\PSoC4/OneWire.c ****     
+ 310:Generated_Source\PSoC4/OneWire.c ****     //configure and start 1-shot timer for 750ms data conversion delay
+ 311:Generated_Source\PSoC4/OneWire.c ****     OneWire_TimerDelay_WriteCounter(T_conv);   // set time for conversion 750ms
+ 1184              		.loc 1 311 0
+ 1185 000c 064B     		ldr	r3, .L70+4
+ 1186 000e 1800     		movs	r0, r3
+ 1187 0010 FFF7FEFF 		bl	OneWire_TimerDelay_WriteCounter
+ 312:Generated_Source\PSoC4/OneWire.c ****     OneWire_TimerDelay_Start();                // Initialize TimerDelay
+ 1188              		.loc 1 312 0
+ 1189 0014 FFF7FEFF 		bl	OneWire_TimerDelay_Start
+ 313:Generated_Source\PSoC4/OneWire.c ****     
+ 314:Generated_Source\PSoC4/OneWire.c ****     OneWire_DataReady = 0;                     // semaphor flag
+ 1190              		.loc 1 314 0
+ 1191 0018 044B     		ldr	r3, .L70+8
+ 1192 001a 0022     		movs	r2, #0
+ 1193 001c 1A70     		strb	r2, [r3]
+ 315:Generated_Source\PSoC4/OneWire.c **** }
+ 1194              		.loc 1 315 0
+ 1195 001e C046     		nop
+ 1196 0020 BD46     		mov	sp, r7
+ 1197              		@ sp needed
+ 1198 0022 80BD     		pop	{r7, pc}
+ 1199              	.L71:
+ 1200              		.align	2
+ 1201              	.L70:
+ 1202 0024 00000000 		.word	OneWire_IRQDataReady
+ 1203 0028 EE020000 		.word	750
+ 1204 002c 00000000 		.word	OneWire_DataReady
+ 1205              		.cfi_endproc
+ 1206              	.LFE46:
+ 1207              		.size	OneWire_Start, .-OneWire_Start
+ 1208              		.section	.text.OneWire_Stop,"ax",%progbits
+ 1209              		.align	2
+ 1210              		.global	OneWire_Stop
+ 1211              		.code	16
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 28
+
+
+ 1212              		.thumb_func
+ 1213              		.type	OneWire_Stop, %function
+ 1214              	OneWire_Stop:
+ 1215              	.LFB47:
+ 316:Generated_Source\PSoC4/OneWire.c **** 
+ 317:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 318:Generated_Source\PSoC4/OneWire.c **** // Disable component
+ 319:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 320:Generated_Source\PSoC4/OneWire.c **** 
+ 321:Generated_Source\PSoC4/OneWire.c **** void OneWire_Stop() 
+ 322:Generated_Source\PSoC4/OneWire.c **** {
+ 1216              		.loc 1 322 0
+ 1217              		.cfi_startproc
+ 1218              		@ args = 0, pretend = 0, frame = 0
+ 1219              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1220 0000 80B5     		push	{r7, lr}
+ 1221              		.cfi_def_cfa_offset 8
+ 1222              		.cfi_offset 7, -8
+ 1223              		.cfi_offset 14, -4
+ 1224 0002 00AF     		add	r7, sp, #0
+ 1225              		.cfi_def_cfa_register 7
+ 323:Generated_Source\PSoC4/OneWire.c ****     OneWire_TimerDelay_Stop(); // disable timer
+ 1226              		.loc 1 323 0
+ 1227 0004 FFF7FEFF 		bl	OneWire_TimerDelay_Stop
+ 324:Generated_Source\PSoC4/OneWire.c **** }
+ 1228              		.loc 1 324 0
+ 1229 0008 C046     		nop
+ 1230 000a BD46     		mov	sp, r7
+ 1231              		@ sp needed
+ 1232 000c 80BD     		pop	{r7, pc}
+ 1233              		.cfi_endproc
+ 1234              	.LFE47:
+ 1235              		.size	OneWire_Stop, .-OneWire_Stop
+ 1236 000e C046     		.section	.text.OneWire_BusState,"ax",%progbits
+ 1237              		.align	2
+ 1238              		.global	OneWire_BusState
+ 1239              		.code	16
+ 1240              		.thumb_func
+ 1241              		.type	OneWire_BusState, %function
+ 1242              	OneWire_BusState:
+ 1243              	.LFB48:
+ 325:Generated_Source\PSoC4/OneWire.c **** 
+ 326:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 327:Generated_Source\PSoC4/OneWire.c **** // Return 8-bit bus state: 1-sensor present, 0-sensor read failure
+ 328:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 329:Generated_Source\PSoC4/OneWire.c **** 
+ 330:Generated_Source\PSoC4/OneWire.c **** uint8 OneWire_BusState()
+ 331:Generated_Source\PSoC4/OneWire.c **** {
+ 1244              		.loc 1 331 0
+ 1245              		.cfi_startproc
+ 1246              		@ args = 0, pretend = 0, frame = 0
+ 1247              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1248 0000 80B5     		push	{r7, lr}
+ 1249              		.cfi_def_cfa_offset 8
+ 1250              		.cfi_offset 7, -8
+ 1251              		.cfi_offset 14, -4
+ 1252 0002 00AF     		add	r7, sp, #0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 29
+
+
+ 1253              		.cfi_def_cfa_register 7
+ 332:Generated_Source\PSoC4/OneWire.c ****     return( BusPresence );   
+ 1254              		.loc 1 332 0
+ 1255 0004 024B     		ldr	r3, .L75
+ 1256 0006 1B78     		ldrb	r3, [r3]
+ 333:Generated_Source\PSoC4/OneWire.c **** }
+ 1257              		.loc 1 333 0
+ 1258 0008 1800     		movs	r0, r3
+ 1259 000a BD46     		mov	sp, r7
+ 1260              		@ sp needed
+ 1261 000c 80BD     		pop	{r7, pc}
+ 1262              	.L76:
+ 1263 000e C046     		.align	2
+ 1264              	.L75:
+ 1265 0010 00000000 		.word	BusPresence
+ 1266              		.cfi_endproc
+ 1267              	.LFE48:
+ 1268              		.size	OneWire_BusState, .-OneWire_BusState
+ 1269              		.section	.text.OneWire_CheckPresence,"ax",%progbits
+ 1270              		.align	2
+ 1271              		.global	OneWire_CheckPresence
+ 1272              		.code	16
+ 1273              		.thumb_func
+ 1274              		.type	OneWire_CheckPresence, %function
+ 1275              	OneWire_CheckPresence:
+ 1276              	.LFB49:
+ 334:Generated_Source\PSoC4/OneWire.c **** 
+ 335:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 336:Generated_Source\PSoC4/OneWire.c **** // Function to check sensors presence
+ 337:Generated_Source\PSoC4/OneWire.c **** // Return 8-bit bus state: 1-sensor present, 0-sensor read failure
+ 338:Generated_Source\PSoC4/OneWire.c **** //==============================================================================
+ 339:Generated_Source\PSoC4/OneWire.c **** 
+ 340:Generated_Source\PSoC4/OneWire.c **** uint8 OneWire_CheckPresence()
+ 341:Generated_Source\PSoC4/OneWire.c **** {  
+ 1277              		.loc 1 341 0
+ 1278              		.cfi_startproc
+ 1279              		@ args = 0, pretend = 0, frame = 0
+ 1280              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1281 0000 80B5     		push	{r7, lr}
+ 1282              		.cfi_def_cfa_offset 8
+ 1283              		.cfi_offset 7, -8
+ 1284              		.cfi_offset 14, -4
+ 1285 0002 00AF     		add	r7, sp, #0
+ 1286              		.cfi_def_cfa_register 7
+ 342:Generated_Source\PSoC4/OneWire.c ****     BusPresence = BusReset(); // Reset ( > 480 usec ) 
+ 1287              		.loc 1 342 0
+ 1288 0004 FFF7FEFF 		bl	BusReset
+ 1289 0008 0300     		movs	r3, r0
+ 1290 000a 1A00     		movs	r2, r3
+ 1291 000c 034B     		ldr	r3, .L79
+ 1292 000e 1A70     		strb	r2, [r3]
+ 343:Generated_Source\PSoC4/OneWire.c ****     return( BusPresence );   
+ 1293              		.loc 1 343 0
+ 1294 0010 024B     		ldr	r3, .L79
+ 1295 0012 1B78     		ldrb	r3, [r3]
+ 344:Generated_Source\PSoC4/OneWire.c **** }
+ 1296              		.loc 1 344 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 30
+
+
+ 1297 0014 1800     		movs	r0, r3
+ 1298 0016 BD46     		mov	sp, r7
+ 1299              		@ sp needed
+ 1300 0018 80BD     		pop	{r7, pc}
+ 1301              	.L80:
+ 1302 001a C046     		.align	2
+ 1303              	.L79:
+ 1304 001c 00000000 		.word	BusPresence
+ 1305              		.cfi_endproc
+ 1306              	.LFE49:
+ 1307              		.size	OneWire_CheckPresence, .-OneWire_CheckPresence
+ 1308              		.data
+ 1309              		.align	2
+ 1310              		.type	Sensor_off.7893, %object
+ 1311              		.size	Sensor_off.7893, 4
+ 1312              	Sensor_off.7893:
+ 1313 0000 00F0     		.short	-4096
+ 1314 0002 00       		.byte	0
+ 1315 0003 00       		.space	1
+ 1316              		.section	.rodata
+ 1317 0016 0000     		.align	2
+ 1318              	.LC20:
+ 1319 0018 2E303000 		.ascii	".00\000"
+ 1320              		.align	2
+ 1321              	.LC21:
+ 1322 001c 2E303600 		.ascii	".06\000"
+ 1323              		.align	2
+ 1324              	.LC22:
+ 1325 0020 2E313300 		.ascii	".13\000"
+ 1326              		.align	2
+ 1327              	.LC23:
+ 1328 0024 2E313900 		.ascii	".19\000"
+ 1329              		.align	2
+ 1330              	.LC24:
+ 1331 0028 2E323500 		.ascii	".25\000"
+ 1332              		.align	2
+ 1333              	.LC25:
+ 1334 002c 2E333100 		.ascii	".31\000"
+ 1335              		.align	2
+ 1336              	.LC26:
+ 1337 0030 2E333800 		.ascii	".38\000"
+ 1338              		.align	2
+ 1339              	.LC27:
+ 1340 0034 2E343400 		.ascii	".44\000"
+ 1341              		.align	2
+ 1342              	.LC28:
+ 1343 0038 2E353000 		.ascii	".50\000"
+ 1344              		.align	2
+ 1345              	.LC29:
+ 1346 003c 2E353600 		.ascii	".56\000"
+ 1347              		.align	2
+ 1348              	.LC30:
+ 1349 0040 2E363300 		.ascii	".63\000"
+ 1350              		.align	2
+ 1351              	.LC31:
+ 1352 0044 2E363900 		.ascii	".69\000"
+ 1353              		.align	2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 31
+
+
+ 1354              	.LC32:
+ 1355 0048 2E373500 		.ascii	".75\000"
+ 1356              		.align	2
+ 1357              	.LC33:
+ 1358 004c 2E383100 		.ascii	".81\000"
+ 1359              		.align	2
+ 1360              	.LC34:
+ 1361 0050 2E383800 		.ascii	".88\000"
+ 1362              		.align	2
+ 1363              	.LC35:
+ 1364 0054 2E393400 		.ascii	".94\000"
+ 1365              		.data
+ 1366              		.align	2
+ 1367              		.type	str.7951, %object
+ 1368              		.size	str.7951, 64
+ 1369              	str.7951:
+ 1370 0004 18000000 		.word	.LC20
+ 1371 0008 1C000000 		.word	.LC21
+ 1372 000c 20000000 		.word	.LC22
+ 1373 0010 24000000 		.word	.LC23
+ 1374 0014 28000000 		.word	.LC24
+ 1375 0018 2C000000 		.word	.LC25
+ 1376 001c 30000000 		.word	.LC26
+ 1377 0020 34000000 		.word	.LC27
+ 1378 0024 38000000 		.word	.LC28
+ 1379 0028 3C000000 		.word	.LC29
+ 1380 002c 40000000 		.word	.LC30
+ 1381 0030 44000000 		.word	.LC31
+ 1382 0034 48000000 		.word	.LC32
+ 1383 0038 4C000000 		.word	.LC33
+ 1384 003c 50000000 		.word	.LC34
+ 1385 0040 54000000 		.word	.LC35
+ 1386              		.text
+ 1387              	.Letext0:
+ 1388              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 1389              		.file 3 "Generated_Source\\PSoC4/OneWire.h"
+ 1390              		.file 4 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 1391              		.file 5 "Generated_Source\\PSoC4/BLE_hts.h"
+ 1392              		.file 6 "Generated_Source\\PSoC4/BLE_eventHandler.h"
+ 1393              		.section	.debug_info,"",%progbits
+ 1394              	.Ldebug_info0:
+ 1395 0000 CC060000 		.4byte	0x6cc
+ 1396 0004 0400     		.2byte	0x4
+ 1397 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1398 000a 04       		.byte	0x4
+ 1399 000b 01       		.uleb128 0x1
+ 1400 000c 0C060000 		.4byte	.LASF140
+ 1401 0010 0C       		.byte	0xc
+ 1402 0011 C6080000 		.4byte	.LASF141
+ 1403 0015 EF080000 		.4byte	.LASF142
+ 1404 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1405 001d 00000000 		.4byte	0
+ 1406 0021 00000000 		.4byte	.Ldebug_line0
+ 1407 0025 02       		.uleb128 0x2
+ 1408 0026 01       		.byte	0x1
+ 1409 0027 06       		.byte	0x6
+ 1410 0028 3A020000 		.4byte	.LASF0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 32
+
+
+ 1411 002c 02       		.uleb128 0x2
+ 1412 002d 01       		.byte	0x1
+ 1413 002e 08       		.byte	0x8
+ 1414 002f 23090000 		.4byte	.LASF1
+ 1415 0033 02       		.uleb128 0x2
+ 1416 0034 02       		.byte	0x2
+ 1417 0035 05       		.byte	0x5
+ 1418 0036 55090000 		.4byte	.LASF2
+ 1419 003a 02       		.uleb128 0x2
+ 1420 003b 02       		.byte	0x2
+ 1421 003c 07       		.byte	0x7
+ 1422 003d 17050000 		.4byte	.LASF3
+ 1423 0041 02       		.uleb128 0x2
+ 1424 0042 04       		.byte	0x4
+ 1425 0043 05       		.byte	0x5
+ 1426 0044 38010000 		.4byte	.LASF4
+ 1427 0048 02       		.uleb128 0x2
+ 1428 0049 04       		.byte	0x4
+ 1429 004a 07       		.byte	0x7
+ 1430 004b 43040000 		.4byte	.LASF5
+ 1431 004f 02       		.uleb128 0x2
+ 1432 0050 08       		.byte	0x8
+ 1433 0051 05       		.byte	0x5
+ 1434 0052 23030000 		.4byte	.LASF6
+ 1435 0056 02       		.uleb128 0x2
+ 1436 0057 08       		.byte	0x8
+ 1437 0058 07       		.byte	0x7
+ 1438 0059 57010000 		.4byte	.LASF7
+ 1439 005d 03       		.uleb128 0x3
+ 1440 005e 04       		.byte	0x4
+ 1441 005f 05       		.byte	0x5
+ 1442 0060 696E7400 		.ascii	"int\000"
+ 1443 0064 02       		.uleb128 0x2
+ 1444 0065 04       		.byte	0x4
+ 1445 0066 07       		.byte	0x7
+ 1446 0067 12040000 		.4byte	.LASF8
+ 1447 006b 04       		.uleb128 0x4
+ 1448 006c 1D030000 		.4byte	.LASF9
+ 1449 0070 02       		.byte	0x2
+ 1450 0071 E601     		.2byte	0x1e6
+ 1451 0073 2C000000 		.4byte	0x2c
+ 1452 0077 04       		.uleb128 0x4
+ 1453 0078 2D000000 		.4byte	.LASF10
+ 1454 007c 02       		.byte	0x2
+ 1455 007d E701     		.2byte	0x1e7
+ 1456 007f 3A000000 		.4byte	0x3a
+ 1457 0083 04       		.uleb128 0x4
+ 1458 0084 3D040000 		.4byte	.LASF11
+ 1459 0088 02       		.byte	0x2
+ 1460 0089 EA01     		.2byte	0x1ea
+ 1461 008b 33000000 		.4byte	0x33
+ 1462 008f 02       		.uleb128 0x2
+ 1463 0090 04       		.byte	0x4
+ 1464 0091 04       		.byte	0x4
+ 1465 0092 3E0C0000 		.4byte	.LASF12
+ 1466 0096 02       		.uleb128 0x2
+ 1467 0097 08       		.byte	0x8
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 33
+
+
+ 1468 0098 04       		.byte	0x4
+ 1469 0099 50030000 		.4byte	.LASF13
+ 1470 009d 02       		.uleb128 0x2
+ 1471 009e 01       		.byte	0x1
+ 1472 009f 08       		.byte	0x8
+ 1473 00a0 CA0A0000 		.4byte	.LASF14
+ 1474 00a4 05       		.uleb128 0x5
+ 1475 00a5 6B000000 		.4byte	0x6b
+ 1476 00a9 06       		.uleb128 0x6
+ 1477 00aa F40C0000 		.4byte	.LASF143
+ 1478 00ae 04       		.byte	0x4
+ 1479 00af 03       		.byte	0x3
+ 1480 00b0 30       		.byte	0x30
+ 1481 00b1 CE000000 		.4byte	0xce
+ 1482 00b5 07       		.uleb128 0x7
+ 1483 00b6 240C0000 		.4byte	.LASF15
+ 1484 00ba 03       		.byte	0x3
+ 1485 00bb 31       		.byte	0x31
+ 1486 00bc 77000000 		.4byte	0x77
+ 1487 00c0 00       		.byte	0
+ 1488 00c1 07       		.uleb128 0x7
+ 1489 00c2 E7080000 		.4byte	.LASF16
+ 1490 00c6 03       		.byte	0x3
+ 1491 00c7 32       		.byte	0x32
+ 1492 00c8 6B000000 		.4byte	0x6b
+ 1493 00cc 02       		.byte	0x2
+ 1494 00cd 00       		.byte	0
+ 1495 00ce 02       		.uleb128 0x2
+ 1496 00cf 08       		.byte	0x8
+ 1497 00d0 04       		.byte	0x4
+ 1498 00d1 94070000 		.4byte	.LASF17
+ 1499 00d5 02       		.uleb128 0x2
+ 1500 00d6 04       		.byte	0x4
+ 1501 00d7 07       		.byte	0x7
+ 1502 00d8 8B070000 		.4byte	.LASF18
+ 1503 00dc 08       		.uleb128 0x8
+ 1504 00dd 04       		.byte	0x4
+ 1505 00de 9D000000 		.4byte	0x9d
+ 1506 00e2 08       		.uleb128 0x8
+ 1507 00e3 04       		.byte	0x4
+ 1508 00e4 E8000000 		.4byte	0xe8
+ 1509 00e8 09       		.uleb128 0x9
+ 1510 00e9 9D000000 		.4byte	0x9d
+ 1511 00ed 0A       		.uleb128 0xa
+ 1512 00ee 9D000000 		.4byte	0x9d
+ 1513 00f2 FD000000 		.4byte	0xfd
+ 1514 00f6 0B       		.uleb128 0xb
+ 1515 00f7 D5000000 		.4byte	0xd5
+ 1516 00fb 07       		.byte	0x7
+ 1517 00fc 00       		.byte	0
+ 1518 00fd 0C       		.uleb128 0xc
+ 1519 00fe 01       		.byte	0x1
+ 1520 00ff 2C000000 		.4byte	0x2c
+ 1521 0103 04       		.byte	0x4
+ 1522 0104 3501     		.2byte	0x135
+ 1523 0106 BB020000 		.4byte	0x2bb
+ 1524 010a 0D       		.uleb128 0xd
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 34
+
+
+ 1525 010b 2A050000 		.4byte	.LASF19
+ 1526 010f 00       		.byte	0
+ 1527 0110 0D       		.uleb128 0xd
+ 1528 0111 46020000 		.4byte	.LASF20
+ 1529 0115 01       		.byte	0x1
+ 1530 0116 0D       		.uleb128 0xd
+ 1531 0117 26010000 		.4byte	.LASF21
+ 1532 011b 02       		.byte	0x2
+ 1533 011c 0D       		.uleb128 0xd
+ 1534 011d CE0B0000 		.4byte	.LASF22
+ 1535 0121 03       		.byte	0x3
+ 1536 0122 0D       		.uleb128 0xd
+ 1537 0123 6E010000 		.4byte	.LASF23
+ 1538 0127 04       		.byte	0x4
+ 1539 0128 0D       		.uleb128 0xd
+ 1540 0129 DC000000 		.4byte	.LASF24
+ 1541 012d 05       		.byte	0x5
+ 1542 012e 0D       		.uleb128 0xd
+ 1543 012f 5F050000 		.4byte	.LASF25
+ 1544 0133 06       		.byte	0x6
+ 1545 0134 0D       		.uleb128 0xd
+ 1546 0135 E9060000 		.4byte	.LASF26
+ 1547 0139 20       		.byte	0x20
+ 1548 013a 0D       		.uleb128 0xd
+ 1549 013b 9F020000 		.4byte	.LASF27
+ 1550 013f 21       		.byte	0x21
+ 1551 0140 0D       		.uleb128 0xd
+ 1552 0141 A8050000 		.4byte	.LASF28
+ 1553 0145 22       		.byte	0x22
+ 1554 0146 0D       		.uleb128 0xd
+ 1555 0147 A80B0000 		.4byte	.LASF29
+ 1556 014b 23       		.byte	0x23
+ 1557 014c 0D       		.uleb128 0xd
+ 1558 014d 0B080000 		.4byte	.LASF30
+ 1559 0151 24       		.byte	0x24
+ 1560 0152 0D       		.uleb128 0xd
+ 1561 0153 A0070000 		.4byte	.LASF31
+ 1562 0157 25       		.byte	0x25
+ 1563 0158 0D       		.uleb128 0xd
+ 1564 0159 F5020000 		.4byte	.LASF32
+ 1565 015d 26       		.byte	0x26
+ 1566 015e 0D       		.uleb128 0xd
+ 1567 015f CC050000 		.4byte	.LASF33
+ 1568 0163 27       		.byte	0x27
+ 1569 0164 0D       		.uleb128 0xd
+ 1570 0165 EE0A0000 		.4byte	.LASF34
+ 1571 0169 28       		.byte	0x28
+ 1572 016a 0D       		.uleb128 0xd
+ 1573 016b C7010000 		.4byte	.LASF35
+ 1574 016f 29       		.byte	0x29
+ 1575 0170 0D       		.uleb128 0xd
+ 1576 0171 69000000 		.4byte	.LASF36
+ 1577 0175 2A       		.byte	0x2a
+ 1578 0176 0D       		.uleb128 0xd
+ 1579 0177 80020000 		.4byte	.LASF37
+ 1580 017b 2B       		.byte	0x2b
+ 1581 017c 0D       		.uleb128 0xd
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 35
+
+
+ 1582 017d 890C0000 		.4byte	.LASF38
+ 1583 0181 2C       		.byte	0x2c
+ 1584 0182 0D       		.uleb128 0xd
+ 1585 0183 E4010000 		.4byte	.LASF39
+ 1586 0187 2D       		.byte	0x2d
+ 1587 0188 0D       		.uleb128 0xd
+ 1588 0189 31090000 		.4byte	.LASF40
+ 1589 018d 2E       		.byte	0x2e
+ 1590 018e 0D       		.uleb128 0xd
+ 1591 018f B3000000 		.4byte	.LASF41
+ 1592 0193 2F       		.byte	0x2f
+ 1593 0194 0D       		.uleb128 0xd
+ 1594 0195 910A0000 		.4byte	.LASF42
+ 1595 0199 30       		.byte	0x30
+ 1596 019a 0D       		.uleb128 0xd
+ 1597 019b 040D0000 		.4byte	.LASF43
+ 1598 019f 31       		.byte	0x31
+ 1599 01a0 0D       		.uleb128 0xd
+ 1600 01a1 E2070000 		.4byte	.LASF44
+ 1601 01a5 32       		.byte	0x32
+ 1602 01a6 0D       		.uleb128 0xd
+ 1603 01a7 4A0A0000 		.4byte	.LASF45
+ 1604 01ab 33       		.byte	0x33
+ 1605 01ac 0D       		.uleb128 0xd
+ 1606 01ad 55040000 		.4byte	.LASF46
+ 1607 01b1 34       		.byte	0x34
+ 1608 01b2 0D       		.uleb128 0xd
+ 1609 01b3 AA030000 		.4byte	.LASF47
+ 1610 01b7 35       		.byte	0x35
+ 1611 01b8 0D       		.uleb128 0xd
+ 1612 01b9 EB050000 		.4byte	.LASF48
+ 1613 01bd 36       		.byte	0x36
+ 1614 01be 0D       		.uleb128 0xd
+ 1615 01bf 12070000 		.4byte	.LASF49
+ 1616 01c3 37       		.byte	0x37
+ 1617 01c4 0D       		.uleb128 0xd
+ 1618 01c5 300A0000 		.4byte	.LASF50
+ 1619 01c9 40       		.byte	0x40
+ 1620 01ca 0D       		.uleb128 0xd
+ 1621 01cb B2060000 		.4byte	.LASF51
+ 1622 01cf 41       		.byte	0x41
+ 1623 01d0 0D       		.uleb128 0xd
+ 1624 01d1 2F0D0000 		.4byte	.LASF52
+ 1625 01d5 42       		.byte	0x42
+ 1626 01d6 0D       		.uleb128 0xd
+ 1627 01d7 060C0000 		.4byte	.LASF53
+ 1628 01db 43       		.byte	0x43
+ 1629 01dc 0D       		.uleb128 0xd
+ 1630 01dd 90040000 		.4byte	.LASF54
+ 1631 01e1 44       		.byte	0x44
+ 1632 01e2 0D       		.uleb128 0xd
+ 1633 01e3 9A080000 		.4byte	.LASF55
+ 1634 01e7 45       		.byte	0x45
+ 1635 01e8 0D       		.uleb128 0xd
+ 1636 01e9 6A070000 		.4byte	.LASF56
+ 1637 01ed 46       		.byte	0x46
+ 1638 01ee 0D       		.uleb128 0xd
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 36
+
+
+ 1639 01ef 41050000 		.4byte	.LASF57
+ 1640 01f3 47       		.byte	0x47
+ 1641 01f4 0D       		.uleb128 0xd
+ 1642 01f5 5B0C0000 		.4byte	.LASF58
+ 1643 01f9 48       		.byte	0x48
+ 1644 01fa 0D       		.uleb128 0xd
+ 1645 01fb B6020000 		.4byte	.LASF59
+ 1646 01ff 49       		.byte	0x49
+ 1647 0200 0D       		.uleb128 0xd
+ 1648 0201 00000000 		.4byte	.LASF60
+ 1649 0205 4A       		.byte	0x4a
+ 1650 0206 0D       		.uleb128 0xd
+ 1651 0207 CF0A0000 		.4byte	.LASF61
+ 1652 020b 4B       		.byte	0x4b
+ 1653 020c 0D       		.uleb128 0xd
+ 1654 020d 76040000 		.4byte	.LASF62
+ 1655 0211 4C       		.byte	0x4c
+ 1656 0212 0D       		.uleb128 0xd
+ 1657 0213 C8070000 		.4byte	.LASF63
+ 1658 0217 4D       		.byte	0x4d
+ 1659 0218 0D       		.uleb128 0xd
+ 1660 0219 CF020000 		.4byte	.LASF64
+ 1661 021d 4E       		.byte	0x4e
+ 1662 021e 0D       		.uleb128 0xd
+ 1663 021f F0090000 		.4byte	.LASF65
+ 1664 0223 4F       		.byte	0x4f
+ 1665 0224 0D       		.uleb128 0xd
+ 1666 0225 F8000000 		.4byte	.LASF66
+ 1667 0229 50       		.byte	0x50
+ 1668 022a 0D       		.uleb128 0xd
+ 1669 022b 31030000 		.4byte	.LASF67
+ 1670 022f 51       		.byte	0x51
+ 1671 0230 0D       		.uleb128 0xd
+ 1672 0231 34080000 		.4byte	.LASF68
+ 1673 0235 52       		.byte	0x52
+ 1674 0236 0D       		.uleb128 0xd
+ 1675 0237 74090000 		.4byte	.LASF69
+ 1676 023b 53       		.byte	0x53
+ 1677 023c 0D       		.uleb128 0xd
+ 1678 023d 0F0A0000 		.4byte	.LASF70
+ 1679 0241 54       		.byte	0x54
+ 1680 0242 0D       		.uleb128 0xd
+ 1681 0243 AE040000 		.4byte	.LASF71
+ 1682 0247 55       		.byte	0x55
+ 1683 0248 0D       		.uleb128 0xd
+ 1684 0249 E4030000 		.4byte	.LASF72
+ 1685 024d 56       		.byte	0x56
+ 1686 024e 0D       		.uleb128 0xd
+ 1687 024f 200B0000 		.4byte	.LASF73
+ 1688 0253 57       		.byte	0x57
+ 1689 0254 0D       		.uleb128 0xd
+ 1690 0255 ED040000 		.4byte	.LASF74
+ 1691 0259 58       		.byte	0x58
+ 1692 025a 0D       		.uleb128 0xd
+ 1693 025b A1010000 		.4byte	.LASF75
+ 1694 025f 70       		.byte	0x70
+ 1695 0260 0D       		.uleb128 0xd
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 37
+
+
+ 1696 0261 CE0C0000 		.4byte	.LASF76
+ 1697 0265 71       		.byte	0x71
+ 1698 0266 0D       		.uleb128 0xd
+ 1699 0267 CD060000 		.4byte	.LASF77
+ 1700 026b 72       		.byte	0x72
+ 1701 026c 0D       		.uleb128 0xd
+ 1702 026d 4C070000 		.4byte	.LASF78
+ 1703 0271 73       		.byte	0x73
+ 1704 0272 0D       		.uleb128 0xd
+ 1705 0273 71080000 		.4byte	.LASF79
+ 1706 0277 74       		.byte	0x74
+ 1707 0278 0D       		.uleb128 0xd
+ 1708 0279 AD0C0000 		.4byte	.LASF80
+ 1709 027d 75       		.byte	0x75
+ 1710 027e 0D       		.uleb128 0xd
+ 1711 027f 92000000 		.4byte	.LASF81
+ 1712 0283 76       		.byte	0x76
+ 1713 0284 0D       		.uleb128 0xd
+ 1714 0285 34000000 		.4byte	.LASF82
+ 1715 0289 77       		.byte	0x77
+ 1716 028a 0D       		.uleb128 0xd
+ 1717 028b 550B0000 		.4byte	.LASF83
+ 1718 028f 78       		.byte	0x78
+ 1719 0290 0D       		.uleb128 0xd
+ 1720 0291 0D020000 		.4byte	.LASF84
+ 1721 0295 79       		.byte	0x79
+ 1722 0296 0D       		.uleb128 0xd
+ 1723 0297 86030000 		.4byte	.LASF85
+ 1724 029b 7A       		.byte	0x7a
+ 1725 029c 0D       		.uleb128 0xd
+ 1726 029d 83010000 		.4byte	.LASF86
+ 1727 02a1 FA       		.byte	0xfa
+ 1728 02a2 0D       		.uleb128 0xd
+ 1729 02a3 95090000 		.4byte	.LASF87
+ 1730 02a7 FB       		.byte	0xfb
+ 1731 02a8 0D       		.uleb128 0xd
+ 1732 02a9 BF090000 		.4byte	.LASF88
+ 1733 02ad FC       		.byte	0xfc
+ 1734 02ae 0D       		.uleb128 0xd
+ 1735 02af 9A060000 		.4byte	.LASF89
+ 1736 02b3 FD       		.byte	0xfd
+ 1737 02b4 0D       		.uleb128 0xd
+ 1738 02b5 73030000 		.4byte	.LASF90
+ 1739 02b9 FF       		.byte	0xff
+ 1740 02ba 00       		.byte	0
+ 1741 02bb 0E       		.uleb128 0xe
+ 1742 02bc 01       		.byte	0x1
+ 1743 02bd 2C000000 		.4byte	0x2c
+ 1744 02c1 05       		.byte	0x5
+ 1745 02c2 21       		.byte	0x21
+ 1746 02c3 E6020000 		.4byte	0x2e6
+ 1747 02c7 0D       		.uleb128 0xd
+ 1748 02c8 CD030000 		.4byte	.LASF91
+ 1749 02cc 00       		.byte	0
+ 1750 02cd 0D       		.uleb128 0xd
+ 1751 02ce 59020000 		.4byte	.LASF92
+ 1752 02d2 01       		.byte	0x1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 38
+
+
+ 1753 02d3 0D       		.uleb128 0xd
+ 1754 02d4 53000000 		.4byte	.LASF93
+ 1755 02d8 02       		.byte	0x2
+ 1756 02d9 0D       		.uleb128 0xd
+ 1757 02da D2040000 		.4byte	.LASF94
+ 1758 02de 03       		.byte	0x3
+ 1759 02df 0D       		.uleb128 0xd
+ 1760 02e0 5F090000 		.4byte	.LASF95
+ 1761 02e4 04       		.byte	0x4
+ 1762 02e5 00       		.byte	0
+ 1763 02e6 0E       		.uleb128 0xe
+ 1764 02e7 01       		.byte	0x1
+ 1765 02e8 2C000000 		.4byte	0x2c
+ 1766 02ec 05       		.byte	0x5
+ 1767 02ed 2C       		.byte	0x2c
+ 1768 02ee 05030000 		.4byte	0x305
+ 1769 02f2 0D       		.uleb128 0xd
+ 1770 02f3 1E000000 		.4byte	.LASF96
+ 1771 02f7 00       		.byte	0
+ 1772 02f8 0D       		.uleb128 0xd
+ 1773 02f9 BA070000 		.4byte	.LASF97
+ 1774 02fd 01       		.byte	0x1
+ 1775 02fe 0D       		.uleb128 0xd
+ 1776 02ff 920B0000 		.4byte	.LASF98
+ 1777 0303 02       		.byte	0x2
+ 1778 0304 00       		.byte	0
+ 1779 0305 0C       		.uleb128 0xc
+ 1780 0306 01       		.byte	0x1
+ 1781 0307 2C000000 		.4byte	0x2c
+ 1782 030b 06       		.byte	0x6
+ 1783 030c EB08     		.2byte	0x8eb
+ 1784 030e 37030000 		.4byte	0x337
+ 1785 0312 0D       		.uleb128 0xd
+ 1786 0313 820A0000 		.4byte	.LASF99
+ 1787 0317 00       		.byte	0
+ 1788 0318 0D       		.uleb128 0xd
+ 1789 0319 100B0000 		.4byte	.LASF100
+ 1790 031d 01       		.byte	0x1
+ 1791 031e 0D       		.uleb128 0xd
+ 1792 031f 6D020000 		.4byte	.LASF101
+ 1793 0323 02       		.byte	0x2
+ 1794 0324 0D       		.uleb128 0xd
+ 1795 0325 57030000 		.4byte	.LASF102
+ 1796 0329 02       		.byte	0x2
+ 1797 032a 0D       		.uleb128 0xd
+ 1798 032b 17010000 		.4byte	.LASF103
+ 1799 032f 03       		.byte	0x3
+ 1800 0330 0D       		.uleb128 0xd
+ 1801 0331 710A0000 		.4byte	.LASF104
+ 1802 0335 04       		.byte	0x4
+ 1803 0336 00       		.byte	0
+ 1804 0337 0F       		.uleb128 0xf
+ 1805 0338 5C080000 		.4byte	.LASF114
+ 1806 033c 01       		.byte	0x1
+ 1807 033d 1E       		.byte	0x1e
+ 1808 033e 00000000 		.4byte	.LFB35
+ 1809 0342 14000000 		.4byte	.LFE35-.LFB35
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 39
+
+
+ 1810 0346 01       		.uleb128 0x1
+ 1811 0347 9C       		.byte	0x9c
+ 1812 0348 10       		.uleb128 0x10
+ 1813 0349 440C0000 		.4byte	.LASF118
+ 1814 034d 01       		.byte	0x1
+ 1815 034e 28       		.byte	0x28
+ 1816 034f 6B000000 		.4byte	0x6b
+ 1817 0353 00000000 		.4byte	.LFB36
+ 1818 0357 4C000000 		.4byte	.LFE36-.LFB36
+ 1819 035b 01       		.uleb128 0x1
+ 1820 035c 9C       		.byte	0x9c
+ 1821 035d 70030000 		.4byte	0x370
+ 1822 0361 11       		.uleb128 0x11
+ 1823 0362 280D0000 		.4byte	.LASF108
+ 1824 0366 01       		.byte	0x1
+ 1825 0367 38       		.byte	0x38
+ 1826 0368 6B000000 		.4byte	0x6b
+ 1827 036c 02       		.uleb128 0x2
+ 1828 036d 91       		.byte	0x91
+ 1829 036e 6F       		.sleb128 -17
+ 1830 036f 00       		.byte	0
+ 1831 0370 12       		.uleb128 0x12
+ 1832 0371 490B0000 		.4byte	.LASF105
+ 1833 0375 01       		.byte	0x1
+ 1834 0376 40       		.byte	0x40
+ 1835 0377 00000000 		.4byte	.LFB37
+ 1836 037b 3C000000 		.4byte	.LFE37-.LFB37
+ 1837 037f 01       		.uleb128 0x1
+ 1838 0380 9C       		.byte	0x9c
+ 1839 0381 94030000 		.4byte	0x394
+ 1840 0385 13       		.uleb128 0x13
+ 1841 0386 03080000 		.4byte	.LASF107
+ 1842 038a 01       		.byte	0x1
+ 1843 038b 40       		.byte	0x40
+ 1844 038c 6B000000 		.4byte	0x6b
+ 1845 0390 02       		.uleb128 0x2
+ 1846 0391 91       		.byte	0x91
+ 1847 0392 77       		.sleb128 -9
+ 1848 0393 00       		.byte	0
+ 1849 0394 12       		.uleb128 0x12
+ 1850 0395 10050000 		.4byte	.LASF106
+ 1851 0399 01       		.byte	0x1
+ 1852 039a 4F       		.byte	0x4f
+ 1853 039b 00000000 		.4byte	.LFB38
+ 1854 039f 62000000 		.4byte	.LFE38-.LFB38
+ 1855 03a3 01       		.uleb128 0x1
+ 1856 03a4 9C       		.byte	0x9c
+ 1857 03a5 D4030000 		.4byte	0x3d4
+ 1858 03a9 13       		.uleb128 0x13
+ 1859 03aa 03080000 		.4byte	.LASF107
+ 1860 03ae 01       		.byte	0x1
+ 1861 03af 4F       		.byte	0x4f
+ 1862 03b0 6B000000 		.4byte	0x6b
+ 1863 03b4 02       		.uleb128 0x2
+ 1864 03b5 91       		.byte	0x91
+ 1865 03b6 6F       		.sleb128 -17
+ 1866 03b7 11       		.uleb128 0x11
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 40
+
+
+ 1867 03b8 B4090000 		.4byte	.LASF109
+ 1868 03bc 01       		.byte	0x1
+ 1869 03bd 51       		.byte	0x51
+ 1870 03be 6B000000 		.4byte	0x6b
+ 1871 03c2 02       		.uleb128 0x2
+ 1872 03c3 91       		.byte	0x91
+ 1873 03c4 76       		.sleb128 -10
+ 1874 03c5 11       		.uleb128 0x11
+ 1875 03c6 780B0000 		.4byte	.LASF110
+ 1876 03ca 01       		.byte	0x1
+ 1877 03cb 51       		.byte	0x51
+ 1878 03cc 6B000000 		.4byte	0x6b
+ 1879 03d0 02       		.uleb128 0x2
+ 1880 03d1 91       		.byte	0x91
+ 1881 03d2 77       		.sleb128 -9
+ 1882 03d3 00       		.byte	0
+ 1883 03d4 14       		.uleb128 0x14
+ 1884 03d5 350C0000 		.4byte	.LASF111
+ 1885 03d9 01       		.byte	0x1
+ 1886 03da 61       		.byte	0x61
+ 1887 03db 6B000000 		.4byte	0x6b
+ 1888 03df 00000000 		.4byte	.LFB39
+ 1889 03e3 98000000 		.4byte	.LFE39-.LFB39
+ 1890 03e7 01       		.uleb128 0x1
+ 1891 03e8 9C       		.byte	0x9c
+ 1892 03e9 19040000 		.4byte	0x419
+ 1893 03ed 11       		.uleb128 0x11
+ 1894 03ee 8F080000 		.4byte	.LASF112
+ 1895 03f2 01       		.byte	0x1
+ 1896 03f3 63       		.byte	0x63
+ 1897 03f4 A9000000 		.4byte	0xa9
+ 1898 03f8 05       		.uleb128 0x5
+ 1899 03f9 03       		.byte	0x3
+ 1900 03fa 00000000 		.4byte	Sensor_off.7893
+ 1901 03fe 15       		.uleb128 0x15
+ 1902 03ff 6900     		.ascii	"i\000"
+ 1903 0401 01       		.byte	0x1
+ 1904 0402 64       		.byte	0x64
+ 1905 0403 6B000000 		.4byte	0x6b
+ 1906 0407 02       		.uleb128 0x2
+ 1907 0408 91       		.byte	0x91
+ 1908 0409 6F       		.sleb128 -17
+ 1909 040a 11       		.uleb128 0x11
+ 1910 040b 820C0000 		.4byte	.LASF113
+ 1911 040f 01       		.byte	0x1
+ 1912 0410 6A       		.byte	0x6a
+ 1913 0411 6B000000 		.4byte	0x6b
+ 1914 0415 02       		.uleb128 0x2
+ 1915 0416 91       		.byte	0x91
+ 1916 0417 6E       		.sleb128 -18
+ 1917 0418 00       		.byte	0
+ 1918 0419 16       		.uleb128 0x16
+ 1919 041a D1090000 		.4byte	.LASF115
+ 1920 041e 01       		.byte	0x1
+ 1921 041f 87       		.byte	0x87
+ 1922 0420 6B000000 		.4byte	0x6b
+ 1923 0424 00000000 		.4byte	.LFB40
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 41
+
+
+ 1924 0428 48000000 		.4byte	.LFE40-.LFB40
+ 1925 042c 01       		.uleb128 0x1
+ 1926 042d 9C       		.byte	0x9c
+ 1927 042e 14       		.uleb128 0x14
+ 1928 042f B20A0000 		.4byte	.LASF116
+ 1929 0433 01       		.byte	0x1
+ 1930 0434 9F       		.byte	0x9f
+ 1931 0435 6B000000 		.4byte	0x6b
+ 1932 0439 00000000 		.4byte	.LFB41
+ 1933 043d 0C020000 		.4byte	.LFE41-.LFB41
+ 1934 0441 01       		.uleb128 0x1
+ 1935 0442 9C       		.byte	0x9c
+ 1936 0443 8A040000 		.4byte	0x48a
+ 1937 0447 15       		.uleb128 0x15
+ 1938 0448 42757300 		.ascii	"Bus\000"
+ 1939 044c 01       		.byte	0x1
+ 1940 044d A1       		.byte	0xa1
+ 1941 044e 6B000000 		.4byte	0x6b
+ 1942 0452 02       		.uleb128 0x2
+ 1943 0453 91       		.byte	0x91
+ 1944 0454 6C       		.sleb128 -20
+ 1945 0455 11       		.uleb128 0x11
+ 1946 0456 81030000 		.4byte	.LASF117
+ 1947 045a 01       		.byte	0x1
+ 1948 045b A2       		.byte	0xa2
+ 1949 045c 6B000000 		.4byte	0x6b
+ 1950 0460 02       		.uleb128 0x2
+ 1951 0461 91       		.byte	0x91
+ 1952 0462 6D       		.sleb128 -19
+ 1953 0463 15       		.uleb128 0x15
+ 1954 0464 6900     		.ascii	"i\000"
+ 1955 0466 01       		.byte	0x1
+ 1956 0467 A3       		.byte	0xa3
+ 1957 0468 6B000000 		.4byte	0x6b
+ 1958 046c 02       		.uleb128 0x2
+ 1959 046d 91       		.byte	0x91
+ 1960 046e 6F       		.sleb128 -17
+ 1961 046f 11       		.uleb128 0x11
+ 1962 0470 780B0000 		.4byte	.LASF110
+ 1963 0474 01       		.byte	0x1
+ 1964 0475 A3       		.byte	0xa3
+ 1965 0476 6B000000 		.4byte	0x6b
+ 1966 047a 02       		.uleb128 0x2
+ 1967 047b 91       		.byte	0x91
+ 1968 047c 6E       		.sleb128 -18
+ 1969 047d 15       		.uleb128 0x15
+ 1970 047e 7300     		.ascii	"s\000"
+ 1971 0480 01       		.byte	0x1
+ 1972 0481 A4       		.byte	0xa4
+ 1973 0482 8A040000 		.4byte	0x48a
+ 1974 0486 02       		.uleb128 0x2
+ 1975 0487 91       		.byte	0x91
+ 1976 0488 4C       		.sleb128 -52
+ 1977 0489 00       		.byte	0
+ 1978 048a 0A       		.uleb128 0xa
+ 1979 048b A9000000 		.4byte	0xa9
+ 1980 048f 9A040000 		.4byte	0x49a
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 42
+
+
+ 1981 0493 0B       		.uleb128 0xb
+ 1982 0494 D5000000 		.4byte	0xd5
+ 1983 0498 07       		.byte	0x7
+ 1984 0499 00       		.byte	0
+ 1985 049a 10       		.uleb128 0x10
+ 1986 049b 1F040000 		.4byte	.LASF119
+ 1987 049f 01       		.byte	0x1
+ 1988 04a0 D8       		.byte	0xd8
+ 1989 04a1 8F000000 		.4byte	0x8f
+ 1990 04a5 00000000 		.4byte	.LFB42
+ 1991 04a9 44000000 		.4byte	.LFE42-.LFB42
+ 1992 04ad 01       		.uleb128 0x1
+ 1993 04ae 9C       		.byte	0x9c
+ 1994 04af D0040000 		.4byte	0x4d0
+ 1995 04b3 13       		.uleb128 0x13
+ 1996 04b4 4F0B0000 		.4byte	.LASF120
+ 1997 04b8 01       		.byte	0x1
+ 1998 04b9 D8       		.byte	0xd8
+ 1999 04ba 6B000000 		.4byte	0x6b
+ 2000 04be 02       		.uleb128 0x2
+ 2001 04bf 91       		.byte	0x91
+ 2002 04c0 6F       		.sleb128 -17
+ 2003 04c1 15       		.uleb128 0x15
+ 2004 04c2 56616C00 		.ascii	"Val\000"
+ 2005 04c6 01       		.byte	0x1
+ 2006 04c7 DA       		.byte	0xda
+ 2007 04c8 83000000 		.4byte	0x83
+ 2008 04cc 02       		.uleb128 0x2
+ 2009 04cd 91       		.byte	0x91
+ 2010 04ce 76       		.sleb128 -10
+ 2011 04cf 00       		.byte	0
+ 2012 04d0 17       		.uleb128 0x17
+ 2013 04d1 E70B0000 		.4byte	.LASF121
+ 2014 04d5 01       		.byte	0x1
+ 2015 04d6 E4       		.byte	0xe4
+ 2016 04d7 83000000 		.4byte	0x83
+ 2017 04db 00000000 		.4byte	.LFB43
+ 2018 04df 3C000000 		.4byte	.LFE43-.LFB43
+ 2019 04e3 01       		.uleb128 0x1
+ 2020 04e4 9C       		.byte	0x9c
+ 2021 04e5 06050000 		.4byte	0x506
+ 2022 04e9 13       		.uleb128 0x13
+ 2023 04ea 4F0B0000 		.4byte	.LASF120
+ 2024 04ee 01       		.byte	0x1
+ 2025 04ef E4       		.byte	0xe4
+ 2026 04f0 6B000000 		.4byte	0x6b
+ 2027 04f4 02       		.uleb128 0x2
+ 2028 04f5 91       		.byte	0x91
+ 2029 04f6 6F       		.sleb128 -17
+ 2030 04f7 15       		.uleb128 0x15
+ 2031 04f8 56616C00 		.ascii	"Val\000"
+ 2032 04fc 01       		.byte	0x1
+ 2033 04fd E6       		.byte	0xe6
+ 2034 04fe 83000000 		.4byte	0x83
+ 2035 0502 02       		.uleb128 0x2
+ 2036 0503 91       		.byte	0x91
+ 2037 0504 76       		.sleb128 -10
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 43
+
+
+ 2038 0505 00       		.byte	0
+ 2039 0506 10       		.uleb128 0x10
+ 2040 0507 55080000 		.4byte	.LASF122
+ 2041 050b 01       		.byte	0x1
+ 2042 050c F3       		.byte	0xf3
+ 2043 050d DC000000 		.4byte	0xdc
+ 2044 0511 00000000 		.4byte	.LFB44
+ 2045 0515 AC000000 		.4byte	.LFE44-.LFB44
+ 2046 0519 01       		.uleb128 0x1
+ 2047 051a 9C       		.byte	0x9c
+ 2048 051b 82050000 		.4byte	0x582
+ 2049 051f 13       		.uleb128 0x13
+ 2050 0520 C7030000 		.4byte	.LASF123
+ 2051 0524 01       		.byte	0x1
+ 2052 0525 F3       		.byte	0xf3
+ 2053 0526 5D000000 		.4byte	0x5d
+ 2054 052a 02       		.uleb128 0x2
+ 2055 052b 91       		.byte	0x91
+ 2056 052c 5C       		.sleb128 -36
+ 2057 052d 13       		.uleb128 0x13
+ 2058 052e 280D0000 		.4byte	.LASF108
+ 2059 0532 01       		.byte	0x1
+ 2060 0533 F3       		.byte	0xf3
+ 2061 0534 DC000000 		.4byte	0xdc
+ 2062 0538 02       		.uleb128 0x2
+ 2063 0539 91       		.byte	0x91
+ 2064 053a 58       		.sleb128 -40
+ 2065 053b 11       		.uleb128 0x11
+ 2066 053c 0D070000 		.4byte	.LASF124
+ 2067 0540 01       		.byte	0x1
+ 2068 0541 F5       		.byte	0xf5
+ 2069 0542 82050000 		.4byte	0x582
+ 2070 0546 02       		.uleb128 0x2
+ 2071 0547 91       		.byte	0x91
+ 2072 0548 6F       		.sleb128 -17
+ 2073 0549 15       		.uleb128 0x15
+ 2074 054a 70747200 		.ascii	"ptr\000"
+ 2075 054e 01       		.byte	0x1
+ 2076 054f F6       		.byte	0xf6
+ 2077 0550 DC000000 		.4byte	0xdc
+ 2078 0554 02       		.uleb128 0x2
+ 2079 0555 91       		.byte	0x91
+ 2080 0556 74       		.sleb128 -12
+ 2081 0557 11       		.uleb128 0x11
+ 2082 0558 6E030000 		.4byte	.LASF125
+ 2083 055c 01       		.byte	0x1
+ 2084 055d F6       		.byte	0xf6
+ 2085 055e DC000000 		.4byte	0xdc
+ 2086 0562 02       		.uleb128 0x2
+ 2087 0563 91       		.byte	0x91
+ 2088 0564 70       		.sleb128 -16
+ 2089 0565 11       		.uleb128 0x11
+ 2090 0566 6D040000 		.4byte	.LASF126
+ 2091 056a 01       		.byte	0x1
+ 2092 056b F6       		.byte	0xf6
+ 2093 056c 9D000000 		.4byte	0x9d
+ 2094 0570 02       		.uleb128 0x2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 44
+
+
+ 2095 0571 91       		.byte	0x91
+ 2096 0572 67       		.sleb128 -25
+ 2097 0573 11       		.uleb128 0x11
+ 2098 0574 30020000 		.4byte	.LASF127
+ 2099 0578 01       		.byte	0x1
+ 2100 0579 F7       		.byte	0xf7
+ 2101 057a 5D000000 		.4byte	0x5d
+ 2102 057e 02       		.uleb128 0x2
+ 2103 057f 91       		.byte	0x91
+ 2104 0580 68       		.sleb128 -24
+ 2105 0581 00       		.byte	0
+ 2106 0582 09       		.uleb128 0x9
+ 2107 0583 6B000000 		.4byte	0x6b
+ 2108 0587 18       		.uleb128 0x18
+ 2109 0588 89050000 		.4byte	.LASF128
+ 2110 058c 01       		.byte	0x1
+ 2111 058d 1101     		.2byte	0x111
+ 2112 058f DC000000 		.4byte	0xdc
+ 2113 0593 00000000 		.4byte	.LFB45
+ 2114 0597 04010000 		.4byte	.LFE45-.LFB45
+ 2115 059b 01       		.uleb128 0x1
+ 2116 059c 9C       		.byte	0x9c
+ 2117 059d 2C060000 		.4byte	0x62c
+ 2118 05a1 19       		.uleb128 0x19
+ 2119 05a2 4F0B0000 		.4byte	.LASF120
+ 2120 05a6 01       		.byte	0x1
+ 2121 05a7 1101     		.2byte	0x111
+ 2122 05a9 6B000000 		.4byte	0x6b
+ 2123 05ad 02       		.uleb128 0x2
+ 2124 05ae 91       		.byte	0x91
+ 2125 05af 4F       		.sleb128 -49
+ 2126 05b0 1A       		.uleb128 0x1a
+ 2127 05b1 ED020000 		.4byte	.LASF129
+ 2128 05b5 01       		.byte	0x1
+ 2129 05b6 1301     		.2byte	0x113
+ 2130 05b8 2C060000 		.4byte	0x62c
+ 2131 05bc 02       		.uleb128 0x2
+ 2132 05bd 91       		.byte	0x91
+ 2133 05be 5C       		.sleb128 -36
+ 2134 05bf 1A       		.uleb128 0x1a
+ 2135 05c0 280D0000 		.4byte	.LASF108
+ 2136 05c4 01       		.byte	0x1
+ 2137 05c5 1401     		.2byte	0x114
+ 2138 05c7 DC000000 		.4byte	0xdc
+ 2139 05cb 02       		.uleb128 0x2
+ 2140 05cc 91       		.byte	0x91
+ 2141 05cd 70       		.sleb128 -16
+ 2142 05ce 1B       		.uleb128 0x1b
+ 2143 05cf 62756600 		.ascii	"buf\000"
+ 2144 05d3 01       		.byte	0x1
+ 2145 05d4 1501     		.2byte	0x115
+ 2146 05d6 ED000000 		.4byte	0xed
+ 2147 05da 02       		.uleb128 0x2
+ 2148 05db 91       		.byte	0x91
+ 2149 05dc 54       		.sleb128 -44
+ 2150 05dd 1A       		.uleb128 0x1a
+ 2151 05de 300C0000 		.4byte	.LASF130
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 45
+
+
+ 2152 05e2 01       		.byte	0x1
+ 2153 05e3 1601     		.2byte	0x116
+ 2154 05e5 6B000000 		.4byte	0x6b
+ 2155 05e9 02       		.uleb128 0x2
+ 2156 05ea 91       		.byte	0x91
+ 2157 05eb 6D       		.sleb128 -19
+ 2158 05ec 1A       		.uleb128 0x1a
+ 2159 05ed 47070000 		.4byte	.LASF131
+ 2160 05f1 01       		.byte	0x1
+ 2161 05f2 1701     		.2byte	0x117
+ 2162 05f4 5D000000 		.4byte	0x5d
+ 2163 05f8 02       		.uleb128 0x2
+ 2164 05f9 91       		.byte	0x91
+ 2165 05fa 74       		.sleb128 -12
+ 2166 05fb 1A       		.uleb128 0x1a
+ 2167 05fc C1080000 		.4byte	.LASF132
+ 2168 0600 01       		.byte	0x1
+ 2169 0601 1801     		.2byte	0x118
+ 2170 0603 6B000000 		.4byte	0x6b
+ 2171 0607 02       		.uleb128 0x2
+ 2172 0608 91       		.byte	0x91
+ 2173 0609 6C       		.sleb128 -20
+ 2174 060a 1B       		.uleb128 0x1b
+ 2175 060b 73747200 		.ascii	"str\000"
+ 2176 060f 01       		.byte	0x1
+ 2177 0610 1A01     		.2byte	0x11a
+ 2178 0612 3C060000 		.4byte	0x63c
+ 2179 0616 05       		.uleb128 0x5
+ 2180 0617 03       		.byte	0x3
+ 2181 0618 04000000 		.4byte	str.7951
+ 2182 061c 1B       		.uleb128 0x1b
+ 2183 061d 56616C00 		.ascii	"Val\000"
+ 2184 0621 01       		.byte	0x1
+ 2185 0622 2001     		.2byte	0x120
+ 2186 0624 83000000 		.4byte	0x83
+ 2187 0628 02       		.uleb128 0x2
+ 2188 0629 91       		.byte	0x91
+ 2189 062a 6E       		.sleb128 -18
+ 2190 062b 00       		.byte	0
+ 2191 062c 0A       		.uleb128 0xa
+ 2192 062d 9D000000 		.4byte	0x9d
+ 2193 0631 3C060000 		.4byte	0x63c
+ 2194 0635 0B       		.uleb128 0xb
+ 2195 0636 D5000000 		.4byte	0xd5
+ 2196 063a 0C       		.byte	0xc
+ 2197 063b 00       		.byte	0
+ 2198 063c 0A       		.uleb128 0xa
+ 2199 063d E2000000 		.4byte	0xe2
+ 2200 0641 4C060000 		.4byte	0x64c
+ 2201 0645 0B       		.uleb128 0xb
+ 2202 0646 D5000000 		.4byte	0xd5
+ 2203 064a 0F       		.byte	0xf
+ 2204 064b 00       		.byte	0
+ 2205 064c 1C       		.uleb128 0x1c
+ 2206 064d 4D0C0000 		.4byte	.LASF133
+ 2207 0651 01       		.byte	0x1
+ 2208 0652 3201     		.2byte	0x132
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 46
+
+
+ 2209 0654 00000000 		.4byte	.LFB46
+ 2210 0658 30000000 		.4byte	.LFE46-.LFB46
+ 2211 065c 01       		.uleb128 0x1
+ 2212 065d 9C       		.byte	0x9c
+ 2213 065e 1C       		.uleb128 0x1c
+ 2214 065f 27080000 		.4byte	.LASF134
+ 2215 0663 01       		.byte	0x1
+ 2216 0664 4101     		.2byte	0x141
+ 2217 0666 00000000 		.4byte	.LFB47
+ 2218 066a 0E000000 		.4byte	.LFE47-.LFB47
+ 2219 066e 01       		.uleb128 0x1
+ 2220 066f 9C       		.byte	0x9c
+ 2221 0670 1D       		.uleb128 0x1d
+ 2222 0671 78050000 		.4byte	.LASF135
+ 2223 0675 01       		.byte	0x1
+ 2224 0676 4A01     		.2byte	0x14a
+ 2225 0678 6B000000 		.4byte	0x6b
+ 2226 067c 00000000 		.4byte	.LFB48
+ 2227 0680 14000000 		.4byte	.LFE48-.LFB48
+ 2228 0684 01       		.uleb128 0x1
+ 2229 0685 9C       		.byte	0x9c
+ 2230 0686 1E       		.uleb128 0x1e
+ 2231 0687 41010000 		.4byte	.LASF136
+ 2232 068b 01       		.byte	0x1
+ 2233 068c 5401     		.2byte	0x154
+ 2234 068e 6B000000 		.4byte	0x6b
+ 2235 0692 00000000 		.4byte	.LFB49
+ 2236 0696 20000000 		.4byte	.LFE49-.LFB49
+ 2237 069a 01       		.uleb128 0x1
+ 2238 069b 9C       		.byte	0x9c
+ 2239 069c 1F       		.uleb128 0x1f
+ 2240 069d 830B0000 		.4byte	.LASF137
+ 2241 06a1 03       		.byte	0x3
+ 2242 06a2 34       		.byte	0x34
+ 2243 06a3 8A040000 		.4byte	0x48a
+ 2244 06a7 05       		.uleb128 0x5
+ 2245 06a8 03       		.byte	0x3
+ 2246 06a9 00000000 		.4byte	OneWire_Sensor
+ 2247 06ad 1F       		.uleb128 0x1f
+ 2248 06ae 4D0D0000 		.4byte	.LASF138
+ 2249 06b2 03       		.byte	0x3
+ 2250 06b3 39       		.byte	0x39
+ 2251 06b4 A4000000 		.4byte	0xa4
+ 2252 06b8 05       		.uleb128 0x5
+ 2253 06b9 03       		.byte	0x3
+ 2254 06ba 00000000 		.4byte	OneWire_DataReady
+ 2255 06be 1F       		.uleb128 0x1f
+ 2256 06bf 06040000 		.4byte	.LASF139
+ 2257 06c3 01       		.byte	0x1
+ 2258 06c4 16       		.byte	0x16
+ 2259 06c5 6B000000 		.4byte	0x6b
+ 2260 06c9 05       		.uleb128 0x5
+ 2261 06ca 03       		.byte	0x3
+ 2262 06cb 00000000 		.4byte	BusPresence
+ 2263 06cf 00       		.byte	0
+ 2264              		.section	.debug_abbrev,"",%progbits
+ 2265              	.Ldebug_abbrev0:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 47
+
+
+ 2266 0000 01       		.uleb128 0x1
+ 2267 0001 11       		.uleb128 0x11
+ 2268 0002 01       		.byte	0x1
+ 2269 0003 25       		.uleb128 0x25
+ 2270 0004 0E       		.uleb128 0xe
+ 2271 0005 13       		.uleb128 0x13
+ 2272 0006 0B       		.uleb128 0xb
+ 2273 0007 03       		.uleb128 0x3
+ 2274 0008 0E       		.uleb128 0xe
+ 2275 0009 1B       		.uleb128 0x1b
+ 2276 000a 0E       		.uleb128 0xe
+ 2277 000b 55       		.uleb128 0x55
+ 2278 000c 17       		.uleb128 0x17
+ 2279 000d 11       		.uleb128 0x11
+ 2280 000e 01       		.uleb128 0x1
+ 2281 000f 10       		.uleb128 0x10
+ 2282 0010 17       		.uleb128 0x17
+ 2283 0011 00       		.byte	0
+ 2284 0012 00       		.byte	0
+ 2285 0013 02       		.uleb128 0x2
+ 2286 0014 24       		.uleb128 0x24
+ 2287 0015 00       		.byte	0
+ 2288 0016 0B       		.uleb128 0xb
+ 2289 0017 0B       		.uleb128 0xb
+ 2290 0018 3E       		.uleb128 0x3e
+ 2291 0019 0B       		.uleb128 0xb
+ 2292 001a 03       		.uleb128 0x3
+ 2293 001b 0E       		.uleb128 0xe
+ 2294 001c 00       		.byte	0
+ 2295 001d 00       		.byte	0
+ 2296 001e 03       		.uleb128 0x3
+ 2297 001f 24       		.uleb128 0x24
+ 2298 0020 00       		.byte	0
+ 2299 0021 0B       		.uleb128 0xb
+ 2300 0022 0B       		.uleb128 0xb
+ 2301 0023 3E       		.uleb128 0x3e
+ 2302 0024 0B       		.uleb128 0xb
+ 2303 0025 03       		.uleb128 0x3
+ 2304 0026 08       		.uleb128 0x8
+ 2305 0027 00       		.byte	0
+ 2306 0028 00       		.byte	0
+ 2307 0029 04       		.uleb128 0x4
+ 2308 002a 16       		.uleb128 0x16
+ 2309 002b 00       		.byte	0
+ 2310 002c 03       		.uleb128 0x3
+ 2311 002d 0E       		.uleb128 0xe
+ 2312 002e 3A       		.uleb128 0x3a
+ 2313 002f 0B       		.uleb128 0xb
+ 2314 0030 3B       		.uleb128 0x3b
+ 2315 0031 05       		.uleb128 0x5
+ 2316 0032 49       		.uleb128 0x49
+ 2317 0033 13       		.uleb128 0x13
+ 2318 0034 00       		.byte	0
+ 2319 0035 00       		.byte	0
+ 2320 0036 05       		.uleb128 0x5
+ 2321 0037 35       		.uleb128 0x35
+ 2322 0038 00       		.byte	0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 48
+
+
+ 2323 0039 49       		.uleb128 0x49
+ 2324 003a 13       		.uleb128 0x13
+ 2325 003b 00       		.byte	0
+ 2326 003c 00       		.byte	0
+ 2327 003d 06       		.uleb128 0x6
+ 2328 003e 13       		.uleb128 0x13
+ 2329 003f 01       		.byte	0x1
+ 2330 0040 03       		.uleb128 0x3
+ 2331 0041 0E       		.uleb128 0xe
+ 2332 0042 0B       		.uleb128 0xb
+ 2333 0043 0B       		.uleb128 0xb
+ 2334 0044 3A       		.uleb128 0x3a
+ 2335 0045 0B       		.uleb128 0xb
+ 2336 0046 3B       		.uleb128 0x3b
+ 2337 0047 0B       		.uleb128 0xb
+ 2338 0048 01       		.uleb128 0x1
+ 2339 0049 13       		.uleb128 0x13
+ 2340 004a 00       		.byte	0
+ 2341 004b 00       		.byte	0
+ 2342 004c 07       		.uleb128 0x7
+ 2343 004d 0D       		.uleb128 0xd
+ 2344 004e 00       		.byte	0
+ 2345 004f 03       		.uleb128 0x3
+ 2346 0050 0E       		.uleb128 0xe
+ 2347 0051 3A       		.uleb128 0x3a
+ 2348 0052 0B       		.uleb128 0xb
+ 2349 0053 3B       		.uleb128 0x3b
+ 2350 0054 0B       		.uleb128 0xb
+ 2351 0055 49       		.uleb128 0x49
+ 2352 0056 13       		.uleb128 0x13
+ 2353 0057 38       		.uleb128 0x38
+ 2354 0058 0B       		.uleb128 0xb
+ 2355 0059 00       		.byte	0
+ 2356 005a 00       		.byte	0
+ 2357 005b 08       		.uleb128 0x8
+ 2358 005c 0F       		.uleb128 0xf
+ 2359 005d 00       		.byte	0
+ 2360 005e 0B       		.uleb128 0xb
+ 2361 005f 0B       		.uleb128 0xb
+ 2362 0060 49       		.uleb128 0x49
+ 2363 0061 13       		.uleb128 0x13
+ 2364 0062 00       		.byte	0
+ 2365 0063 00       		.byte	0
+ 2366 0064 09       		.uleb128 0x9
+ 2367 0065 26       		.uleb128 0x26
+ 2368 0066 00       		.byte	0
+ 2369 0067 49       		.uleb128 0x49
+ 2370 0068 13       		.uleb128 0x13
+ 2371 0069 00       		.byte	0
+ 2372 006a 00       		.byte	0
+ 2373 006b 0A       		.uleb128 0xa
+ 2374 006c 01       		.uleb128 0x1
+ 2375 006d 01       		.byte	0x1
+ 2376 006e 49       		.uleb128 0x49
+ 2377 006f 13       		.uleb128 0x13
+ 2378 0070 01       		.uleb128 0x1
+ 2379 0071 13       		.uleb128 0x13
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 49
+
+
+ 2380 0072 00       		.byte	0
+ 2381 0073 00       		.byte	0
+ 2382 0074 0B       		.uleb128 0xb
+ 2383 0075 21       		.uleb128 0x21
+ 2384 0076 00       		.byte	0
+ 2385 0077 49       		.uleb128 0x49
+ 2386 0078 13       		.uleb128 0x13
+ 2387 0079 2F       		.uleb128 0x2f
+ 2388 007a 0B       		.uleb128 0xb
+ 2389 007b 00       		.byte	0
+ 2390 007c 00       		.byte	0
+ 2391 007d 0C       		.uleb128 0xc
+ 2392 007e 04       		.uleb128 0x4
+ 2393 007f 01       		.byte	0x1
+ 2394 0080 0B       		.uleb128 0xb
+ 2395 0081 0B       		.uleb128 0xb
+ 2396 0082 49       		.uleb128 0x49
+ 2397 0083 13       		.uleb128 0x13
+ 2398 0084 3A       		.uleb128 0x3a
+ 2399 0085 0B       		.uleb128 0xb
+ 2400 0086 3B       		.uleb128 0x3b
+ 2401 0087 05       		.uleb128 0x5
+ 2402 0088 01       		.uleb128 0x1
+ 2403 0089 13       		.uleb128 0x13
+ 2404 008a 00       		.byte	0
+ 2405 008b 00       		.byte	0
+ 2406 008c 0D       		.uleb128 0xd
+ 2407 008d 28       		.uleb128 0x28
+ 2408 008e 00       		.byte	0
+ 2409 008f 03       		.uleb128 0x3
+ 2410 0090 0E       		.uleb128 0xe
+ 2411 0091 1C       		.uleb128 0x1c
+ 2412 0092 0B       		.uleb128 0xb
+ 2413 0093 00       		.byte	0
+ 2414 0094 00       		.byte	0
+ 2415 0095 0E       		.uleb128 0xe
+ 2416 0096 04       		.uleb128 0x4
+ 2417 0097 01       		.byte	0x1
+ 2418 0098 0B       		.uleb128 0xb
+ 2419 0099 0B       		.uleb128 0xb
+ 2420 009a 49       		.uleb128 0x49
+ 2421 009b 13       		.uleb128 0x13
+ 2422 009c 3A       		.uleb128 0x3a
+ 2423 009d 0B       		.uleb128 0xb
+ 2424 009e 3B       		.uleb128 0x3b
+ 2425 009f 0B       		.uleb128 0xb
+ 2426 00a0 01       		.uleb128 0x1
+ 2427 00a1 13       		.uleb128 0x13
+ 2428 00a2 00       		.byte	0
+ 2429 00a3 00       		.byte	0
+ 2430 00a4 0F       		.uleb128 0xf
+ 2431 00a5 2E       		.uleb128 0x2e
+ 2432 00a6 00       		.byte	0
+ 2433 00a7 3F       		.uleb128 0x3f
+ 2434 00a8 19       		.uleb128 0x19
+ 2435 00a9 03       		.uleb128 0x3
+ 2436 00aa 0E       		.uleb128 0xe
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 50
+
+
+ 2437 00ab 3A       		.uleb128 0x3a
+ 2438 00ac 0B       		.uleb128 0xb
+ 2439 00ad 3B       		.uleb128 0x3b
+ 2440 00ae 0B       		.uleb128 0xb
+ 2441 00af 27       		.uleb128 0x27
+ 2442 00b0 19       		.uleb128 0x19
+ 2443 00b1 11       		.uleb128 0x11
+ 2444 00b2 01       		.uleb128 0x1
+ 2445 00b3 12       		.uleb128 0x12
+ 2446 00b4 06       		.uleb128 0x6
+ 2447 00b5 40       		.uleb128 0x40
+ 2448 00b6 18       		.uleb128 0x18
+ 2449 00b7 9742     		.uleb128 0x2117
+ 2450 00b9 19       		.uleb128 0x19
+ 2451 00ba 00       		.byte	0
+ 2452 00bb 00       		.byte	0
+ 2453 00bc 10       		.uleb128 0x10
+ 2454 00bd 2E       		.uleb128 0x2e
+ 2455 00be 01       		.byte	0x1
+ 2456 00bf 3F       		.uleb128 0x3f
+ 2457 00c0 19       		.uleb128 0x19
+ 2458 00c1 03       		.uleb128 0x3
+ 2459 00c2 0E       		.uleb128 0xe
+ 2460 00c3 3A       		.uleb128 0x3a
+ 2461 00c4 0B       		.uleb128 0xb
+ 2462 00c5 3B       		.uleb128 0x3b
+ 2463 00c6 0B       		.uleb128 0xb
+ 2464 00c7 27       		.uleb128 0x27
+ 2465 00c8 19       		.uleb128 0x19
+ 2466 00c9 49       		.uleb128 0x49
+ 2467 00ca 13       		.uleb128 0x13
+ 2468 00cb 11       		.uleb128 0x11
+ 2469 00cc 01       		.uleb128 0x1
+ 2470 00cd 12       		.uleb128 0x12
+ 2471 00ce 06       		.uleb128 0x6
+ 2472 00cf 40       		.uleb128 0x40
+ 2473 00d0 18       		.uleb128 0x18
+ 2474 00d1 9642     		.uleb128 0x2116
+ 2475 00d3 19       		.uleb128 0x19
+ 2476 00d4 01       		.uleb128 0x1
+ 2477 00d5 13       		.uleb128 0x13
+ 2478 00d6 00       		.byte	0
+ 2479 00d7 00       		.byte	0
+ 2480 00d8 11       		.uleb128 0x11
+ 2481 00d9 34       		.uleb128 0x34
+ 2482 00da 00       		.byte	0
+ 2483 00db 03       		.uleb128 0x3
+ 2484 00dc 0E       		.uleb128 0xe
+ 2485 00dd 3A       		.uleb128 0x3a
+ 2486 00de 0B       		.uleb128 0xb
+ 2487 00df 3B       		.uleb128 0x3b
+ 2488 00e0 0B       		.uleb128 0xb
+ 2489 00e1 49       		.uleb128 0x49
+ 2490 00e2 13       		.uleb128 0x13
+ 2491 00e3 02       		.uleb128 0x2
+ 2492 00e4 18       		.uleb128 0x18
+ 2493 00e5 00       		.byte	0
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 51
+
+
+ 2494 00e6 00       		.byte	0
+ 2495 00e7 12       		.uleb128 0x12
+ 2496 00e8 2E       		.uleb128 0x2e
+ 2497 00e9 01       		.byte	0x1
+ 2498 00ea 3F       		.uleb128 0x3f
+ 2499 00eb 19       		.uleb128 0x19
+ 2500 00ec 03       		.uleb128 0x3
+ 2501 00ed 0E       		.uleb128 0xe
+ 2502 00ee 3A       		.uleb128 0x3a
+ 2503 00ef 0B       		.uleb128 0xb
+ 2504 00f0 3B       		.uleb128 0x3b
+ 2505 00f1 0B       		.uleb128 0xb
+ 2506 00f2 27       		.uleb128 0x27
+ 2507 00f3 19       		.uleb128 0x19
+ 2508 00f4 11       		.uleb128 0x11
+ 2509 00f5 01       		.uleb128 0x1
+ 2510 00f6 12       		.uleb128 0x12
+ 2511 00f7 06       		.uleb128 0x6
+ 2512 00f8 40       		.uleb128 0x40
+ 2513 00f9 18       		.uleb128 0x18
+ 2514 00fa 9642     		.uleb128 0x2116
+ 2515 00fc 19       		.uleb128 0x19
+ 2516 00fd 01       		.uleb128 0x1
+ 2517 00fe 13       		.uleb128 0x13
+ 2518 00ff 00       		.byte	0
+ 2519 0100 00       		.byte	0
+ 2520 0101 13       		.uleb128 0x13
+ 2521 0102 05       		.uleb128 0x5
+ 2522 0103 00       		.byte	0
+ 2523 0104 03       		.uleb128 0x3
+ 2524 0105 0E       		.uleb128 0xe
+ 2525 0106 3A       		.uleb128 0x3a
+ 2526 0107 0B       		.uleb128 0xb
+ 2527 0108 3B       		.uleb128 0x3b
+ 2528 0109 0B       		.uleb128 0xb
+ 2529 010a 49       		.uleb128 0x49
+ 2530 010b 13       		.uleb128 0x13
+ 2531 010c 02       		.uleb128 0x2
+ 2532 010d 18       		.uleb128 0x18
+ 2533 010e 00       		.byte	0
+ 2534 010f 00       		.byte	0
+ 2535 0110 14       		.uleb128 0x14
+ 2536 0111 2E       		.uleb128 0x2e
+ 2537 0112 01       		.byte	0x1
+ 2538 0113 3F       		.uleb128 0x3f
+ 2539 0114 19       		.uleb128 0x19
+ 2540 0115 03       		.uleb128 0x3
+ 2541 0116 0E       		.uleb128 0xe
+ 2542 0117 3A       		.uleb128 0x3a
+ 2543 0118 0B       		.uleb128 0xb
+ 2544 0119 3B       		.uleb128 0x3b
+ 2545 011a 0B       		.uleb128 0xb
+ 2546 011b 49       		.uleb128 0x49
+ 2547 011c 13       		.uleb128 0x13
+ 2548 011d 11       		.uleb128 0x11
+ 2549 011e 01       		.uleb128 0x1
+ 2550 011f 12       		.uleb128 0x12
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 52
+
+
+ 2551 0120 06       		.uleb128 0x6
+ 2552 0121 40       		.uleb128 0x40
+ 2553 0122 18       		.uleb128 0x18
+ 2554 0123 9642     		.uleb128 0x2116
+ 2555 0125 19       		.uleb128 0x19
+ 2556 0126 01       		.uleb128 0x1
+ 2557 0127 13       		.uleb128 0x13
+ 2558 0128 00       		.byte	0
+ 2559 0129 00       		.byte	0
+ 2560 012a 15       		.uleb128 0x15
+ 2561 012b 34       		.uleb128 0x34
+ 2562 012c 00       		.byte	0
+ 2563 012d 03       		.uleb128 0x3
+ 2564 012e 08       		.uleb128 0x8
+ 2565 012f 3A       		.uleb128 0x3a
+ 2566 0130 0B       		.uleb128 0xb
+ 2567 0131 3B       		.uleb128 0x3b
+ 2568 0132 0B       		.uleb128 0xb
+ 2569 0133 49       		.uleb128 0x49
+ 2570 0134 13       		.uleb128 0x13
+ 2571 0135 02       		.uleb128 0x2
+ 2572 0136 18       		.uleb128 0x18
+ 2573 0137 00       		.byte	0
+ 2574 0138 00       		.byte	0
+ 2575 0139 16       		.uleb128 0x16
+ 2576 013a 2E       		.uleb128 0x2e
+ 2577 013b 00       		.byte	0
+ 2578 013c 3F       		.uleb128 0x3f
+ 2579 013d 19       		.uleb128 0x19
+ 2580 013e 03       		.uleb128 0x3
+ 2581 013f 0E       		.uleb128 0xe
+ 2582 0140 3A       		.uleb128 0x3a
+ 2583 0141 0B       		.uleb128 0xb
+ 2584 0142 3B       		.uleb128 0x3b
+ 2585 0143 0B       		.uleb128 0xb
+ 2586 0144 49       		.uleb128 0x49
+ 2587 0145 13       		.uleb128 0x13
+ 2588 0146 11       		.uleb128 0x11
+ 2589 0147 01       		.uleb128 0x1
+ 2590 0148 12       		.uleb128 0x12
+ 2591 0149 06       		.uleb128 0x6
+ 2592 014a 40       		.uleb128 0x40
+ 2593 014b 18       		.uleb128 0x18
+ 2594 014c 9642     		.uleb128 0x2116
+ 2595 014e 19       		.uleb128 0x19
+ 2596 014f 00       		.byte	0
+ 2597 0150 00       		.byte	0
+ 2598 0151 17       		.uleb128 0x17
+ 2599 0152 2E       		.uleb128 0x2e
+ 2600 0153 01       		.byte	0x1
+ 2601 0154 3F       		.uleb128 0x3f
+ 2602 0155 19       		.uleb128 0x19
+ 2603 0156 03       		.uleb128 0x3
+ 2604 0157 0E       		.uleb128 0xe
+ 2605 0158 3A       		.uleb128 0x3a
+ 2606 0159 0B       		.uleb128 0xb
+ 2607 015a 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 53
+
+
+ 2608 015b 0B       		.uleb128 0xb
+ 2609 015c 27       		.uleb128 0x27
+ 2610 015d 19       		.uleb128 0x19
+ 2611 015e 49       		.uleb128 0x49
+ 2612 015f 13       		.uleb128 0x13
+ 2613 0160 11       		.uleb128 0x11
+ 2614 0161 01       		.uleb128 0x1
+ 2615 0162 12       		.uleb128 0x12
+ 2616 0163 06       		.uleb128 0x6
+ 2617 0164 40       		.uleb128 0x40
+ 2618 0165 18       		.uleb128 0x18
+ 2619 0166 9742     		.uleb128 0x2117
+ 2620 0168 19       		.uleb128 0x19
+ 2621 0169 01       		.uleb128 0x1
+ 2622 016a 13       		.uleb128 0x13
+ 2623 016b 00       		.byte	0
+ 2624 016c 00       		.byte	0
+ 2625 016d 18       		.uleb128 0x18
+ 2626 016e 2E       		.uleb128 0x2e
+ 2627 016f 01       		.byte	0x1
+ 2628 0170 3F       		.uleb128 0x3f
+ 2629 0171 19       		.uleb128 0x19
+ 2630 0172 03       		.uleb128 0x3
+ 2631 0173 0E       		.uleb128 0xe
+ 2632 0174 3A       		.uleb128 0x3a
+ 2633 0175 0B       		.uleb128 0xb
+ 2634 0176 3B       		.uleb128 0x3b
+ 2635 0177 05       		.uleb128 0x5
+ 2636 0178 27       		.uleb128 0x27
+ 2637 0179 19       		.uleb128 0x19
+ 2638 017a 49       		.uleb128 0x49
+ 2639 017b 13       		.uleb128 0x13
+ 2640 017c 11       		.uleb128 0x11
+ 2641 017d 01       		.uleb128 0x1
+ 2642 017e 12       		.uleb128 0x12
+ 2643 017f 06       		.uleb128 0x6
+ 2644 0180 40       		.uleb128 0x40
+ 2645 0181 18       		.uleb128 0x18
+ 2646 0182 9642     		.uleb128 0x2116
+ 2647 0184 19       		.uleb128 0x19
+ 2648 0185 01       		.uleb128 0x1
+ 2649 0186 13       		.uleb128 0x13
+ 2650 0187 00       		.byte	0
+ 2651 0188 00       		.byte	0
+ 2652 0189 19       		.uleb128 0x19
+ 2653 018a 05       		.uleb128 0x5
+ 2654 018b 00       		.byte	0
+ 2655 018c 03       		.uleb128 0x3
+ 2656 018d 0E       		.uleb128 0xe
+ 2657 018e 3A       		.uleb128 0x3a
+ 2658 018f 0B       		.uleb128 0xb
+ 2659 0190 3B       		.uleb128 0x3b
+ 2660 0191 05       		.uleb128 0x5
+ 2661 0192 49       		.uleb128 0x49
+ 2662 0193 13       		.uleb128 0x13
+ 2663 0194 02       		.uleb128 0x2
+ 2664 0195 18       		.uleb128 0x18
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 54
+
+
+ 2665 0196 00       		.byte	0
+ 2666 0197 00       		.byte	0
+ 2667 0198 1A       		.uleb128 0x1a
+ 2668 0199 34       		.uleb128 0x34
+ 2669 019a 00       		.byte	0
+ 2670 019b 03       		.uleb128 0x3
+ 2671 019c 0E       		.uleb128 0xe
+ 2672 019d 3A       		.uleb128 0x3a
+ 2673 019e 0B       		.uleb128 0xb
+ 2674 019f 3B       		.uleb128 0x3b
+ 2675 01a0 05       		.uleb128 0x5
+ 2676 01a1 49       		.uleb128 0x49
+ 2677 01a2 13       		.uleb128 0x13
+ 2678 01a3 02       		.uleb128 0x2
+ 2679 01a4 18       		.uleb128 0x18
+ 2680 01a5 00       		.byte	0
+ 2681 01a6 00       		.byte	0
+ 2682 01a7 1B       		.uleb128 0x1b
+ 2683 01a8 34       		.uleb128 0x34
+ 2684 01a9 00       		.byte	0
+ 2685 01aa 03       		.uleb128 0x3
+ 2686 01ab 08       		.uleb128 0x8
+ 2687 01ac 3A       		.uleb128 0x3a
+ 2688 01ad 0B       		.uleb128 0xb
+ 2689 01ae 3B       		.uleb128 0x3b
+ 2690 01af 05       		.uleb128 0x5
+ 2691 01b0 49       		.uleb128 0x49
+ 2692 01b1 13       		.uleb128 0x13
+ 2693 01b2 02       		.uleb128 0x2
+ 2694 01b3 18       		.uleb128 0x18
+ 2695 01b4 00       		.byte	0
+ 2696 01b5 00       		.byte	0
+ 2697 01b6 1C       		.uleb128 0x1c
+ 2698 01b7 2E       		.uleb128 0x2e
+ 2699 01b8 00       		.byte	0
+ 2700 01b9 3F       		.uleb128 0x3f
+ 2701 01ba 19       		.uleb128 0x19
+ 2702 01bb 03       		.uleb128 0x3
+ 2703 01bc 0E       		.uleb128 0xe
+ 2704 01bd 3A       		.uleb128 0x3a
+ 2705 01be 0B       		.uleb128 0xb
+ 2706 01bf 3B       		.uleb128 0x3b
+ 2707 01c0 05       		.uleb128 0x5
+ 2708 01c1 11       		.uleb128 0x11
+ 2709 01c2 01       		.uleb128 0x1
+ 2710 01c3 12       		.uleb128 0x12
+ 2711 01c4 06       		.uleb128 0x6
+ 2712 01c5 40       		.uleb128 0x40
+ 2713 01c6 18       		.uleb128 0x18
+ 2714 01c7 9642     		.uleb128 0x2116
+ 2715 01c9 19       		.uleb128 0x19
+ 2716 01ca 00       		.byte	0
+ 2717 01cb 00       		.byte	0
+ 2718 01cc 1D       		.uleb128 0x1d
+ 2719 01cd 2E       		.uleb128 0x2e
+ 2720 01ce 00       		.byte	0
+ 2721 01cf 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 55
+
+
+ 2722 01d0 19       		.uleb128 0x19
+ 2723 01d1 03       		.uleb128 0x3
+ 2724 01d2 0E       		.uleb128 0xe
+ 2725 01d3 3A       		.uleb128 0x3a
+ 2726 01d4 0B       		.uleb128 0xb
+ 2727 01d5 3B       		.uleb128 0x3b
+ 2728 01d6 05       		.uleb128 0x5
+ 2729 01d7 49       		.uleb128 0x49
+ 2730 01d8 13       		.uleb128 0x13
+ 2731 01d9 11       		.uleb128 0x11
+ 2732 01da 01       		.uleb128 0x1
+ 2733 01db 12       		.uleb128 0x12
+ 2734 01dc 06       		.uleb128 0x6
+ 2735 01dd 40       		.uleb128 0x40
+ 2736 01de 18       		.uleb128 0x18
+ 2737 01df 9742     		.uleb128 0x2117
+ 2738 01e1 19       		.uleb128 0x19
+ 2739 01e2 00       		.byte	0
+ 2740 01e3 00       		.byte	0
+ 2741 01e4 1E       		.uleb128 0x1e
+ 2742 01e5 2E       		.uleb128 0x2e
+ 2743 01e6 00       		.byte	0
+ 2744 01e7 3F       		.uleb128 0x3f
+ 2745 01e8 19       		.uleb128 0x19
+ 2746 01e9 03       		.uleb128 0x3
+ 2747 01ea 0E       		.uleb128 0xe
+ 2748 01eb 3A       		.uleb128 0x3a
+ 2749 01ec 0B       		.uleb128 0xb
+ 2750 01ed 3B       		.uleb128 0x3b
+ 2751 01ee 05       		.uleb128 0x5
+ 2752 01ef 49       		.uleb128 0x49
+ 2753 01f0 13       		.uleb128 0x13
+ 2754 01f1 11       		.uleb128 0x11
+ 2755 01f2 01       		.uleb128 0x1
+ 2756 01f3 12       		.uleb128 0x12
+ 2757 01f4 06       		.uleb128 0x6
+ 2758 01f5 40       		.uleb128 0x40
+ 2759 01f6 18       		.uleb128 0x18
+ 2760 01f7 9642     		.uleb128 0x2116
+ 2761 01f9 19       		.uleb128 0x19
+ 2762 01fa 00       		.byte	0
+ 2763 01fb 00       		.byte	0
+ 2764 01fc 1F       		.uleb128 0x1f
+ 2765 01fd 34       		.uleb128 0x34
+ 2766 01fe 00       		.byte	0
+ 2767 01ff 03       		.uleb128 0x3
+ 2768 0200 0E       		.uleb128 0xe
+ 2769 0201 3A       		.uleb128 0x3a
+ 2770 0202 0B       		.uleb128 0xb
+ 2771 0203 3B       		.uleb128 0x3b
+ 2772 0204 0B       		.uleb128 0xb
+ 2773 0205 49       		.uleb128 0x49
+ 2774 0206 13       		.uleb128 0x13
+ 2775 0207 3F       		.uleb128 0x3f
+ 2776 0208 19       		.uleb128 0x19
+ 2777 0209 02       		.uleb128 0x2
+ 2778 020a 18       		.uleb128 0x18
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 56
+
+
+ 2779 020b 00       		.byte	0
+ 2780 020c 00       		.byte	0
+ 2781 020d 00       		.byte	0
+ 2782              		.section	.debug_aranges,"",%progbits
+ 2783 0000 8C000000 		.4byte	0x8c
+ 2784 0004 0200     		.2byte	0x2
+ 2785 0006 00000000 		.4byte	.Ldebug_info0
+ 2786 000a 04       		.byte	0x4
+ 2787 000b 00       		.byte	0
+ 2788 000c 0000     		.2byte	0
+ 2789 000e 0000     		.2byte	0
+ 2790 0010 00000000 		.4byte	.LFB35
+ 2791 0014 14000000 		.4byte	.LFE35-.LFB35
+ 2792 0018 00000000 		.4byte	.LFB36
+ 2793 001c 4C000000 		.4byte	.LFE36-.LFB36
+ 2794 0020 00000000 		.4byte	.LFB37
+ 2795 0024 3C000000 		.4byte	.LFE37-.LFB37
+ 2796 0028 00000000 		.4byte	.LFB38
+ 2797 002c 62000000 		.4byte	.LFE38-.LFB38
+ 2798 0030 00000000 		.4byte	.LFB39
+ 2799 0034 98000000 		.4byte	.LFE39-.LFB39
+ 2800 0038 00000000 		.4byte	.LFB40
+ 2801 003c 48000000 		.4byte	.LFE40-.LFB40
+ 2802 0040 00000000 		.4byte	.LFB41
+ 2803 0044 0C020000 		.4byte	.LFE41-.LFB41
+ 2804 0048 00000000 		.4byte	.LFB42
+ 2805 004c 44000000 		.4byte	.LFE42-.LFB42
+ 2806 0050 00000000 		.4byte	.LFB43
+ 2807 0054 3C000000 		.4byte	.LFE43-.LFB43
+ 2808 0058 00000000 		.4byte	.LFB44
+ 2809 005c AC000000 		.4byte	.LFE44-.LFB44
+ 2810 0060 00000000 		.4byte	.LFB45
+ 2811 0064 04010000 		.4byte	.LFE45-.LFB45
+ 2812 0068 00000000 		.4byte	.LFB46
+ 2813 006c 30000000 		.4byte	.LFE46-.LFB46
+ 2814 0070 00000000 		.4byte	.LFB47
+ 2815 0074 0E000000 		.4byte	.LFE47-.LFB47
+ 2816 0078 00000000 		.4byte	.LFB48
+ 2817 007c 14000000 		.4byte	.LFE48-.LFB48
+ 2818 0080 00000000 		.4byte	.LFB49
+ 2819 0084 20000000 		.4byte	.LFE49-.LFB49
+ 2820 0088 00000000 		.4byte	0
+ 2821 008c 00000000 		.4byte	0
+ 2822              		.section	.debug_ranges,"",%progbits
+ 2823              	.Ldebug_ranges0:
+ 2824 0000 00000000 		.4byte	.LFB35
+ 2825 0004 14000000 		.4byte	.LFE35
+ 2826 0008 00000000 		.4byte	.LFB36
+ 2827 000c 4C000000 		.4byte	.LFE36
+ 2828 0010 00000000 		.4byte	.LFB37
+ 2829 0014 3C000000 		.4byte	.LFE37
+ 2830 0018 00000000 		.4byte	.LFB38
+ 2831 001c 62000000 		.4byte	.LFE38
+ 2832 0020 00000000 		.4byte	.LFB39
+ 2833 0024 98000000 		.4byte	.LFE39
+ 2834 0028 00000000 		.4byte	.LFB40
+ 2835 002c 48000000 		.4byte	.LFE40
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 57
+
+
+ 2836 0030 00000000 		.4byte	.LFB41
+ 2837 0034 0C020000 		.4byte	.LFE41
+ 2838 0038 00000000 		.4byte	.LFB42
+ 2839 003c 44000000 		.4byte	.LFE42
+ 2840 0040 00000000 		.4byte	.LFB43
+ 2841 0044 3C000000 		.4byte	.LFE43
+ 2842 0048 00000000 		.4byte	.LFB44
+ 2843 004c AC000000 		.4byte	.LFE44
+ 2844 0050 00000000 		.4byte	.LFB45
+ 2845 0054 04010000 		.4byte	.LFE45
+ 2846 0058 00000000 		.4byte	.LFB46
+ 2847 005c 30000000 		.4byte	.LFE46
+ 2848 0060 00000000 		.4byte	.LFB47
+ 2849 0064 0E000000 		.4byte	.LFE47
+ 2850 0068 00000000 		.4byte	.LFB48
+ 2851 006c 14000000 		.4byte	.LFE48
+ 2852 0070 00000000 		.4byte	.LFB49
+ 2853 0074 20000000 		.4byte	.LFE49
+ 2854 0078 00000000 		.4byte	0
+ 2855 007c 00000000 		.4byte	0
+ 2856              		.section	.debug_line,"",%progbits
+ 2857              	.Ldebug_line0:
+ 2858 0000 A5020000 		.section	.debug_str,"MS",%progbits,1
+ 2858      02008300 
+ 2858      00000201 
+ 2858      FB0E0D00 
+ 2858      01010101 
+ 2859              	.LASF60:
+ 2860 0000 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 2860      455F4556 
+ 2860      545F4741 
+ 2860      5454435F 
+ 2860      52454144 
+ 2861              	.LASF96:
+ 2862 001e 4359424C 		.ascii	"CYBLE_HTS_CCCD\000"
+ 2862      455F4854 
+ 2862      535F4343 
+ 2862      434400
+ 2863              	.LASF10:
+ 2864 002d 75696E74 		.ascii	"uint16\000"
+ 2864      313600
+ 2865              	.LASF82:
+ 2866 0034 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 2866      455F4556 
+ 2866      545F4C32 
+ 2866      4341505F 
+ 2866      43424643 
+ 2867              	.LASF93:
+ 2868 0053 4359424C 		.ascii	"CYBLE_HTS_INTERM_TEMP\000"
+ 2868      455F4854 
+ 2868      535F494E 
+ 2868      5445524D 
+ 2868      5F54454D 
+ 2869              	.LASF36:
+ 2870 0069 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 2870      455F4556 
+ 2870      545F4741 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 58
+
+
+ 2870      505F434F 
+ 2870      4E4E4543 
+ 2871              	.LASF81:
+ 2872 0092 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 2872      455F4556 
+ 2872      545F4C32 
+ 2872      4341505F 
+ 2872      43424643 
+ 2873              	.LASF41:
+ 2874 00b3 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 2874      455F4556 
+ 2874      545F4741 
+ 2874      505F4F4F 
+ 2874      425F4745 
+ 2875              	.LASF24:
+ 2876 00dc 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 2876      455F4556 
+ 2876      545F5354 
+ 2876      41434B5F 
+ 2876      42555359 
+ 2877              	.LASF66:
+ 2878 00f8 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 2878      455F4556 
+ 2878      545F4741 
+ 2878      5454535F 
+ 2878      45584543 
+ 2879              	.LASF103:
+ 2880 0117 4359424C 		.ascii	"CYBLE_SRVI_HTS\000"
+ 2880      455F5352 
+ 2880      56495F48 
+ 2880      545300
+ 2881              	.LASF21:
+ 2882 0126 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 2882      455F4556 
+ 2882      545F5449 
+ 2882      4D454F55 
+ 2882      5400
+ 2883              	.LASF4:
+ 2884 0138 6C6F6E67 		.ascii	"long int\000"
+ 2884      20696E74 
+ 2884      00
+ 2885              	.LASF136:
+ 2886 0141 4F6E6557 		.ascii	"OneWire_CheckPresence\000"
+ 2886      6972655F 
+ 2886      43686563 
+ 2886      6B507265 
+ 2886      73656E63 
+ 2887              	.LASF7:
+ 2888 0157 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2888      206C6F6E 
+ 2888      6720756E 
+ 2888      7369676E 
+ 2888      65642069 
+ 2889              	.LASF23:
+ 2890 016e 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 2890      455F4556 
+ 2890      545F4843 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 59
+
+
+ 2890      495F5354 
+ 2890      41545553 
+ 2891              	.LASF86:
+ 2892 0183 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 2892      455F4556 
+ 2892      545F5045 
+ 2892      4E44494E 
+ 2892      475F464C 
+ 2893              	.LASF75:
+ 2894 01a1 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 2894      455F4556 
+ 2894      545F4C32 
+ 2894      4341505F 
+ 2894      434F4E4E 
+ 2895              	.LASF35:
+ 2896 01c7 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 2896      455F4556 
+ 2896      545F4741 
+ 2896      505F454E 
+ 2896      43525950 
+ 2897              	.LASF39:
+ 2898 01e4 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 2898      455F4556 
+ 2898      545F4741 
+ 2898      505F4E55 
+ 2898      4D455249 
+ 2899              	.LASF84:
+ 2900 020d 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 2900      455F4556 
+ 2900      545F4C32 
+ 2900      4341505F 
+ 2900      43424643 
+ 2901              	.LASF127:
+ 2902 0230 746D705F 		.ascii	"tmp_value\000"
+ 2902      76616C75 
+ 2902      6500
+ 2903              	.LASF0:
+ 2904 023a 7369676E 		.ascii	"signed char\000"
+ 2904      65642063 
+ 2904      68617200 
+ 2905              	.LASF20:
+ 2906 0246 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 2906      455F4556 
+ 2906      545F5354 
+ 2906      41434B5F 
+ 2906      4F4E00
+ 2907              	.LASF92:
+ 2908 0259 4359424C 		.ascii	"CYBLE_HTS_TEMP_TYPE\000"
+ 2908      455F4854 
+ 2908      535F5445 
+ 2908      4D505F54 
+ 2908      59504500 
+ 2909              	.LASF101:
+ 2910 026d 4359424C 		.ascii	"CYBLE_SRVI_CUSTOMS\000"
+ 2910      455F5352 
+ 2910      56495F43 
+ 2910      5553544F 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 60
+
+
+ 2910      4D5300
+ 2911              	.LASF37:
+ 2912 0280 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 2912      455F4556 
+ 2912      545F4741 
+ 2912      50435F53 
+ 2912      43414E5F 
+ 2913              	.LASF27:
+ 2914 029f 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 2914      455F4556 
+ 2914      545F4741 
+ 2914      505F4155 
+ 2914      54485F52 
+ 2915              	.LASF59:
+ 2916 02b6 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 2916      455F4556 
+ 2916      545F4741 
+ 2916      5454435F 
+ 2916      52454144 
+ 2917              	.LASF64:
+ 2918 02cf 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 2918      455F4556 
+ 2918      545F4741 
+ 2918      5454535F 
+ 2918      57524954 
+ 2919              	.LASF129:
+ 2920 02ed 54656D70 		.ascii	"TempStr\000"
+ 2920      53747200 
+ 2921              	.LASF32:
+ 2922 02f5 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 2922      455F4556 
+ 2922      545F4741 
+ 2922      50505F41 
+ 2922      44564552 
+ 2923              	.LASF9:
+ 2924 031d 75696E74 		.ascii	"uint8\000"
+ 2924      3800
+ 2925              	.LASF6:
+ 2926 0323 6C6F6E67 		.ascii	"long long int\000"
+ 2926      206C6F6E 
+ 2926      6720696E 
+ 2926      7400
+ 2927              	.LASF67:
+ 2928 0331 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 2928      455F4556 
+ 2928      545F4741 
+ 2928      5454435F 
+ 2928      45584543 
+ 2929              	.LASF13:
+ 2930 0350 646F7562 		.ascii	"double\000"
+ 2930      6C6500
+ 2931              	.LASF102:
+ 2932 0357 4359424C 		.ascii	"CYBLE_SRVI_CUSTOMS_END\000"
+ 2932      455F5352 
+ 2932      56495F43 
+ 2932      5553544F 
+ 2932      4D535F45 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 61
+
+
+ 2933              	.LASF125:
+ 2934 036e 70747231 		.ascii	"ptr1\000"
+ 2934      00
+ 2935              	.LASF90:
+ 2936 0373 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 2936      455F4556 
+ 2936      545F4D41 
+ 2936      5800
+ 2937              	.LASF117:
+ 2938 0381 6D61736B 		.ascii	"mask\000"
+ 2938      00
+ 2939              	.LASF85:
+ 2940 0386 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 2940      455F4556 
+ 2940      545F4C32 
+ 2940      4341505F 
+ 2940      43424643 
+ 2941              	.LASF47:
+ 2942 03aa 4359424C 		.ascii	"CYBLE_EVT_GAP_SCAN_REQ_RECVD\000"
+ 2942      455F4556 
+ 2942      545F4741 
+ 2942      505F5343 
+ 2942      414E5F52 
+ 2943              	.LASF123:
+ 2944 03c7 76616C75 		.ascii	"value\000"
+ 2944      6500
+ 2945              	.LASF91:
+ 2946 03cd 4359424C 		.ascii	"CYBLE_HTS_TEMP_MEASURE\000"
+ 2946      455F4854 
+ 2946      535F5445 
+ 2946      4D505F4D 
+ 2946      45415355 
+ 2947              	.LASF72:
+ 2948 03e4 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 2948      455F4556 
+ 2948      545F4741 
+ 2948      5454435F 
+ 2948      53544F50 
+ 2949              	.LASF139:
+ 2950 0406 42757350 		.ascii	"BusPresence\000"
+ 2950      72657365 
+ 2950      6E636500 
+ 2951              	.LASF8:
+ 2952 0412 756E7369 		.ascii	"unsigned int\000"
+ 2952      676E6564 
+ 2952      20696E74 
+ 2952      00
+ 2953              	.LASF119:
+ 2954 041f 4F6E6557 		.ascii	"OneWire_GetTemperatureAsFloat\000"
+ 2954      6972655F 
+ 2954      47657454 
+ 2954      656D7065 
+ 2954      72617475 
+ 2955              	.LASF11:
+ 2956 043d 696E7431 		.ascii	"int16\000"
+ 2956      3600
+ 2957              	.LASF5:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 62
+
+
+ 2958 0443 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2958      20756E73 
+ 2958      69676E65 
+ 2958      6420696E 
+ 2958      7400
+ 2959              	.LASF46:
+ 2960 0455 4359424C 		.ascii	"CYBLE_EVT_GAP_CONN_ESTB\000"
+ 2960      455F4556 
+ 2960      545F4741 
+ 2960      505F434F 
+ 2960      4E4E5F45 
+ 2961              	.LASF126:
+ 2962 046d 746D705F 		.ascii	"tmp_char\000"
+ 2962      63686172 
+ 2962      00
+ 2963              	.LASF62:
+ 2964 0476 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 2964      455F4556 
+ 2964      545F4741 
+ 2964      5454535F 
+ 2964      57524954 
+ 2965              	.LASF54:
+ 2966 0490 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 2966      455F4556 
+ 2966      545F4741 
+ 2966      5454435F 
+ 2966      5843484E 
+ 2967              	.LASF71:
+ 2968 04ae 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 2968      455F4556 
+ 2968      545F4741 
+ 2968      5454535F 
+ 2968      44415441 
+ 2969              	.LASF94:
+ 2970 04d2 4359424C 		.ascii	"CYBLE_HTS_MEASURE_INTERVAL\000"
+ 2970      455F4854 
+ 2970      535F4D45 
+ 2970      41535552 
+ 2970      455F494E 
+ 2971              	.LASF74:
+ 2972 04ed 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 2972      455F4556 
+ 2972      545F4741 
+ 2972      5454435F 
+ 2972      4C4F4E47 
+ 2973              	.LASF106:
+ 2974 0510 57726974 		.ascii	"Write8\000"
+ 2974      653800
+ 2975              	.LASF3:
+ 2976 0517 73686F72 		.ascii	"short unsigned int\000"
+ 2976      7420756E 
+ 2976      7369676E 
+ 2976      65642069 
+ 2976      6E7400
+ 2977              	.LASF19:
+ 2978 052a 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 2978      455F4556 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 63
+
+
+ 2978      545F484F 
+ 2978      53545F49 
+ 2978      4E56414C 
+ 2979              	.LASF57:
+ 2980 0541 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 2980      455F4556 
+ 2980      545F4741 
+ 2980      5454435F 
+ 2980      46494E44 
+ 2981              	.LASF25:
+ 2982 055f 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 2982      455F4556 
+ 2982      545F4D45 
+ 2982      4D4F5259 
+ 2982      5F524551 
+ 2983              	.LASF135:
+ 2984 0578 4F6E6557 		.ascii	"OneWire_BusState\000"
+ 2984      6972655F 
+ 2984      42757353 
+ 2984      74617465 
+ 2984      00
+ 2985              	.LASF128:
+ 2986 0589 4F6E6557 		.ascii	"OneWire_GetTemperatureAsString\000"
+ 2986      6972655F 
+ 2986      47657454 
+ 2986      656D7065 
+ 2986      72617475 
+ 2987              	.LASF28:
+ 2988 05a8 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 2988      455F4556 
+ 2988      545F4741 
+ 2988      505F5041 
+ 2988      53534B45 
+ 2989              	.LASF33:
+ 2990 05cc 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 2990      455F4556 
+ 2990      545F4741 
+ 2990      505F4445 
+ 2990      56494345 
+ 2991              	.LASF48:
+ 2992 05eb 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ_REPLY_ERR\000"
+ 2992      455F4556 
+ 2992      545F4741 
+ 2992      505F4155 
+ 2992      54485F52 
+ 2993              	.LASF140:
+ 2994 060c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2994      43313120 
+ 2994      352E342E 
+ 2994      31203230 
+ 2994      31363036 
+ 2995 063f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 2995      20726576 
+ 2995      6973696F 
+ 2995      6E203233 
+ 2995      37373135 
+ 2996 0672 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 64
+
+
+ 2996      66756E63 
+ 2996      74696F6E 
+ 2996      2D736563 
+ 2996      74696F6E 
+ 2997              	.LASF89:
+ 2998 069a 4359424C 		.ascii	"CYBLE_EVT_FLASH_CORRUPT\000"
+ 2998      455F4556 
+ 2998      545F464C 
+ 2998      4153485F 
+ 2998      434F5252 
+ 2999              	.LASF51:
+ 3000 06b2 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 3000      455F4556 
+ 3000      545F4741 
+ 3000      54545F43 
+ 3000      4F4E4E45 
+ 3001              	.LASF77:
+ 3002 06cd 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 3002      455F4556 
+ 3002      545F4C32 
+ 3002      4341505F 
+ 3002      434F4D4D 
+ 3003              	.LASF26:
+ 3004 06e9 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 3004      455F4556 
+ 3004      545F4741 
+ 3004      50435F53 
+ 3004      43414E5F 
+ 3005              	.LASF124:
+ 3006 070d 62617365 		.ascii	"base\000"
+ 3006      00
+ 3007              	.LASF49:
+ 3008 0712 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_LOC_P256_KEYS_GEN_AND_SET_COMPLET"
+ 3008      455F4556 
+ 3008      545F4741 
+ 3008      505F534D 
+ 3008      505F4C4F 
+ 3009 0745 4500     		.ascii	"E\000"
+ 3010              	.LASF131:
+ 3011 0747 67726164 		.ascii	"grad\000"
+ 3011      00
+ 3012              	.LASF78:
+ 3013 074c 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 3013      455F4556 
+ 3013      545F4C32 
+ 3013      4341505F 
+ 3013      43424643 
+ 3014              	.LASF56:
+ 3015 076a 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 3015      455F4556 
+ 3015      545F4741 
+ 3015      5454435F 
+ 3015      52454144 
+ 3016              	.LASF18:
+ 3017 078b 73697A65 		.ascii	"sizetype\000"
+ 3017      74797065 
+ 3017      00
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 65
+
+
+ 3018              	.LASF17:
+ 3019 0794 6C6F6E67 		.ascii	"long double\000"
+ 3019      20646F75 
+ 3019      626C6500 
+ 3020              	.LASF31:
+ 3021 07a0 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 3021      455F4556 
+ 3021      545F4741 
+ 3021      505F4155 
+ 3021      54485F46 
+ 3022              	.LASF97:
+ 3023 07ba 4359424C 		.ascii	"CYBLE_HTS_VRD\000"
+ 3023      455F4854 
+ 3023      535F5652 
+ 3023      4400
+ 3024              	.LASF63:
+ 3025 07c8 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 3025      455F4556 
+ 3025      545F4741 
+ 3025      5454435F 
+ 3025      57524954 
+ 3026              	.LASF44:
+ 3027 07e2 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 3027      455F4556 
+ 3027      545F4741 
+ 3027      50435F44 
+ 3027      49524543 
+ 3028              	.LASF107:
+ 3029 0803 7061796C 		.ascii	"payload\000"
+ 3029      6F616400 
+ 3030              	.LASF30:
+ 3031 080b 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 3031      455F4556 
+ 3031      545F4741 
+ 3031      505F4155 
+ 3031      54485F43 
+ 3032              	.LASF134:
+ 3033 0827 4F6E6557 		.ascii	"OneWire_Stop\000"
+ 3033      6972655F 
+ 3033      53746F70 
+ 3033      00
+ 3034              	.LASF68:
+ 3035 0834 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 3035      455F4556 
+ 3035      545F4741 
+ 3035      5454435F 
+ 3035      48414E44 
+ 3036              	.LASF122:
+ 3037 0855 69746F61 		.ascii	"itoa10\000"
+ 3037      313000
+ 3038              	.LASF114:
+ 3039 085c 4F6E6557 		.ascii	"OneWire_IRQDataReady\000"
+ 3039      6972655F 
+ 3039      49525144 
+ 3039      61746152 
+ 3039      65616479 
+ 3040              	.LASF79:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 66
+
+
+ 3041 0871 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 3041      455F4556 
+ 3041      545F4C32 
+ 3041      4341505F 
+ 3041      43424643 
+ 3042              	.LASF112:
+ 3043 088f 53656E73 		.ascii	"Sensor_off\000"
+ 3043      6F725F6F 
+ 3043      666600
+ 3044              	.LASF55:
+ 3045 089a 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 3045      455F4556 
+ 3045      545F4741 
+ 3045      5454435F 
+ 3045      52454144 
+ 3046              	.LASF132:
+ 3047 08c1 66726163 		.ascii	"frac\000"
+ 3047      00
+ 3048              	.LASF141:
+ 3049 08c6 47656E65 		.ascii	"Generated_Source\\PSoC4\\OneWire.c\000"
+ 3049      72617465 
+ 3049      645F536F 
+ 3049      75726365 
+ 3049      5C50536F 
+ 3050              	.LASF16:
+ 3051 08e7 70726573 		.ascii	"present\000"
+ 3051      656E7400 
+ 3052              	.LASF142:
+ 3053 08ef 433A5C55 		.ascii	"C:\\Users\\User\\Desktop\\Hi\\Demo1\\TM_Mesh_System"
+ 3053      73657273 
+ 3053      5C557365 
+ 3053      725C4465 
+ 3053      736B746F 
+ 3054 091c 2E637964 		.ascii	".cydsn\000"
+ 3054      736E00
+ 3055              	.LASF1:
+ 3056 0923 756E7369 		.ascii	"unsigned char\000"
+ 3056      676E6564 
+ 3056      20636861 
+ 3056      7200
+ 3057              	.LASF40:
+ 3058 0931 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 3058      455F4556 
+ 3058      545F4741 
+ 3058      505F4B45 
+ 3058      59505245 
+ 3059              	.LASF2:
+ 3060 0955 73686F72 		.ascii	"short int\000"
+ 3060      7420696E 
+ 3060      7400
+ 3061              	.LASF95:
+ 3062 095f 4359424C 		.ascii	"CYBLE_HTS_CHAR_COUNT\000"
+ 3062      455F4854 
+ 3062      535F4348 
+ 3062      41525F43 
+ 3062      4F554E54 
+ 3063              	.LASF69:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 67
+
+
+ 3064 0974 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 3064      455F4556 
+ 3064      545F4741 
+ 3064      5454435F 
+ 3064      48414E44 
+ 3065              	.LASF87:
+ 3066 0995 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 3066      455F4556 
+ 3066      545F4C45 
+ 3066      5F50494E 
+ 3066      475F4155 
+ 3067              	.LASF109:
+ 3068 09b4 42697450 		.ascii	"BitPayload\000"
+ 3068      61796C6F 
+ 3068      616400
+ 3069              	.LASF88:
+ 3070 09bf 4359424C 		.ascii	"CYBLE_EVT_HCI_PKT\000"
+ 3070      455F4556 
+ 3070      545F4843 
+ 3070      495F504B 
+ 3070      5400
+ 3071              	.LASF115:
+ 3072 09d1 4F6E6557 		.ascii	"OneWire_SendTemperatureRequest\000"
+ 3072      6972655F 
+ 3072      53656E64 
+ 3072      54656D70 
+ 3072      65726174 
+ 3073              	.LASF65:
+ 3074 09f0 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 3074      455F4556 
+ 3074      545F4741 
+ 3074      5454535F 
+ 3074      50524550 
+ 3075              	.LASF70:
+ 3076 0a0f 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 3076      455F4556 
+ 3076      545F4741 
+ 3076      5454535F 
+ 3076      48414E44 
+ 3077              	.LASF50:
+ 3078 0a30 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 3078      455F4556 
+ 3078      545F4741 
+ 3078      5454435F 
+ 3078      4552524F 
+ 3079              	.LASF45:
+ 3080 0a4a 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 3080      455F4556 
+ 3080      545F4741 
+ 3080      505F534D 
+ 3080      505F4E45 
+ 3081              	.LASF104:
+ 3082 0a71 4359424C 		.ascii	"CYBLE_SRVI_COUNT\000"
+ 3082      455F5352 
+ 3082      56495F43 
+ 3082      4F554E54 
+ 3082      00
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 68
+
+
+ 3083              	.LASF99:
+ 3084 0a82 4359424C 		.ascii	"CYBLE_SRVI_GAP\000"
+ 3084      455F5352 
+ 3084      56495F47 
+ 3084      415000
+ 3085              	.LASF42:
+ 3086 0a91 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 3086      455F4556 
+ 3086      545F4741 
+ 3086      505F4441 
+ 3086      54415F4C 
+ 3087              	.LASF116:
+ 3088 0ab2 4F6E6557 		.ascii	"OneWire_ReadTemperature\000"
+ 3088      6972655F 
+ 3088      52656164 
+ 3088      54656D70 
+ 3088      65726174 
+ 3089              	.LASF14:
+ 3090 0aca 63686172 		.ascii	"char\000"
+ 3090      00
+ 3091              	.LASF61:
+ 3092 0acf 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 3092      455F4556 
+ 3092      545F4741 
+ 3092      5454435F 
+ 3092      52454144 
+ 3093              	.LASF34:
+ 3094 0aee 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 3094      455F4556 
+ 3094      545F4741 
+ 3094      505F4445 
+ 3094      56494345 
+ 3095              	.LASF100:
+ 3096 0b10 4359424C 		.ascii	"CYBLE_SRVI_GATT\000"
+ 3096      455F5352 
+ 3096      56495F47 
+ 3096      41545400 
+ 3097              	.LASF73:
+ 3098 0b20 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 3098      455F4556 
+ 3098      545F4741 
+ 3098      5454535F 
+ 3098      52454144 
+ 3099              	.LASF105:
+ 3100 0b49 575F4269 		.ascii	"W_Bit\000"
+ 3100      7400
+ 3101              	.LASF120:
+ 3102 0b4f 696E6465 		.ascii	"index\000"
+ 3102      7800
+ 3103              	.LASF83:
+ 3104 0b55 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 3104      455F4556 
+ 3104      545F4C32 
+ 3104      4341505F 
+ 3104      43424643 
+ 3105              	.LASF110:
+ 3106 0b78 73686966 		.ascii	"shiftcount\000"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 69
+
+
+ 3106      74636F75 
+ 3106      6E7400
+ 3107              	.LASF137:
+ 3108 0b83 4F6E6557 		.ascii	"OneWire_Sensor\000"
+ 3108      6972655F 
+ 3108      53656E73 
+ 3108      6F7200
+ 3109              	.LASF98:
+ 3110 0b92 4359424C 		.ascii	"CYBLE_HTS_DESCR_COUNT\000"
+ 3110      455F4854 
+ 3110      535F4445 
+ 3110      5343525F 
+ 3110      434F554E 
+ 3111              	.LASF29:
+ 3112 0ba8 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 3112      455F4556 
+ 3112      545F4741 
+ 3112      505F5041 
+ 3112      53534B45 
+ 3113              	.LASF22:
+ 3114 0bce 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 3114      455F4556 
+ 3114      545F4841 
+ 3114      52445741 
+ 3114      52455F45 
+ 3115              	.LASF121:
+ 3116 0be7 4F6E6557 		.ascii	"OneWire_GetTemperatureAsInt100\000"
+ 3116      6972655F 
+ 3116      47657454 
+ 3116      656D7065 
+ 3116      72617475 
+ 3117              	.LASF53:
+ 3118 0c06 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 3118      455F4556 
+ 3118      545F4741 
+ 3118      5454535F 
+ 3118      58434E48 
+ 3119              	.LASF15:
+ 3120 0c24 54656D70 		.ascii	"Temperature\000"
+ 3120      65726174 
+ 3120      75726500 
+ 3121              	.LASF130:
+ 3122 0c30 7369676E 		.ascii	"sign\000"
+ 3122      00
+ 3123              	.LASF111:
+ 3124 0c35 42757352 		.ascii	"BusReset\000"
+ 3124      65736574 
+ 3124      00
+ 3125              	.LASF12:
+ 3126 0c3e 666C6F61 		.ascii	"float\000"
+ 3126      7400
+ 3127              	.LASF118:
+ 3128 0c44 525F4269 		.ascii	"R_BitBus\000"
+ 3128      74427573 
+ 3128      00
+ 3129              	.LASF133:
+ 3130 0c4d 4F6E6557 		.ascii	"OneWire_Start\000"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 70
+
+
+ 3130      6972655F 
+ 3130      53746172 
+ 3130      7400
+ 3131              	.LASF58:
+ 3132 0c5b 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 3132      455F4556 
+ 3132      545F4741 
+ 3132      5454435F 
+ 3132      46494E44 
+ 3133              	.LASF113:
+ 3134 0c82 42757350 		.ascii	"BusPin\000"
+ 3134      696E00
+ 3135              	.LASF38:
+ 3136 0c89 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 3136      455F4556 
+ 3136      545F4741 
+ 3136      505F4B45 
+ 3136      59494E46 
+ 3137              	.LASF80:
+ 3138 0cad 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 3138      455F4556 
+ 3138      545F4C32 
+ 3138      4341505F 
+ 3138      43424643 
+ 3139              	.LASF76:
+ 3140 0cce 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 3140      455F4556 
+ 3140      545F4C32 
+ 3140      4341505F 
+ 3140      434F4E4E 
+ 3141              	.LASF143:
+ 3142 0cf4 4F6E6557 		.ascii	"OneWire_TSensor\000"
+ 3142      6972655F 
+ 3142      5453656E 
+ 3142      736F7200 
+ 3143              	.LASF43:
+ 3144 0d04 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 3144      455F4556 
+ 3144      545F4741 
+ 3144      505F454E 
+ 3144      48414E43 
+ 3145              	.LASF108:
+ 3146 0d28 72657375 		.ascii	"result\000"
+ 3146      6C7400
+ 3147              	.LASF52:
+ 3148 0d2f 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 3148      455F4556 
+ 3148      545F4741 
+ 3148      54545F44 
+ 3148      4953434F 
+ 3149              	.LASF138:
+ 3150 0d4d 4F6E6557 		.ascii	"OneWire_DataReady\000"
+ 3150      6972655F 
+ 3150      44617461 
+ 3150      52656164 
+ 3150      7900
+ 3151              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccdoetvP.s 			page 71
+
+

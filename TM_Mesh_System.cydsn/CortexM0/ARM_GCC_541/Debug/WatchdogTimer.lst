@@ -1,0 +1,2351 @@
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"WatchdogTimer.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	OneWire_Sensor,32,4
+  20              		.comm	OneWire_DataReady,1,1
+  21              		.data
+  22              		.align	2
+  23              		.type	watchdogPeriodMs, %object
+  24              		.size	watchdogPeriodMs, 4
+  25              	watchdogPeriodMs:
+  26 0000 14000000 		.word	20
+  27              		.align	2
+  28              		.type	nextTicks, %object
+  29              		.size	nextTicks, 4
+  30              	nextTicks:
+  31 0004 80020000 		.word	640
+  32              		.section	.text.WatchdogTimer_Lock,"ax",%progbits
+  33              		.align	2
+  34              		.code	16
+  35              		.thumb_func
+  36              		.type	WatchdogTimer_Lock, %function
+  37              	WatchdogTimer_Lock:
+  38              	.LFB35:
+  39              		.file 1 "WatchdogTimer.c"
+   1:WatchdogTimer.c **** /*****************************************************************************
+   2:WatchdogTimer.c **** * File Name: WatchdogTimer.c
+   3:WatchdogTimer.c **** *
+   4:WatchdogTimer.c **** * Version: 1.0
+   5:WatchdogTimer.c **** *
+   6:WatchdogTimer.c **** * Description:
+   7:WatchdogTimer.c **** * This file implements the watchdog timer for a deep-sleep wakeup source, 
+   8:WatchdogTimer.c **** * and also to keep the timestamp.
+   9:WatchdogTimer.c **** *
+  10:WatchdogTimer.c **** * Note:
+  11:WatchdogTimer.c **** * 
+  12:WatchdogTimer.c **** * Owner:
+  13:WatchdogTimer.c **** * PMAD
+  14:WatchdogTimer.c **** *
+  15:WatchdogTimer.c **** ******************************************************************************
+  16:WatchdogTimer.c **** * Copyright (2014), Cypress Semiconductor Corporation.
+  17:WatchdogTimer.c **** ******************************************************************************
+  18:WatchdogTimer.c **** * This software is owned by Cypress Semiconductor Corporation (Cypress) and is
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 2
+
+
+  19:WatchdogTimer.c **** * protected by and subject to worldwide patent protection (United States and
+  20:WatchdogTimer.c **** * foreign), United States copyright laws and international treaty provisions.
+  21:WatchdogTimer.c **** * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+  22:WatchdogTimer.c **** * license to copy, use, modify, create derivative works of, and compile the
+  23:WatchdogTimer.c **** * Cypress Source Code and derivative works for the sole purpose of creating
+  24:WatchdogTimer.c **** * custom software in support of licensee product to be used only in conjunction
+  25:WatchdogTimer.c **** * with a Cypress integrated circuit as specified in the applicable agreement.
+  26:WatchdogTimer.c **** * Any reproduction, modification, translation, compilation, or representation of
+  27:WatchdogTimer.c **** * this software except as specified above is prohibited without the express
+  28:WatchdogTimer.c **** * written permission of Cypress.
+  29:WatchdogTimer.c **** *
+  30:WatchdogTimer.c **** * Disclaimer: CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH
+  31:WatchdogTimer.c **** * REGARD TO THIS MATERIAL, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  32:WatchdogTimer.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  33:WatchdogTimer.c **** * Cypress reserves the right to make changes without further notice to the
+  34:WatchdogTimer.c **** * materials described herein. Cypress does not assume any liability arising out
+  35:WatchdogTimer.c **** * of the application or use of any product or circuit described herein. Cypress
+  36:WatchdogTimer.c **** * does not authorize its products for use as critical components in life-support
+  37:WatchdogTimer.c **** * systems where a malfunction or failure may reasonably be expected to result in
+  38:WatchdogTimer.c **** * significant injury to the user. The inclusion of Cypress' product in a life-
+  39:WatchdogTimer.c **** * support systems application implies that the manufacturer assumes all risk of
+  40:WatchdogTimer.c **** * such use and in doing so indemnifies Cypress against all charges. Use may be
+  41:WatchdogTimer.c **** * limited by and subject to the applicable Cypress software license agreement.
+  42:WatchdogTimer.c **** *****************************************************************************/
+  43:WatchdogTimer.c **** 
+  44:WatchdogTimer.c **** 
+  45:WatchdogTimer.c **** /*****************************************************************************
+  46:WatchdogTimer.c **** * Included headers
+  47:WatchdogTimer.c **** *****************************************************************************/
+  48:WatchdogTimer.c **** #include "CommonFunctions.h"
+  49:WatchdogTimer.c **** #include "BLE_HTSS.h"
+  50:WatchdogTimer.c **** 
+  51:WatchdogTimer.c **** /*****************************************************************************
+  52:WatchdogTimer.c **** * Macros and constants
+  53:WatchdogTimer.c **** *****************************************************************************/
+  54:WatchdogTimer.c **** #define WDT_INTERRUPT_NUM           (8)
+  55:WatchdogTimer.c **** #define WATCHDOG_DEFAULT_PERIOD_MS  (20)
+  56:WatchdogTimer.c **** #define WATCHDOG_TICKS_PER_MS       (32)
+  57:WatchdogTimer.c **** #define CLK_ILO_CONFIG_ILO_ENABLE   (1u << 31)
+  58:WatchdogTimer.c **** #define WDT_CONFIG_WDT_MODE0_INT    (1u << 0)    
+  59:WatchdogTimer.c **** #define WDT_CONTROL_WDT_ENABLE0     (1u << 0)
+  60:WatchdogTimer.c **** #define WDT_CONTROL_WDT_ENABLED0    (1u << 1)
+  61:WatchdogTimer.c **** #define WDT_CONTROL_WDT_INT0        (1u << 2)
+  62:WatchdogTimer.c **** #define CLK_SELECT_WDT_LOCK_SET01   ((1u << 14) | (1u << 15))
+  63:WatchdogTimer.c **** #define CLK_SELECT_WDT_LOCK_CLR0    (1u << 14)
+  64:WatchdogTimer.c **** #define CLK_SELECT_WDT_LOCK_CLR1    (1u << 15)
+  65:WatchdogTimer.c **** #define UPDATE_WDT_MATCH(value)     CY_SET_REG32(CYREG_WDT_MATCH, \
+  66:WatchdogTimer.c ****                                     (CY_GET_REG32(CYREG_WDT_MATCH) & 0xFFFF0000) + (uint16)value)
+  67:WatchdogTimer.c **** 
+  68:WatchdogTimer.c **** 
+  69:WatchdogTimer.c **** /*****************************************************************************
+  70:WatchdogTimer.c **** * Global variables
+  71:WatchdogTimer.c **** *****************************************************************************/
+  72:WatchdogTimer.c **** volatile static uint32 watchdogPeriodMs = WATCHDOG_DEFAULT_PERIOD_MS;
+  73:WatchdogTimer.c **** volatile static uint32 nextTicks = WATCHDOG_DEFAULT_PERIOD_MS * WATCHDOG_TICKS_PER_MS;
+  74:WatchdogTimer.c **** 
+  75:WatchdogTimer.c **** /*****************************************************************************
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 3
+
+
+  76:WatchdogTimer.c **** * Function Definitions
+  77:WatchdogTimer.c **** *****************************************************************************/
+  78:WatchdogTimer.c **** 
+  79:WatchdogTimer.c **** /*****************************************************************************
+  80:WatchdogTimer.c **** * Static Functions
+  81:WatchdogTimer.c **** *****************************************************************************/
+  82:WatchdogTimer.c **** 
+  83:WatchdogTimer.c **** /*****************************************************************************
+  84:WatchdogTimer.c **** * Function Name: WatchdogTimer_Lock()
+  85:WatchdogTimer.c **** ******************************************************************************
+  86:WatchdogTimer.c **** * Summary:
+  87:WatchdogTimer.c **** * Locks the watchdog timer to prevent configuration changes.
+  88:WatchdogTimer.c **** *
+  89:WatchdogTimer.c **** * Parameters:
+  90:WatchdogTimer.c **** * None
+  91:WatchdogTimer.c **** *
+  92:WatchdogTimer.c **** * Return:
+  93:WatchdogTimer.c **** * None
+  94:WatchdogTimer.c **** *
+  95:WatchdogTimer.c **** * Theory:
+  96:WatchdogTimer.c **** * The CLK_SELECT register is written to, such that watchdog timer is now 
+  97:WatchdogTimer.c **** * locked. Any further changes to watchdog timer registers are then ignored.
+  98:WatchdogTimer.c **** *
+  99:WatchdogTimer.c **** * Side Effects:
+ 100:WatchdogTimer.c **** * None
+ 101:WatchdogTimer.c **** *
+ 102:WatchdogTimer.c **** * Note:
+ 103:WatchdogTimer.c **** *
+ 104:WatchdogTimer.c **** *****************************************************************************/
+ 105:WatchdogTimer.c **** static void WatchdogTimer_Lock(void)
+ 106:WatchdogTimer.c **** {
+  40              		.loc 1 106 0
+  41              		.cfi_startproc
+  42              		@ args = 0, pretend = 0, frame = 8
+  43              		@ frame_needed = 1, uses_anonymous_args = 0
+  44 0000 80B5     		push	{r7, lr}
+  45              		.cfi_def_cfa_offset 8
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+  48 0002 82B0     		sub	sp, sp, #8
+  49              		.cfi_def_cfa_offset 16
+  50 0004 00AF     		add	r7, sp, #0
+  51              		.cfi_def_cfa_register 7
+ 107:WatchdogTimer.c ****     uint32 ClkSelectValue;
+ 108:WatchdogTimer.c **** 
+ 109:WatchdogTimer.c ****     /* Update CLK_SELECT register to lock watchdog timer */
+ 110:WatchdogTimer.c ****     ClkSelectValue = CY_GET_REG32(CYREG_CLK_SELECT) | CLK_SELECT_WDT_LOCK_SET01;
+  52              		.loc 1 110 0
+  53 0006 064B     		ldr	r3, .L2
+  54 0008 1B68     		ldr	r3, [r3]
+  55 000a C022     		movs	r2, #192
+  56 000c 1202     		lsls	r2, r2, #8
+  57 000e 1343     		orrs	r3, r2
+  58 0010 7B60     		str	r3, [r7, #4]
+ 111:WatchdogTimer.c ****     CY_SET_REG32(CYREG_CLK_SELECT, ClkSelectValue);
+  59              		.loc 1 111 0
+  60 0012 034B     		ldr	r3, .L2
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 4
+
+
+  61 0014 7A68     		ldr	r2, [r7, #4]
+  62 0016 1A60     		str	r2, [r3]
+ 112:WatchdogTimer.c **** }
+  63              		.loc 1 112 0
+  64 0018 C046     		nop
+  65 001a BD46     		mov	sp, r7
+  66 001c 02B0     		add	sp, sp, #8
+  67              		@ sp needed
+  68 001e 80BD     		pop	{r7, pc}
+  69              	.L3:
+  70              		.align	2
+  71              	.L2:
+  72 0020 00010B40 		.word	1074462976
+  73              		.cfi_endproc
+  74              	.LFE35:
+  75              		.size	WatchdogTimer_Lock, .-WatchdogTimer_Lock
+  76              		.section	.text.WatchdogTimer_Unlock,"ax",%progbits
+  77              		.align	2
+  78              		.code	16
+  79              		.thumb_func
+  80              		.type	WatchdogTimer_Unlock, %function
+  81              	WatchdogTimer_Unlock:
+  82              	.LFB36:
+ 113:WatchdogTimer.c **** 
+ 114:WatchdogTimer.c **** 
+ 115:WatchdogTimer.c **** /*****************************************************************************
+ 116:WatchdogTimer.c **** * Function Name: WatchdogTimer_Unlock()
+ 117:WatchdogTimer.c **** ******************************************************************************
+ 118:WatchdogTimer.c **** * Summary:
+ 119:WatchdogTimer.c **** * Unlocks the watchdog timer to allow configuration changes.
+ 120:WatchdogTimer.c **** *
+ 121:WatchdogTimer.c **** * Parameters:
+ 122:WatchdogTimer.c **** * None
+ 123:WatchdogTimer.c **** *
+ 124:WatchdogTimer.c **** * Return:
+ 125:WatchdogTimer.c **** * None
+ 126:WatchdogTimer.c **** *
+ 127:WatchdogTimer.c **** * Theory:
+ 128:WatchdogTimer.c **** * The CLK_SELECT register is written to, such that watchdog timer is now 
+ 129:WatchdogTimer.c **** * unlocked. The watchdog timer registers can then be modified.
+ 130:WatchdogTimer.c **** *
+ 131:WatchdogTimer.c **** * Side Effects:
+ 132:WatchdogTimer.c **** * None
+ 133:WatchdogTimer.c **** *
+ 134:WatchdogTimer.c **** * Note:
+ 135:WatchdogTimer.c **** *
+ 136:WatchdogTimer.c **** *****************************************************************************/
+ 137:WatchdogTimer.c **** static void WatchdogTimer_Unlock(void)
+ 138:WatchdogTimer.c **** {
+  83              		.loc 1 138 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 8
+  86              		@ frame_needed = 1, uses_anonymous_args = 0
+  87 0000 80B5     		push	{r7, lr}
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 7, -8
+  90              		.cfi_offset 14, -4
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 5
+
+
+  91 0002 82B0     		sub	sp, sp, #8
+  92              		.cfi_def_cfa_offset 16
+  93 0004 00AF     		add	r7, sp, #0
+  94              		.cfi_def_cfa_register 7
+ 139:WatchdogTimer.c ****     uint32 ClkSelectValue;
+ 140:WatchdogTimer.c **** 
+ 141:WatchdogTimer.c ****     /* Update CLK_SELECT register to unlock watchdog timer */
+ 142:WatchdogTimer.c ****     ClkSelectValue = CY_GET_REG32(CYREG_CLK_SELECT) & ~CLK_SELECT_WDT_LOCK_SET01;
+  95              		.loc 1 142 0
+  96 0006 0A4B     		ldr	r3, .L5
+  97 0008 1B68     		ldr	r3, [r3]
+  98 000a 0A4A     		ldr	r2, .L5+4
+  99 000c 1340     		ands	r3, r2
+ 100 000e 7B60     		str	r3, [r7, #4]
+ 143:WatchdogTimer.c ****     CY_SET_REG32(CYREG_CLK_SELECT, ClkSelectValue | CLK_SELECT_WDT_LOCK_CLR0);
+ 101              		.loc 1 143 0
+ 102 0010 074B     		ldr	r3, .L5
+ 103 0012 7A68     		ldr	r2, [r7, #4]
+ 104 0014 8021     		movs	r1, #128
+ 105 0016 C901     		lsls	r1, r1, #7
+ 106 0018 0A43     		orrs	r2, r1
+ 107 001a 1A60     		str	r2, [r3]
+ 144:WatchdogTimer.c ****     CY_SET_REG32(CYREG_CLK_SELECT, ClkSelectValue | CLK_SELECT_WDT_LOCK_CLR1);
+ 108              		.loc 1 144 0
+ 109 001c 044B     		ldr	r3, .L5
+ 110 001e 7A68     		ldr	r2, [r7, #4]
+ 111 0020 8021     		movs	r1, #128
+ 112 0022 0902     		lsls	r1, r1, #8
+ 113 0024 0A43     		orrs	r2, r1
+ 114 0026 1A60     		str	r2, [r3]
+ 145:WatchdogTimer.c **** }
+ 115              		.loc 1 145 0
+ 116 0028 C046     		nop
+ 117 002a BD46     		mov	sp, r7
+ 118 002c 02B0     		add	sp, sp, #8
+ 119              		@ sp needed
+ 120 002e 80BD     		pop	{r7, pc}
+ 121              	.L6:
+ 122              		.align	2
+ 123              	.L5:
+ 124 0030 00010B40 		.word	1074462976
+ 125 0034 FF3FFFFF 		.word	-49153
+ 126              		.cfi_endproc
+ 127              	.LFE36:
+ 128              		.size	WatchdogTimer_Unlock, .-WatchdogTimer_Unlock
+ 129              		.section	.text.WatchdogTimer_Isr,"ax",%progbits
+ 130              		.align	2
+ 131              		.global	WatchdogTimer_Isr
+ 132              		.code	16
+ 133              		.thumb_func
+ 134              		.type	WatchdogTimer_Isr, %function
+ 135              	WatchdogTimer_Isr:
+ 136              	.LFB37:
+ 146:WatchdogTimer.c **** 
+ 147:WatchdogTimer.c **** 
+ 148:WatchdogTimer.c **** /*****************************************************************************
+ 149:WatchdogTimer.c **** * Public Functions
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 6
+
+
+ 150:WatchdogTimer.c **** *****************************************************************************/
+ 151:WatchdogTimer.c **** 
+ 152:WatchdogTimer.c **** /*****************************************************************************
+ 153:WatchdogTimer.c **** * Function Name: WatchdogTimer_Isr()
+ 154:WatchdogTimer.c **** ******************************************************************************
+ 155:WatchdogTimer.c **** * Summary:
+ 156:WatchdogTimer.c **** * The ISR for the watchdog timer. 
+ 157:WatchdogTimer.c **** *
+ 158:WatchdogTimer.c **** * Parameters:
+ 159:WatchdogTimer.c **** * None
+ 160:WatchdogTimer.c **** *
+ 161:WatchdogTimer.c **** * Return:
+ 162:WatchdogTimer.c **** * None
+ 163:WatchdogTimer.c **** *
+ 164:WatchdogTimer.c **** * Theory:
+ 165:WatchdogTimer.c **** * The ISR checks if the WDT interrupt source is timer 0. If yes, then it 
+ 166:WatchdogTimer.c **** * updates the WDT_MATCH register to prepare for the next interrupt and
+ 167:WatchdogTimer.c **** * updates the flags for measurement interval. 
+ 168:WatchdogTimer.c **** *
+ 169:WatchdogTimer.c **** * Side Effects:
+ 170:WatchdogTimer.c **** * None
+ 171:WatchdogTimer.c **** *
+ 172:WatchdogTimer.c **** * Note:
+ 173:WatchdogTimer.c **** *
+ 174:WatchdogTimer.c **** *****************************************************************************/
+ 175:WatchdogTimer.c **** CY_ISR(WatchdogTimer_Isr)
+ 176:WatchdogTimer.c **** {
+ 137              		.loc 1 176 0
+ 138              		.cfi_startproc
+ 139              		@ args = 0, pretend = 0, frame = 0
+ 140              		@ frame_needed = 1, uses_anonymous_args = 0
+ 141 0000 80B5     		push	{r7, lr}
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 7, -8
+ 144              		.cfi_offset 14, -4
+ 145 0002 00AF     		add	r7, sp, #0
+ 146              		.cfi_def_cfa_register 7
+ 177:WatchdogTimer.c ****     /* Initializes the interval timer with default measurement interval */
+ 178:WatchdogTimer.c ****     static uint32 intervalTimer = DEFAULT_MEASUREMENT_INTERVAL;
+ 179:WatchdogTimer.c ****     
+ 180:WatchdogTimer.c ****     /* Unlock watchdog timer to enable configuration changes*/
+ 181:WatchdogTimer.c ****     WatchdogTimer_Unlock();
+ 147              		.loc 1 181 0
+ 148 0004 FFF7FEFF 		bl	WatchdogTimer_Unlock
+ 182:WatchdogTimer.c **** 
+ 183:WatchdogTimer.c ****     /* Update WDT match register for next interrupt */
+ 184:WatchdogTimer.c ****     UPDATE_WDT_MATCH((uint16)(CY_GET_REG32(CYREG_WDT_MATCH) + nextTicks));
+ 149              		.loc 1 184 0
+ 150 0008 194A     		ldr	r2, .L9
+ 151 000a 194B     		ldr	r3, .L9
+ 152 000c 1B68     		ldr	r3, [r3]
+ 153 000e 1B0C     		lsrs	r3, r3, #16
+ 154 0010 1904     		lsls	r1, r3, #16
+ 155 0012 174B     		ldr	r3, .L9
+ 156 0014 1B68     		ldr	r3, [r3]
+ 157 0016 98B2     		uxth	r0, r3
+ 158 0018 164B     		ldr	r3, .L9+4
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 7
+
+
+ 159 001a 1B68     		ldr	r3, [r3]
+ 160 001c 9BB2     		uxth	r3, r3
+ 161 001e C318     		adds	r3, r0, r3
+ 162 0020 9BB2     		uxth	r3, r3
+ 163 0022 CB18     		adds	r3, r1, r3
+ 164 0024 1360     		str	r3, [r2]
+ 185:WatchdogTimer.c ****     
+ 186:WatchdogTimer.c ****     /* Clear WDT pending interrupt */
+ 187:WatchdogTimer.c ****     CY_SET_REG32(CYREG_WDT_CONTROL, CY_GET_REG32(CYREG_WDT_CONTROL) | WDT_CONTROL_WDT_INT0);
+ 165              		.loc 1 187 0
+ 166 0026 144B     		ldr	r3, .L9+8
+ 167 0028 134A     		ldr	r2, .L9+8
+ 168 002a 1268     		ldr	r2, [r2]
+ 169 002c 0421     		movs	r1, #4
+ 170 002e 0A43     		orrs	r2, r1
+ 171 0030 1A60     		str	r2, [r3]
+ 188:WatchdogTimer.c **** 
+ 189:WatchdogTimer.c ****     /* Lock watchdog timer to prevent configuration changes */
+ 190:WatchdogTimer.c ****     WatchdogTimer_Lock();
+ 172              		.loc 1 190 0
+ 173 0032 FFF7FEFF 		bl	WatchdogTimer_Lock
+ 191:WatchdogTimer.c ****     
+ 192:WatchdogTimer.c ****     /* Decrement interval timer */
+ 193:WatchdogTimer.c ****     intervalTimer--;    
+ 174              		.loc 1 193 0
+ 175 0036 114B     		ldr	r3, .L9+12
+ 176 0038 1B68     		ldr	r3, [r3]
+ 177 003a 5A1E     		subs	r2, r3, #1
+ 178 003c 0F4B     		ldr	r3, .L9+12
+ 179 003e 1A60     		str	r2, [r3]
+ 194:WatchdogTimer.c ****     
+ 195:WatchdogTimer.c ****     /* If interval timer has elapsed then enable MEASUREMENT_INTERVAL flag */
+ 196:WatchdogTimer.c ****     if(intervalTimer == 0)
+ 180              		.loc 1 196 0
+ 181 0040 0E4B     		ldr	r3, .L9+12
+ 182 0042 1B68     		ldr	r3, [r3]
+ 183 0044 002B     		cmp	r3, #0
+ 184 0046 09D1     		bne	.L8
+ 197:WatchdogTimer.c ****     {
+ 198:WatchdogTimer.c ****         /* Initialize interval timer and set MEASUREMENT_INTERVAL flag */
+ 199:WatchdogTimer.c ****         intervalTimer = htssInterval;
+ 185              		.loc 1 199 0
+ 186 0048 0D4B     		ldr	r3, .L9+16
+ 187 004a 1A68     		ldr	r2, [r3]
+ 188 004c 0B4B     		ldr	r3, .L9+12
+ 189 004e 1A60     		str	r2, [r3]
+ 200:WatchdogTimer.c ****         SystemFlag |= MEASUREMENT_INTERVAL;
+ 190              		.loc 1 200 0
+ 191 0050 0C4B     		ldr	r3, .L9+20
+ 192 0052 1B68     		ldr	r3, [r3]
+ 193 0054 0222     		movs	r2, #2
+ 194 0056 1A43     		orrs	r2, r3
+ 195 0058 0A4B     		ldr	r3, .L9+20
+ 196 005a 1A60     		str	r2, [r3]
+ 197              	.L8:
+ 201:WatchdogTimer.c ****     }
+ 202:WatchdogTimer.c ****     
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 8
+
+
+ 203:WatchdogTimer.c ****     /* Set WDT flag for application processing */
+ 204:WatchdogTimer.c ****     SystemFlag |= WAKEUP_SOURCE_WDT;        
+ 198              		.loc 1 204 0
+ 199 005c 094B     		ldr	r3, .L9+20
+ 200 005e 1B68     		ldr	r3, [r3]
+ 201 0060 0122     		movs	r2, #1
+ 202 0062 1A43     		orrs	r2, r3
+ 203 0064 074B     		ldr	r3, .L9+20
+ 204 0066 1A60     		str	r2, [r3]
+ 205:WatchdogTimer.c **** }
+ 205              		.loc 1 205 0
+ 206 0068 C046     		nop
+ 207 006a BD46     		mov	sp, r7
+ 208              		@ sp needed
+ 209 006c 80BD     		pop	{r7, pc}
+ 210              	.L10:
+ 211 006e C046     		.align	2
+ 212              	.L9:
+ 213 0070 08020B40 		.word	1074463240
+ 214 0074 04000000 		.word	nextTicks
+ 215 0078 10020B40 		.word	1074463248
+ 216 007c 08000000 		.word	intervalTimer.7871
+ 217 0080 00000000 		.word	htssInterval
+ 218 0084 00000000 		.word	SystemFlag
+ 219              		.cfi_endproc
+ 220              	.LFE37:
+ 221              		.size	WatchdogTimer_Isr, .-WatchdogTimer_Isr
+ 222              		.section	.text.WatchdogTimer_Start,"ax",%progbits
+ 223              		.align	2
+ 224              		.global	WatchdogTimer_Start
+ 225              		.code	16
+ 226              		.thumb_func
+ 227              		.type	WatchdogTimer_Start, %function
+ 228              	WatchdogTimer_Start:
+ 229              	.LFB38:
+ 206:WatchdogTimer.c **** 
+ 207:WatchdogTimer.c **** 
+ 208:WatchdogTimer.c **** /*****************************************************************************
+ 209:WatchdogTimer.c **** * Function Name: WatchdogTimer_Start()
+ 210:WatchdogTimer.c **** ******************************************************************************
+ 211:WatchdogTimer.c **** * Summary:
+ 212:WatchdogTimer.c **** * Initializes the watchdog timer 0.
+ 213:WatchdogTimer.c **** *
+ 214:WatchdogTimer.c **** * Parameters:
+ 215:WatchdogTimer.c **** * wdtPeriodMs - The watchdog timer period to set, in milliseconds.
+ 216:WatchdogTimer.c **** *
+ 217:WatchdogTimer.c **** * Return:
+ 218:WatchdogTimer.c **** * None
+ 219:WatchdogTimer.c **** *
+ 220:WatchdogTimer.c **** * Theory:
+ 221:WatchdogTimer.c **** * Writes to the SRSS registers to start the low frequency clock and configure 
+ 222:WatchdogTimer.c **** * the watchdog timer 0. The watchdog timer is configured for 16-bit timing, 
+ 223:WatchdogTimer.c **** * and to generate an interrupt on match. 
+ 224:WatchdogTimer.c **** *
+ 225:WatchdogTimer.c **** * Side Effects:
+ 226:WatchdogTimer.c **** * None
+ 227:WatchdogTimer.c **** *
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 9
+
+
+ 228:WatchdogTimer.c **** * Note:
+ 229:WatchdogTimer.c **** *
+ 230:WatchdogTimer.c **** *****************************************************************************/
+ 231:WatchdogTimer.c **** void WatchdogTimer_Start(uint32 wdtPeriodMs)
+ 232:WatchdogTimer.c **** {
+ 230              		.loc 1 232 0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 8
+ 233              		@ frame_needed = 1, uses_anonymous_args = 0
+ 234 0000 80B5     		push	{r7, lr}
+ 235              		.cfi_def_cfa_offset 8
+ 236              		.cfi_offset 7, -8
+ 237              		.cfi_offset 14, -4
+ 238 0002 82B0     		sub	sp, sp, #8
+ 239              		.cfi_def_cfa_offset 16
+ 240 0004 00AF     		add	r7, sp, #0
+ 241              		.cfi_def_cfa_register 7
+ 242 0006 7860     		str	r0, [r7, #4]
+ 233:WatchdogTimer.c ****     CyIntSetVector(WDT_INTERRUPT_NUM, &WatchdogTimer_Isr);
+ 243              		.loc 1 233 0
+ 244 0008 1A4B     		ldr	r3, .L13
+ 245 000a 1900     		movs	r1, r3
+ 246 000c 0820     		movs	r0, #8
+ 247 000e FFF7FEFF 		bl	CyIntSetVector
+ 234:WatchdogTimer.c ****     
+ 235:WatchdogTimer.c ****     WatchdogTimer_Unlock();
+ 248              		.loc 1 235 0
+ 249 0012 FFF7FEFF 		bl	WatchdogTimer_Unlock
+ 236:WatchdogTimer.c **** 
+ 237:WatchdogTimer.c ****     /* Set the WDT period */
+ 238:WatchdogTimer.c ****     watchdogPeriodMs = wdtPeriodMs;
+ 250              		.loc 1 238 0
+ 251 0016 184B     		ldr	r3, .L13+4
+ 252 0018 7A68     		ldr	r2, [r7, #4]
+ 253 001a 1A60     		str	r2, [r3]
+ 239:WatchdogTimer.c ****     nextTicks = watchdogPeriodMs * WATCHDOG_TICKS_PER_MS;
+ 254              		.loc 1 239 0
+ 255 001c 164B     		ldr	r3, .L13+4
+ 256 001e 1B68     		ldr	r3, [r3]
+ 257 0020 5A01     		lsls	r2, r3, #5
+ 258 0022 164B     		ldr	r3, .L13+8
+ 259 0024 1A60     		str	r2, [r3]
+ 240:WatchdogTimer.c ****     UPDATE_WDT_MATCH(nextTicks);
+ 260              		.loc 1 240 0
+ 261 0026 164A     		ldr	r2, .L13+12
+ 262 0028 154B     		ldr	r3, .L13+12
+ 263 002a 1B68     		ldr	r3, [r3]
+ 264 002c 1B0C     		lsrs	r3, r3, #16
+ 265 002e 1904     		lsls	r1, r3, #16
+ 266 0030 124B     		ldr	r3, .L13+8
+ 267 0032 1B68     		ldr	r3, [r3]
+ 268 0034 1B04     		lsls	r3, r3, #16
+ 269 0036 1B0C     		lsrs	r3, r3, #16
+ 270 0038 CB18     		adds	r3, r1, r3
+ 271 003a 1360     		str	r3, [r2]
+ 241:WatchdogTimer.c ****         
+ 242:WatchdogTimer.c ****     /* Set WDT_CONFIG register */
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 10
+
+
+ 243:WatchdogTimer.c ****     CY_SET_REG32(CYREG_WDT_CONFIG, CY_GET_REG32(CYREG_WDT_CONFIG) | WDT_CONFIG_WDT_MODE0_INT);
+ 272              		.loc 1 243 0
+ 273 003c 114B     		ldr	r3, .L13+16
+ 274 003e 114A     		ldr	r2, .L13+16
+ 275 0040 1268     		ldr	r2, [r2]
+ 276 0042 0121     		movs	r1, #1
+ 277 0044 0A43     		orrs	r2, r1
+ 278 0046 1A60     		str	r2, [r3]
+ 244:WatchdogTimer.c **** 
+ 245:WatchdogTimer.c ****     /* Enable WDT interrupt for the NVIC */
+ 246:WatchdogTimer.c ****     CyIntEnable(WDT_INTERRUPT_NUM);
+ 279              		.loc 1 246 0
+ 280 0048 0820     		movs	r0, #8
+ 281 004a FFF7FEFF 		bl	CyIntEnable
+ 247:WatchdogTimer.c **** 
+ 248:WatchdogTimer.c ****     /* Set WDT_CONTROL register */
+ 249:WatchdogTimer.c ****     CY_SET_REG32(CYREG_WDT_CONTROL, CY_GET_REG32(CYREG_WDT_CONTROL) | WDT_CONTROL_WDT_ENABLE0);
+ 282              		.loc 1 249 0
+ 283 004e 0E4B     		ldr	r3, .L13+20
+ 284 0050 0D4A     		ldr	r2, .L13+20
+ 285 0052 1268     		ldr	r2, [r2]
+ 286 0054 0121     		movs	r1, #1
+ 287 0056 0A43     		orrs	r2, r1
+ 288 0058 1A60     		str	r2, [r3]
+ 250:WatchdogTimer.c **** 
+ 251:WatchdogTimer.c ****     /* Wait for the WDT enable to complete */
+ 252:WatchdogTimer.c ****     while((CY_GET_REG32(CYREG_WDT_CONTROL) & WDT_CONTROL_WDT_ENABLED0) == 0);
+ 289              		.loc 1 252 0
+ 290 005a C046     		nop
+ 291              	.L12:
+ 292              		.loc 1 252 0 is_stmt 0 discriminator 1
+ 293 005c 0A4B     		ldr	r3, .L13+20
+ 294 005e 1B68     		ldr	r3, [r3]
+ 295 0060 0222     		movs	r2, #2
+ 296 0062 1340     		ands	r3, r2
+ 297 0064 FAD0     		beq	.L12
+ 253:WatchdogTimer.c ****     
+ 254:WatchdogTimer.c ****     WatchdogTimer_Lock();
+ 298              		.loc 1 254 0 is_stmt 1
+ 299 0066 FFF7FEFF 		bl	WatchdogTimer_Lock
+ 255:WatchdogTimer.c **** }
+ 300              		.loc 1 255 0
+ 301 006a C046     		nop
+ 302 006c BD46     		mov	sp, r7
+ 303 006e 02B0     		add	sp, sp, #8
+ 304              		@ sp needed
+ 305 0070 80BD     		pop	{r7, pc}
+ 306              	.L14:
+ 307 0072 C046     		.align	2
+ 308              	.L13:
+ 309 0074 00000000 		.word	WatchdogTimer_Isr
+ 310 0078 00000000 		.word	watchdogPeriodMs
+ 311 007c 04000000 		.word	nextTicks
+ 312 0080 08020B40 		.word	1074463240
+ 313 0084 0C020B40 		.word	1074463244
+ 314 0088 10020B40 		.word	1074463248
+ 315              		.cfi_endproc
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 11
+
+
+ 316              	.LFE38:
+ 317              		.size	WatchdogTimer_Start, .-WatchdogTimer_Start
+ 318              		.section	.text.WatchdogTimer_Stop,"ax",%progbits
+ 319              		.align	2
+ 320              		.global	WatchdogTimer_Stop
+ 321              		.code	16
+ 322              		.thumb_func
+ 323              		.type	WatchdogTimer_Stop, %function
+ 324              	WatchdogTimer_Stop:
+ 325              	.LFB39:
+ 256:WatchdogTimer.c **** 
+ 257:WatchdogTimer.c **** /*****************************************************************************
+ 258:WatchdogTimer.c **** * Function Name: WatchdogTimer_Stop()
+ 259:WatchdogTimer.c **** ******************************************************************************
+ 260:WatchdogTimer.c **** * Summary:
+ 261:WatchdogTimer.c **** * Disables the watchdog timer.
+ 262:WatchdogTimer.c **** *
+ 263:WatchdogTimer.c **** * Parameters:
+ 264:WatchdogTimer.c **** * None
+ 265:WatchdogTimer.c **** *
+ 266:WatchdogTimer.c **** * Return:
+ 267:WatchdogTimer.c **** * None
+ 268:WatchdogTimer.c **** *
+ 269:WatchdogTimer.c **** * Theory:
+ 270:WatchdogTimer.c **** * Disables the watchdog timer 0.
+ 271:WatchdogTimer.c **** *
+ 272:WatchdogTimer.c **** * Side Effects:
+ 273:WatchdogTimer.c **** * None
+ 274:WatchdogTimer.c **** *
+ 275:WatchdogTimer.c **** * Note:
+ 276:WatchdogTimer.c **** *
+ 277:WatchdogTimer.c **** *****************************************************************************/
+ 278:WatchdogTimer.c **** void WatchdogTimer_Stop (void)
+ 279:WatchdogTimer.c **** {
+ 326              		.loc 1 279 0
+ 327              		.cfi_startproc
+ 328              		@ args = 0, pretend = 0, frame = 0
+ 329              		@ frame_needed = 1, uses_anonymous_args = 0
+ 330 0000 80B5     		push	{r7, lr}
+ 331              		.cfi_def_cfa_offset 8
+ 332              		.cfi_offset 7, -8
+ 333              		.cfi_offset 14, -4
+ 334 0002 00AF     		add	r7, sp, #0
+ 335              		.cfi_def_cfa_register 7
+ 280:WatchdogTimer.c ****     WatchdogTimer_Unlock();
+ 336              		.loc 1 280 0
+ 337 0004 FFF7FEFF 		bl	WatchdogTimer_Unlock
+ 281:WatchdogTimer.c **** 
+ 282:WatchdogTimer.c ****     /* Clear WDT_CONFIG register */
+ 283:WatchdogTimer.c ****     CY_SET_REG32(CYREG_WDT_CONFIG, CY_GET_REG32(CYREG_WDT_CONFIG) & ~WDT_CONFIG_WDT_MODE0_INT);
+ 338              		.loc 1 283 0
+ 339 0008 084B     		ldr	r3, .L16
+ 340 000a 084A     		ldr	r2, .L16
+ 341 000c 1268     		ldr	r2, [r2]
+ 342 000e 0121     		movs	r1, #1
+ 343 0010 8A43     		bics	r2, r1
+ 344 0012 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 12
+
+
+ 284:WatchdogTimer.c **** 
+ 285:WatchdogTimer.c ****     /* Clear WDT pending interrupt */
+ 286:WatchdogTimer.c ****     CY_SET_REG32(CYREG_WDT_CONTROL, CY_GET_REG32(CYREG_WDT_CONTROL) | WDT_CONTROL_WDT_INT0);
+ 345              		.loc 1 286 0
+ 346 0014 064B     		ldr	r3, .L16+4
+ 347 0016 064A     		ldr	r2, .L16+4
+ 348 0018 1268     		ldr	r2, [r2]
+ 349 001a 0421     		movs	r1, #4
+ 350 001c 0A43     		orrs	r2, r1
+ 351 001e 1A60     		str	r2, [r3]
+ 287:WatchdogTimer.c **** 
+ 288:WatchdogTimer.c ****     WatchdogTimer_Lock();
+ 352              		.loc 1 288 0
+ 353 0020 FFF7FEFF 		bl	WatchdogTimer_Lock
+ 289:WatchdogTimer.c **** }
+ 354              		.loc 1 289 0
+ 355 0024 C046     		nop
+ 356 0026 BD46     		mov	sp, r7
+ 357              		@ sp needed
+ 358 0028 80BD     		pop	{r7, pc}
+ 359              	.L17:
+ 360 002a C046     		.align	2
+ 361              	.L16:
+ 362 002c 0C020B40 		.word	1074463244
+ 363 0030 10020B40 		.word	1074463248
+ 364              		.cfi_endproc
+ 365              	.LFE39:
+ 366              		.size	WatchdogTimer_Stop, .-WatchdogTimer_Stop
+ 367              		.data
+ 368              		.align	2
+ 369              		.type	intervalTimer.7871, %object
+ 370              		.size	intervalTimer.7871, 4
+ 371              	intervalTimer.7871:
+ 372 0008 01000000 		.word	1
+ 373              		.text
+ 374              	.Letext0:
+ 375              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 376              		.file 3 "Generated_Source\\PSoC4/OneWire.h"
+ 377              		.file 4 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 378              		.file 5 "Generated_Source\\PSoC4/BLE_hts.h"
+ 379              		.file 6 "Generated_Source\\PSoC4/BLE_eventHandler.h"
+ 380              		.file 7 "CommonFunctions.h"
+ 381              		.file 8 "BLE_HTSS.h"
+ 382              		.section	.debug_info,"",%progbits
+ 383              	.Ldebug_info0:
+ 384 0000 33040000 		.4byte	0x433
+ 385 0004 0400     		.2byte	0x4
+ 386 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 387 000a 04       		.byte	0x4
+ 388 000b 01       		.uleb128 0x1
+ 389 000c D2040000 		.4byte	.LASF118
+ 390 0010 0C       		.byte	0xc
+ 391 0011 9C040000 		.4byte	.LASF119
+ 392 0015 E4010000 		.4byte	.LASF120
+ 393 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 394 001d 00000000 		.4byte	0
+ 395 0021 00000000 		.4byte	.Ldebug_line0
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 13
+
+
+ 396 0025 02       		.uleb128 0x2
+ 397 0026 01       		.byte	0x1
+ 398 0027 06       		.byte	0x6
+ 399 0028 3C060000 		.4byte	.LASF0
+ 400 002c 02       		.uleb128 0x2
+ 401 002d 01       		.byte	0x1
+ 402 002e 08       		.byte	0x8
+ 403 002f E4050000 		.4byte	.LASF1
+ 404 0033 02       		.uleb128 0x2
+ 405 0034 02       		.byte	0x2
+ 406 0035 05       		.byte	0x5
+ 407 0036 CC000000 		.4byte	.LASF2
+ 408 003a 02       		.uleb128 0x2
+ 409 003b 02       		.byte	0x2
+ 410 003c 07       		.byte	0x7
+ 411 003d BD070000 		.4byte	.LASF3
+ 412 0041 02       		.uleb128 0x2
+ 413 0042 04       		.byte	0x4
+ 414 0043 05       		.byte	0x5
+ 415 0044 EF030000 		.4byte	.LASF4
+ 416 0048 02       		.uleb128 0x2
+ 417 0049 04       		.byte	0x4
+ 418 004a 07       		.byte	0x7
+ 419 004b F7060000 		.4byte	.LASF5
+ 420 004f 02       		.uleb128 0x2
+ 421 0050 08       		.byte	0x8
+ 422 0051 05       		.byte	0x5
+ 423 0052 88010000 		.4byte	.LASF6
+ 424 0056 02       		.uleb128 0x2
+ 425 0057 08       		.byte	0x8
+ 426 0058 07       		.byte	0x7
+ 427 0059 B7030000 		.4byte	.LASF7
+ 428 005d 03       		.uleb128 0x3
+ 429 005e 04       		.byte	0x4
+ 430 005f 05       		.byte	0x5
+ 431 0060 696E7400 		.ascii	"int\000"
+ 432 0064 02       		.uleb128 0x2
+ 433 0065 04       		.byte	0x4
+ 434 0066 07       		.byte	0x7
+ 435 0067 A5060000 		.4byte	.LASF8
+ 436 006b 04       		.uleb128 0x4
+ 437 006c 93080000 		.4byte	.LASF9
+ 438 0070 02       		.byte	0x2
+ 439 0071 E601     		.2byte	0x1e6
+ 440 0073 2C000000 		.4byte	0x2c
+ 441 0077 04       		.uleb128 0x4
+ 442 0078 6B020000 		.4byte	.LASF10
+ 443 007c 02       		.byte	0x2
+ 444 007d E701     		.2byte	0x1e7
+ 445 007f 3A000000 		.4byte	0x3a
+ 446 0083 04       		.uleb128 0x4
+ 447 0084 F4080000 		.4byte	.LASF11
+ 448 0088 02       		.byte	0x2
+ 449 0089 E801     		.2byte	0x1e8
+ 450 008b 48000000 		.4byte	0x48
+ 451 008f 02       		.uleb128 0x2
+ 452 0090 04       		.byte	0x4
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 14
+
+
+ 453 0091 04       		.byte	0x4
+ 454 0092 5D030000 		.4byte	.LASF12
+ 455 0096 02       		.uleb128 0x2
+ 456 0097 08       		.byte	0x8
+ 457 0098 04       		.byte	0x4
+ 458 0099 60090000 		.4byte	.LASF13
+ 459 009d 02       		.uleb128 0x2
+ 460 009e 01       		.byte	0x1
+ 461 009f 08       		.byte	0x8
+ 462 00a0 47080000 		.4byte	.LASF14
+ 463 00a4 05       		.uleb128 0x5
+ 464 00a5 6B000000 		.4byte	0x6b
+ 465 00a9 04       		.uleb128 0x4
+ 466 00aa 150C0000 		.4byte	.LASF15
+ 467 00ae 02       		.byte	0x2
+ 468 00af 9202     		.2byte	0x292
+ 469 00b1 B5000000 		.4byte	0xb5
+ 470 00b5 05       		.uleb128 0x5
+ 471 00b6 83000000 		.4byte	0x83
+ 472 00ba 06       		.uleb128 0x6
+ 473 00bb A2050000 		.4byte	.LASF121
+ 474 00bf 04       		.byte	0x4
+ 475 00c0 03       		.byte	0x3
+ 476 00c1 30       		.byte	0x30
+ 477 00c2 DF000000 		.4byte	0xdf
+ 478 00c6 07       		.uleb128 0x7
+ 479 00c7 2B0B0000 		.4byte	.LASF16
+ 480 00cb 03       		.byte	0x3
+ 481 00cc 31       		.byte	0x31
+ 482 00cd 77000000 		.4byte	0x77
+ 483 00d1 00       		.byte	0
+ 484 00d2 07       		.uleb128 0x7
+ 485 00d3 860A0000 		.4byte	.LASF17
+ 486 00d7 03       		.byte	0x3
+ 487 00d8 32       		.byte	0x32
+ 488 00d9 6B000000 		.4byte	0x6b
+ 489 00dd 02       		.byte	0x2
+ 490 00de 00       		.byte	0
+ 491 00df 02       		.uleb128 0x2
+ 492 00e0 08       		.byte	0x8
+ 493 00e1 04       		.byte	0x4
+ 494 00e2 B2050000 		.4byte	.LASF18
+ 495 00e6 02       		.uleb128 0x2
+ 496 00e7 04       		.byte	0x4
+ 497 00e8 07       		.byte	0x7
+ 498 00e9 21010000 		.4byte	.LASF19
+ 499 00ed 08       		.uleb128 0x8
+ 500 00ee 01       		.byte	0x1
+ 501 00ef 2C000000 		.4byte	0x2c
+ 502 00f3 04       		.byte	0x4
+ 503 00f4 3501     		.2byte	0x135
+ 504 00f6 AB020000 		.4byte	0x2ab
+ 505 00fa 09       		.uleb128 0x9
+ 506 00fb C8020000 		.4byte	.LASF20
+ 507 00ff 00       		.byte	0
+ 508 0100 09       		.uleb128 0x9
+ 509 0101 D1010000 		.4byte	.LASF21
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 15
+
+
+ 510 0105 01       		.byte	0x1
+ 511 0106 09       		.uleb128 0x9
+ 512 0107 190B0000 		.4byte	.LASF22
+ 513 010b 02       		.byte	0x2
+ 514 010c 09       		.uleb128 0x9
+ 515 010d 180A0000 		.4byte	.LASF23
+ 516 0111 03       		.byte	0x3
+ 517 0112 09       		.uleb128 0x9
+ 518 0113 93000000 		.4byte	.LASF24
+ 519 0117 04       		.byte	0x4
+ 520 0118 09       		.uleb128 0x9
+ 521 0119 80040000 		.4byte	.LASF25
+ 522 011d 05       		.byte	0x5
+ 523 011e 09       		.uleb128 0x9
+ 524 011f 43000000 		.4byte	.LASF26
+ 525 0123 06       		.byte	0x6
+ 526 0124 09       		.uleb128 0x9
+ 527 0125 620A0000 		.4byte	.LASF27
+ 528 0129 20       		.byte	0x20
+ 529 012a 09       		.uleb128 0x9
+ 530 012b 14070000 		.4byte	.LASF28
+ 531 012f 21       		.byte	0x21
+ 532 0130 09       		.uleb128 0x9
+ 533 0131 B9090000 		.4byte	.LASF29
+ 534 0135 22       		.byte	0x22
+ 535 0136 09       		.uleb128 0x9
+ 536 0137 AC040000 		.4byte	.LASF30
+ 537 013b 23       		.byte	0x23
+ 538 013c 09       		.uleb128 0x9
+ 539 013d 89060000 		.4byte	.LASF31
+ 540 0141 24       		.byte	0x24
+ 541 0142 09       		.uleb128 0x9
+ 542 0143 D6000000 		.4byte	.LASF32
+ 543 0147 25       		.byte	0x25
+ 544 0148 09       		.uleb128 0x9
+ 545 0149 F0090000 		.4byte	.LASF33
+ 546 014d 26       		.byte	0x26
+ 547 014e 09       		.uleb128 0x9
+ 548 014f 29040000 		.4byte	.LASF34
+ 549 0153 27       		.byte	0x27
+ 550 0154 09       		.uleb128 0x9
+ 551 0155 71000000 		.4byte	.LASF35
+ 552 0159 28       		.byte	0x28
+ 553 015a 09       		.uleb128 0x9
+ 554 015b 4C070000 		.4byte	.LASF36
+ 555 015f 29       		.byte	0x29
+ 556 0160 09       		.uleb128 0x9
+ 557 0161 E8070000 		.4byte	.LASF37
+ 558 0165 2A       		.byte	0x2a
+ 559 0166 09       		.uleb128 0x9
+ 560 0167 370B0000 		.4byte	.LASF38
+ 561 016b 2B       		.byte	0x2b
+ 562 016c 09       		.uleb128 0x9
+ 563 016d 72020000 		.4byte	.LASF39
+ 564 0171 2C       		.byte	0x2c
+ 565 0172 09       		.uleb128 0x9
+ 566 0173 6D030000 		.4byte	.LASF40
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 16
+
+
+ 567 0177 2D       		.byte	0x2d
+ 568 0178 09       		.uleb128 0x9
+ 569 0179 A8000000 		.4byte	.LASF41
+ 570 017d 2E       		.byte	0x2e
+ 571 017e 09       		.uleb128 0x9
+ 572 017f 510C0000 		.4byte	.LASF42
+ 573 0183 2F       		.byte	0x2f
+ 574 0184 09       		.uleb128 0x9
+ 575 0185 2A010000 		.4byte	.LASF43
+ 576 0189 30       		.byte	0x30
+ 577 018a 09       		.uleb128 0x9
+ 578 018b 3C090000 		.4byte	.LASF44
+ 579 018f 31       		.byte	0x31
+ 580 0190 09       		.uleb128 0x9
+ 581 0191 96030000 		.4byte	.LASF45
+ 582 0195 32       		.byte	0x32
+ 583 0196 09       		.uleb128 0x9
+ 584 0197 11080000 		.4byte	.LASF46
+ 585 019b 33       		.byte	0x33
+ 586 019c 09       		.uleb128 0x9
+ 587 019d 69070000 		.4byte	.LASF47
+ 588 01a1 34       		.byte	0x34
+ 589 01a2 09       		.uleb128 0x9
+ 590 01a3 BF060000 		.4byte	.LASF48
+ 591 01a7 35       		.byte	0x35
+ 592 01a8 09       		.uleb128 0x9
+ 593 01a9 CE030000 		.4byte	.LASF49
+ 594 01ad 36       		.byte	0x36
+ 595 01ae 09       		.uleb128 0x9
+ 596 01af 18020000 		.4byte	.LASF50
+ 597 01b3 37       		.byte	0x37
+ 598 01b4 09       		.uleb128 0x9
+ 599 01b5 EC0B0000 		.4byte	.LASF51
+ 600 01b9 40       		.byte	0x40
+ 601 01ba 09       		.uleb128 0x9
+ 602 01bb DC060000 		.4byte	.LASF52
+ 603 01bf 41       		.byte	0x41
+ 604 01c0 09       		.uleb128 0x9
+ 605 01c1 F0000000 		.4byte	.LASF53
+ 606 01c5 42       		.byte	0x42
+ 607 01c6 09       		.uleb128 0x9
+ 608 01c7 4D020000 		.4byte	.LASF54
+ 609 01cb 43       		.byte	0x43
+ 610 01cc 09       		.uleb128 0x9
+ 611 01cd E70A0000 		.4byte	.LASF55
+ 612 01d1 44       		.byte	0x44
+ 613 01d2 09       		.uleb128 0x9
+ 614 01d3 A20A0000 		.4byte	.LASF56
+ 615 01d7 45       		.byte	0x45
+ 616 01d8 09       		.uleb128 0x9
+ 617 01d9 B0010000 		.4byte	.LASF57
+ 618 01dd 46       		.byte	0x46
+ 619 01de 09       		.uleb128 0x9
+ 620 01df 8D0B0000 		.4byte	.LASF58
+ 621 01e3 47       		.byte	0x47
+ 622 01e4 09       		.uleb128 0x9
+ 623 01e5 62060000 		.4byte	.LASF59
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 17
+
+
+ 624 01e9 48       		.byte	0x48
+ 625 01ea 09       		.uleb128 0x9
+ 626 01eb 81070000 		.4byte	.LASF60
+ 627 01ef 49       		.byte	0x49
+ 628 01f0 09       		.uleb128 0x9
+ 629 01f1 A8080000 		.4byte	.LASF61
+ 630 01f5 4A       		.byte	0x4a
+ 631 01f6 09       		.uleb128 0x9
+ 632 01f7 96020000 		.4byte	.LASF62
+ 633 01fb 4B       		.byte	0x4b
+ 634 01fc 09       		.uleb128 0x9
+ 635 01fd 48060000 		.4byte	.LASF63
+ 636 0201 4C       		.byte	0x4c
+ 637 0202 09       		.uleb128 0x9
+ 638 0203 96010000 		.4byte	.LASF64
+ 639 0207 4D       		.byte	0x4d
+ 640 0208 09       		.uleb128 0x9
+ 641 0209 C90A0000 		.4byte	.LASF65
+ 642 020d 4E       		.byte	0x4e
+ 643 020e 09       		.uleb128 0x9
+ 644 020f F2050000 		.4byte	.LASF66
+ 645 0213 4F       		.byte	0x4f
+ 646 0214 09       		.uleb128 0x9
+ 647 0215 CD0B0000 		.4byte	.LASF67
+ 648 0219 50       		.byte	0x50
+ 649 021a 09       		.uleb128 0x9
+ 650 021b D5080000 		.4byte	.LASF68
+ 651 021f 51       		.byte	0x51
+ 652 0220 09       		.uleb128 0x9
+ 653 0221 5F040000 		.4byte	.LASF69
+ 654 0225 52       		.byte	0x52
+ 655 0226 09       		.uleb128 0x9
+ 656 0227 F8030000 		.4byte	.LASF70
+ 657 022b 53       		.byte	0x53
+ 658 022c 09       		.uleb128 0x9
+ 659 022d 67090000 		.4byte	.LASF71
+ 660 0231 54       		.byte	0x54
+ 661 0232 09       		.uleb128 0x9
+ 662 0233 1B0C0000 		.4byte	.LASF72
+ 663 0237 55       		.byte	0x55
+ 664 0238 09       		.uleb128 0x9
+ 665 0239 AB0B0000 		.4byte	.LASF73
+ 666 023d 56       		.byte	0x56
+ 667 023e 09       		.uleb128 0x9
+ 668 023f 640B0000 		.4byte	.LASF74
+ 669 0243 57       		.byte	0x57
+ 670 0244 09       		.uleb128 0x9
+ 671 0245 9A070000 		.4byte	.LASF75
+ 672 0249 58       		.byte	0x58
+ 673 024a 09       		.uleb128 0x9
+ 674 024b BE050000 		.4byte	.LASF76
+ 675 024f 70       		.byte	0x70
+ 676 0250 09       		.uleb128 0x9
+ 677 0251 4B010000 		.4byte	.LASF77
+ 678 0255 71       		.byte	0x71
+ 679 0256 09       		.uleb128 0x9
+ 680 0257 77080000 		.4byte	.LASF78
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 18
+
+
+ 681 025b 72       		.byte	0x72
+ 682 025c 09       		.uleb128 0x9
+ 683 025d F0020000 		.4byte	.LASF79
+ 684 0261 73       		.byte	0x73
+ 685 0262 09       		.uleb128 0x9
+ 686 0263 84050000 		.4byte	.LASF80
+ 687 0267 74       		.byte	0x74
+ 688 0268 09       		.uleb128 0x9
+ 689 0269 2B070000 		.4byte	.LASF81
+ 690 026d 75       		.byte	0x75
+ 691 026e 09       		.uleb128 0x9
+ 692 026f 1C030000 		.4byte	.LASF82
+ 693 0273 76       		.byte	0x76
+ 694 0274 09       		.uleb128 0x9
+ 695 0275 310A0000 		.4byte	.LASF83
+ 696 0279 77       		.byte	0x77
+ 697 027a 09       		.uleb128 0x9
+ 698 027b 19090000 		.4byte	.LASF84
+ 699 027f 78       		.byte	0x78
+ 700 0280 09       		.uleb128 0x9
+ 701 0281 96090000 		.4byte	.LASF85
+ 702 0285 79       		.byte	0x79
+ 703 0286 09       		.uleb128 0x9
+ 704 0287 60050000 		.4byte	.LASF86
+ 705 028b 7A       		.byte	0x7a
+ 706 028c 09       		.uleb128 0x9
+ 707 028d FB080000 		.4byte	.LASF87
+ 708 0291 FA       		.byte	0xfa
+ 709 0292 09       		.uleb128 0x9
+ 710 0293 11060000 		.4byte	.LASF88
+ 711 0297 FB       		.byte	0xfb
+ 712 0298 09       		.uleb128 0x9
+ 713 0299 3F0C0000 		.4byte	.LASF89
+ 714 029d FC       		.byte	0xfc
+ 715 029e 09       		.uleb128 0x9
+ 716 029f D0070000 		.4byte	.LASF90
+ 717 02a3 FD       		.byte	0xfd
+ 718 02a4 09       		.uleb128 0x9
+ 719 02a5 560B0000 		.4byte	.LASF91
+ 720 02a9 FF       		.byte	0xff
+ 721 02aa 00       		.byte	0
+ 722 02ab 0A       		.uleb128 0xa
+ 723 02ac 01       		.byte	0x1
+ 724 02ad 2C000000 		.4byte	0x2c
+ 725 02b1 05       		.byte	0x5
+ 726 02b2 21       		.byte	0x21
+ 727 02b3 D6020000 		.4byte	0x2d6
+ 728 02b7 09       		.uleb128 0x9
+ 729 02b8 71010000 		.4byte	.LASF92
+ 730 02bc 00       		.byte	0
+ 731 02bd 09       		.uleb128 0x9
+ 732 02be 8E0A0000 		.4byte	.LASF93
+ 733 02c2 01       		.byte	0x1
+ 734 02c3 09       		.uleb128 0x9
+ 735 02c4 4C080000 		.4byte	.LASF94
+ 736 02c8 02       		.byte	0x2
+ 737 02c9 09       		.uleb128 0x9
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 19
+
+
+ 738 02ca 00000000 		.4byte	.LASF95
+ 739 02ce 03       		.byte	0x3
+ 740 02cf 09       		.uleb128 0x9
+ 741 02d0 62080000 		.4byte	.LASF96
+ 742 02d4 04       		.byte	0x4
+ 743 02d5 00       		.byte	0
+ 744 02d6 0A       		.uleb128 0xa
+ 745 02d7 01       		.byte	0x1
+ 746 02d8 2C000000 		.4byte	0x2c
+ 747 02dc 05       		.byte	0x5
+ 748 02dd 2C       		.byte	0x2c
+ 749 02de F5020000 		.4byte	0x2f5
+ 750 02e2 09       		.uleb128 0x9
+ 751 02e3 060C0000 		.4byte	.LASF97
+ 752 02e7 00       		.byte	0
+ 753 02e8 09       		.uleb128 0x9
+ 754 02e9 0E030000 		.4byte	.LASF98
+ 755 02ed 01       		.byte	0x1
+ 756 02ee 09       		.uleb128 0x9
+ 757 02ef 2D000000 		.4byte	.LASF99
+ 758 02f3 02       		.byte	0x2
+ 759 02f4 00       		.byte	0
+ 760 02f5 08       		.uleb128 0x8
+ 761 02f6 01       		.byte	0x1
+ 762 02f7 2C000000 		.4byte	0x2c
+ 763 02fb 06       		.byte	0x6
+ 764 02fc EB08     		.2byte	0x8eb
+ 765 02fe 27030000 		.4byte	0x327
+ 766 0302 09       		.uleb128 0x9
+ 767 0303 C6080000 		.4byte	.LASF100
+ 768 0307 00       		.byte	0
+ 769 0308 09       		.uleb128 0x9
+ 770 0309 19040000 		.4byte	.LASF101
+ 771 030d 01       		.byte	0x1
+ 772 030e 09       		.uleb128 0x9
+ 773 030f 0E010000 		.4byte	.LASF102
+ 774 0313 02       		.byte	0x2
+ 775 0314 09       		.uleb128 0x9
+ 776 0315 48040000 		.4byte	.LASF103
+ 777 0319 02       		.byte	0x2
+ 778 031a 09       		.uleb128 0x9
+ 779 031b 99080000 		.4byte	.LASF104
+ 780 031f 03       		.byte	0x3
+ 781 0320 09       		.uleb128 0x9
+ 782 0321 DF020000 		.4byte	.LASF105
+ 783 0325 04       		.byte	0x4
+ 784 0326 00       		.byte	0
+ 785 0327 0B       		.uleb128 0xb
+ 786 0328 DD090000 		.4byte	.LASF106
+ 787 032c 01       		.byte	0x1
+ 788 032d 69       		.byte	0x69
+ 789 032e 00000000 		.4byte	.LFB35
+ 790 0332 24000000 		.4byte	.LFE35-.LFB35
+ 791 0336 01       		.uleb128 0x1
+ 792 0337 9C       		.byte	0x9c
+ 793 0338 4B030000 		.4byte	0x34b
+ 794 033c 0C       		.uleb128 0xc
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 20
+
+
+ 795 033d 4E030000 		.4byte	.LASF108
+ 796 0341 01       		.byte	0x1
+ 797 0342 6B       		.byte	0x6b
+ 798 0343 83000000 		.4byte	0x83
+ 799 0347 02       		.uleb128 0x2
+ 800 0348 91       		.byte	0x91
+ 801 0349 74       		.sleb128 -12
+ 802 034a 00       		.byte	0
+ 803 034b 0B       		.uleb128 0xb
+ 804 034c 5C000000 		.4byte	.LASF107
+ 805 0350 01       		.byte	0x1
+ 806 0351 89       		.byte	0x89
+ 807 0352 00000000 		.4byte	.LFB36
+ 808 0356 38000000 		.4byte	.LFE36-.LFB36
+ 809 035a 01       		.uleb128 0x1
+ 810 035b 9C       		.byte	0x9c
+ 811 035c 6F030000 		.4byte	0x36f
+ 812 0360 0C       		.uleb128 0xc
+ 813 0361 4E030000 		.4byte	.LASF108
+ 814 0365 01       		.byte	0x1
+ 815 0366 8B       		.byte	0x8b
+ 816 0367 83000000 		.4byte	0x83
+ 817 036b 02       		.uleb128 0x2
+ 818 036c 91       		.byte	0x91
+ 819 036d 74       		.sleb128 -12
+ 820 036e 00       		.byte	0
+ 821 036f 0D       		.uleb128 0xd
+ 822 0370 1B000000 		.4byte	.LASF110
+ 823 0374 01       		.byte	0x1
+ 824 0375 AF       		.byte	0xaf
+ 825 0376 00000000 		.4byte	.LFB37
+ 826 037a 88000000 		.4byte	.LFE37-.LFB37
+ 827 037e 01       		.uleb128 0x1
+ 828 037f 9C       		.byte	0x9c
+ 829 0380 96030000 		.4byte	0x396
+ 830 0384 0C       		.uleb128 0xc
+ 831 0385 88090000 		.4byte	.LASF109
+ 832 0389 01       		.byte	0x1
+ 833 038a B2       		.byte	0xb2
+ 834 038b 83000000 		.4byte	0x83
+ 835 038f 05       		.uleb128 0x5
+ 836 0390 03       		.byte	0x3
+ 837 0391 08000000 		.4byte	intervalTimer.7871
+ 838 0395 00       		.byte	0
+ 839 0396 0D       		.uleb128 0xd
+ 840 0397 050B0000 		.4byte	.LASF111
+ 841 039b 01       		.byte	0x1
+ 842 039c E7       		.byte	0xe7
+ 843 039d 00000000 		.4byte	.LFB38
+ 844 03a1 8C000000 		.4byte	.LFE38-.LFB38
+ 845 03a5 01       		.uleb128 0x1
+ 846 03a6 9C       		.byte	0x9c
+ 847 03a7 BA030000 		.4byte	0x3ba
+ 848 03ab 0E       		.uleb128 0xe
+ 849 03ac 30060000 		.4byte	.LASF122
+ 850 03b0 01       		.byte	0x1
+ 851 03b1 E7       		.byte	0xe7
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 21
+
+
+ 852 03b2 83000000 		.4byte	0x83
+ 853 03b6 02       		.uleb128 0x2
+ 854 03b7 91       		.byte	0x91
+ 855 03b8 74       		.sleb128 -12
+ 856 03b9 00       		.byte	0
+ 857 03ba 0F       		.uleb128 0xf
+ 858 03bb B5020000 		.4byte	.LASF123
+ 859 03bf 01       		.byte	0x1
+ 860 03c0 1601     		.2byte	0x116
+ 861 03c2 00000000 		.4byte	.LFB39
+ 862 03c6 34000000 		.4byte	.LFE39-.LFB39
+ 863 03ca 01       		.uleb128 0x1
+ 864 03cb 9C       		.byte	0x9c
+ 865 03cc 0C       		.uleb128 0xc
+ 866 03cd 3D030000 		.4byte	.LASF112
+ 867 03d1 01       		.byte	0x1
+ 868 03d2 48       		.byte	0x48
+ 869 03d3 B5000000 		.4byte	0xb5
+ 870 03d7 05       		.uleb128 0x5
+ 871 03d8 03       		.byte	0x3
+ 872 03d9 00000000 		.4byte	watchdogPeriodMs
+ 873 03dd 0C       		.uleb128 0xc
+ 874 03de 63030000 		.4byte	.LASF113
+ 875 03e2 01       		.byte	0x1
+ 876 03e3 49       		.byte	0x49
+ 877 03e4 B5000000 		.4byte	0xb5
+ 878 03e8 05       		.uleb128 0x5
+ 879 03e9 03       		.byte	0x3
+ 880 03ea 04000000 		.4byte	nextTicks
+ 881 03ee 10       		.uleb128 0x10
+ 882 03ef BA000000 		.4byte	0xba
+ 883 03f3 FE030000 		.4byte	0x3fe
+ 884 03f7 11       		.uleb128 0x11
+ 885 03f8 E6000000 		.4byte	0xe6
+ 886 03fc 07       		.byte	0x7
+ 887 03fd 00       		.byte	0
+ 888 03fe 12       		.uleb128 0x12
+ 889 03ff 38080000 		.4byte	.LASF114
+ 890 0403 03       		.byte	0x3
+ 891 0404 34       		.byte	0x34
+ 892 0405 EE030000 		.4byte	0x3ee
+ 893 0409 05       		.uleb128 0x5
+ 894 040a 03       		.byte	0x3
+ 895 040b 00000000 		.4byte	OneWire_Sensor
+ 896 040f 12       		.uleb128 0x12
+ 897 0410 500A0000 		.4byte	.LASF115
+ 898 0414 03       		.byte	0x3
+ 899 0415 39       		.byte	0x39
+ 900 0416 A4000000 		.4byte	0xa4
+ 901 041a 05       		.uleb128 0x5
+ 902 041b 03       		.byte	0x3
+ 903 041c 00000000 		.4byte	OneWire_DataReady
+ 904 0420 13       		.uleb128 0x13
+ 905 0421 09070000 		.4byte	.LASF116
+ 906 0425 07       		.byte	0x7
+ 907 0426 1A       		.byte	0x1a
+ 908 0427 83000000 		.4byte	0x83
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 22
+
+
+ 909 042b 13       		.uleb128 0x13
+ 910 042c B2060000 		.4byte	.LASF117
+ 911 0430 08       		.byte	0x8
+ 912 0431 37       		.byte	0x37
+ 913 0432 83000000 		.4byte	0x83
+ 914 0436 00       		.byte	0
+ 915              		.section	.debug_abbrev,"",%progbits
+ 916              	.Ldebug_abbrev0:
+ 917 0000 01       		.uleb128 0x1
+ 918 0001 11       		.uleb128 0x11
+ 919 0002 01       		.byte	0x1
+ 920 0003 25       		.uleb128 0x25
+ 921 0004 0E       		.uleb128 0xe
+ 922 0005 13       		.uleb128 0x13
+ 923 0006 0B       		.uleb128 0xb
+ 924 0007 03       		.uleb128 0x3
+ 925 0008 0E       		.uleb128 0xe
+ 926 0009 1B       		.uleb128 0x1b
+ 927 000a 0E       		.uleb128 0xe
+ 928 000b 55       		.uleb128 0x55
+ 929 000c 17       		.uleb128 0x17
+ 930 000d 11       		.uleb128 0x11
+ 931 000e 01       		.uleb128 0x1
+ 932 000f 10       		.uleb128 0x10
+ 933 0010 17       		.uleb128 0x17
+ 934 0011 00       		.byte	0
+ 935 0012 00       		.byte	0
+ 936 0013 02       		.uleb128 0x2
+ 937 0014 24       		.uleb128 0x24
+ 938 0015 00       		.byte	0
+ 939 0016 0B       		.uleb128 0xb
+ 940 0017 0B       		.uleb128 0xb
+ 941 0018 3E       		.uleb128 0x3e
+ 942 0019 0B       		.uleb128 0xb
+ 943 001a 03       		.uleb128 0x3
+ 944 001b 0E       		.uleb128 0xe
+ 945 001c 00       		.byte	0
+ 946 001d 00       		.byte	0
+ 947 001e 03       		.uleb128 0x3
+ 948 001f 24       		.uleb128 0x24
+ 949 0020 00       		.byte	0
+ 950 0021 0B       		.uleb128 0xb
+ 951 0022 0B       		.uleb128 0xb
+ 952 0023 3E       		.uleb128 0x3e
+ 953 0024 0B       		.uleb128 0xb
+ 954 0025 03       		.uleb128 0x3
+ 955 0026 08       		.uleb128 0x8
+ 956 0027 00       		.byte	0
+ 957 0028 00       		.byte	0
+ 958 0029 04       		.uleb128 0x4
+ 959 002a 16       		.uleb128 0x16
+ 960 002b 00       		.byte	0
+ 961 002c 03       		.uleb128 0x3
+ 962 002d 0E       		.uleb128 0xe
+ 963 002e 3A       		.uleb128 0x3a
+ 964 002f 0B       		.uleb128 0xb
+ 965 0030 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 23
+
+
+ 966 0031 05       		.uleb128 0x5
+ 967 0032 49       		.uleb128 0x49
+ 968 0033 13       		.uleb128 0x13
+ 969 0034 00       		.byte	0
+ 970 0035 00       		.byte	0
+ 971 0036 05       		.uleb128 0x5
+ 972 0037 35       		.uleb128 0x35
+ 973 0038 00       		.byte	0
+ 974 0039 49       		.uleb128 0x49
+ 975 003a 13       		.uleb128 0x13
+ 976 003b 00       		.byte	0
+ 977 003c 00       		.byte	0
+ 978 003d 06       		.uleb128 0x6
+ 979 003e 13       		.uleb128 0x13
+ 980 003f 01       		.byte	0x1
+ 981 0040 03       		.uleb128 0x3
+ 982 0041 0E       		.uleb128 0xe
+ 983 0042 0B       		.uleb128 0xb
+ 984 0043 0B       		.uleb128 0xb
+ 985 0044 3A       		.uleb128 0x3a
+ 986 0045 0B       		.uleb128 0xb
+ 987 0046 3B       		.uleb128 0x3b
+ 988 0047 0B       		.uleb128 0xb
+ 989 0048 01       		.uleb128 0x1
+ 990 0049 13       		.uleb128 0x13
+ 991 004a 00       		.byte	0
+ 992 004b 00       		.byte	0
+ 993 004c 07       		.uleb128 0x7
+ 994 004d 0D       		.uleb128 0xd
+ 995 004e 00       		.byte	0
+ 996 004f 03       		.uleb128 0x3
+ 997 0050 0E       		.uleb128 0xe
+ 998 0051 3A       		.uleb128 0x3a
+ 999 0052 0B       		.uleb128 0xb
+ 1000 0053 3B       		.uleb128 0x3b
+ 1001 0054 0B       		.uleb128 0xb
+ 1002 0055 49       		.uleb128 0x49
+ 1003 0056 13       		.uleb128 0x13
+ 1004 0057 38       		.uleb128 0x38
+ 1005 0058 0B       		.uleb128 0xb
+ 1006 0059 00       		.byte	0
+ 1007 005a 00       		.byte	0
+ 1008 005b 08       		.uleb128 0x8
+ 1009 005c 04       		.uleb128 0x4
+ 1010 005d 01       		.byte	0x1
+ 1011 005e 0B       		.uleb128 0xb
+ 1012 005f 0B       		.uleb128 0xb
+ 1013 0060 49       		.uleb128 0x49
+ 1014 0061 13       		.uleb128 0x13
+ 1015 0062 3A       		.uleb128 0x3a
+ 1016 0063 0B       		.uleb128 0xb
+ 1017 0064 3B       		.uleb128 0x3b
+ 1018 0065 05       		.uleb128 0x5
+ 1019 0066 01       		.uleb128 0x1
+ 1020 0067 13       		.uleb128 0x13
+ 1021 0068 00       		.byte	0
+ 1022 0069 00       		.byte	0
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 24
+
+
+ 1023 006a 09       		.uleb128 0x9
+ 1024 006b 28       		.uleb128 0x28
+ 1025 006c 00       		.byte	0
+ 1026 006d 03       		.uleb128 0x3
+ 1027 006e 0E       		.uleb128 0xe
+ 1028 006f 1C       		.uleb128 0x1c
+ 1029 0070 0B       		.uleb128 0xb
+ 1030 0071 00       		.byte	0
+ 1031 0072 00       		.byte	0
+ 1032 0073 0A       		.uleb128 0xa
+ 1033 0074 04       		.uleb128 0x4
+ 1034 0075 01       		.byte	0x1
+ 1035 0076 0B       		.uleb128 0xb
+ 1036 0077 0B       		.uleb128 0xb
+ 1037 0078 49       		.uleb128 0x49
+ 1038 0079 13       		.uleb128 0x13
+ 1039 007a 3A       		.uleb128 0x3a
+ 1040 007b 0B       		.uleb128 0xb
+ 1041 007c 3B       		.uleb128 0x3b
+ 1042 007d 0B       		.uleb128 0xb
+ 1043 007e 01       		.uleb128 0x1
+ 1044 007f 13       		.uleb128 0x13
+ 1045 0080 00       		.byte	0
+ 1046 0081 00       		.byte	0
+ 1047 0082 0B       		.uleb128 0xb
+ 1048 0083 2E       		.uleb128 0x2e
+ 1049 0084 01       		.byte	0x1
+ 1050 0085 03       		.uleb128 0x3
+ 1051 0086 0E       		.uleb128 0xe
+ 1052 0087 3A       		.uleb128 0x3a
+ 1053 0088 0B       		.uleb128 0xb
+ 1054 0089 3B       		.uleb128 0x3b
+ 1055 008a 0B       		.uleb128 0xb
+ 1056 008b 27       		.uleb128 0x27
+ 1057 008c 19       		.uleb128 0x19
+ 1058 008d 11       		.uleb128 0x11
+ 1059 008e 01       		.uleb128 0x1
+ 1060 008f 12       		.uleb128 0x12
+ 1061 0090 06       		.uleb128 0x6
+ 1062 0091 40       		.uleb128 0x40
+ 1063 0092 18       		.uleb128 0x18
+ 1064 0093 9742     		.uleb128 0x2117
+ 1065 0095 19       		.uleb128 0x19
+ 1066 0096 01       		.uleb128 0x1
+ 1067 0097 13       		.uleb128 0x13
+ 1068 0098 00       		.byte	0
+ 1069 0099 00       		.byte	0
+ 1070 009a 0C       		.uleb128 0xc
+ 1071 009b 34       		.uleb128 0x34
+ 1072 009c 00       		.byte	0
+ 1073 009d 03       		.uleb128 0x3
+ 1074 009e 0E       		.uleb128 0xe
+ 1075 009f 3A       		.uleb128 0x3a
+ 1076 00a0 0B       		.uleb128 0xb
+ 1077 00a1 3B       		.uleb128 0x3b
+ 1078 00a2 0B       		.uleb128 0xb
+ 1079 00a3 49       		.uleb128 0x49
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 25
+
+
+ 1080 00a4 13       		.uleb128 0x13
+ 1081 00a5 02       		.uleb128 0x2
+ 1082 00a6 18       		.uleb128 0x18
+ 1083 00a7 00       		.byte	0
+ 1084 00a8 00       		.byte	0
+ 1085 00a9 0D       		.uleb128 0xd
+ 1086 00aa 2E       		.uleb128 0x2e
+ 1087 00ab 01       		.byte	0x1
+ 1088 00ac 3F       		.uleb128 0x3f
+ 1089 00ad 19       		.uleb128 0x19
+ 1090 00ae 03       		.uleb128 0x3
+ 1091 00af 0E       		.uleb128 0xe
+ 1092 00b0 3A       		.uleb128 0x3a
+ 1093 00b1 0B       		.uleb128 0xb
+ 1094 00b2 3B       		.uleb128 0x3b
+ 1095 00b3 0B       		.uleb128 0xb
+ 1096 00b4 27       		.uleb128 0x27
+ 1097 00b5 19       		.uleb128 0x19
+ 1098 00b6 11       		.uleb128 0x11
+ 1099 00b7 01       		.uleb128 0x1
+ 1100 00b8 12       		.uleb128 0x12
+ 1101 00b9 06       		.uleb128 0x6
+ 1102 00ba 40       		.uleb128 0x40
+ 1103 00bb 18       		.uleb128 0x18
+ 1104 00bc 9642     		.uleb128 0x2116
+ 1105 00be 19       		.uleb128 0x19
+ 1106 00bf 01       		.uleb128 0x1
+ 1107 00c0 13       		.uleb128 0x13
+ 1108 00c1 00       		.byte	0
+ 1109 00c2 00       		.byte	0
+ 1110 00c3 0E       		.uleb128 0xe
+ 1111 00c4 05       		.uleb128 0x5
+ 1112 00c5 00       		.byte	0
+ 1113 00c6 03       		.uleb128 0x3
+ 1114 00c7 0E       		.uleb128 0xe
+ 1115 00c8 3A       		.uleb128 0x3a
+ 1116 00c9 0B       		.uleb128 0xb
+ 1117 00ca 3B       		.uleb128 0x3b
+ 1118 00cb 0B       		.uleb128 0xb
+ 1119 00cc 49       		.uleb128 0x49
+ 1120 00cd 13       		.uleb128 0x13
+ 1121 00ce 02       		.uleb128 0x2
+ 1122 00cf 18       		.uleb128 0x18
+ 1123 00d0 00       		.byte	0
+ 1124 00d1 00       		.byte	0
+ 1125 00d2 0F       		.uleb128 0xf
+ 1126 00d3 2E       		.uleb128 0x2e
+ 1127 00d4 00       		.byte	0
+ 1128 00d5 3F       		.uleb128 0x3f
+ 1129 00d6 19       		.uleb128 0x19
+ 1130 00d7 03       		.uleb128 0x3
+ 1131 00d8 0E       		.uleb128 0xe
+ 1132 00d9 3A       		.uleb128 0x3a
+ 1133 00da 0B       		.uleb128 0xb
+ 1134 00db 3B       		.uleb128 0x3b
+ 1135 00dc 05       		.uleb128 0x5
+ 1136 00dd 27       		.uleb128 0x27
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 26
+
+
+ 1137 00de 19       		.uleb128 0x19
+ 1138 00df 11       		.uleb128 0x11
+ 1139 00e0 01       		.uleb128 0x1
+ 1140 00e1 12       		.uleb128 0x12
+ 1141 00e2 06       		.uleb128 0x6
+ 1142 00e3 40       		.uleb128 0x40
+ 1143 00e4 18       		.uleb128 0x18
+ 1144 00e5 9642     		.uleb128 0x2116
+ 1145 00e7 19       		.uleb128 0x19
+ 1146 00e8 00       		.byte	0
+ 1147 00e9 00       		.byte	0
+ 1148 00ea 10       		.uleb128 0x10
+ 1149 00eb 01       		.uleb128 0x1
+ 1150 00ec 01       		.byte	0x1
+ 1151 00ed 49       		.uleb128 0x49
+ 1152 00ee 13       		.uleb128 0x13
+ 1153 00ef 01       		.uleb128 0x1
+ 1154 00f0 13       		.uleb128 0x13
+ 1155 00f1 00       		.byte	0
+ 1156 00f2 00       		.byte	0
+ 1157 00f3 11       		.uleb128 0x11
+ 1158 00f4 21       		.uleb128 0x21
+ 1159 00f5 00       		.byte	0
+ 1160 00f6 49       		.uleb128 0x49
+ 1161 00f7 13       		.uleb128 0x13
+ 1162 00f8 2F       		.uleb128 0x2f
+ 1163 00f9 0B       		.uleb128 0xb
+ 1164 00fa 00       		.byte	0
+ 1165 00fb 00       		.byte	0
+ 1166 00fc 12       		.uleb128 0x12
+ 1167 00fd 34       		.uleb128 0x34
+ 1168 00fe 00       		.byte	0
+ 1169 00ff 03       		.uleb128 0x3
+ 1170 0100 0E       		.uleb128 0xe
+ 1171 0101 3A       		.uleb128 0x3a
+ 1172 0102 0B       		.uleb128 0xb
+ 1173 0103 3B       		.uleb128 0x3b
+ 1174 0104 0B       		.uleb128 0xb
+ 1175 0105 49       		.uleb128 0x49
+ 1176 0106 13       		.uleb128 0x13
+ 1177 0107 3F       		.uleb128 0x3f
+ 1178 0108 19       		.uleb128 0x19
+ 1179 0109 02       		.uleb128 0x2
+ 1180 010a 18       		.uleb128 0x18
+ 1181 010b 00       		.byte	0
+ 1182 010c 00       		.byte	0
+ 1183 010d 13       		.uleb128 0x13
+ 1184 010e 34       		.uleb128 0x34
+ 1185 010f 00       		.byte	0
+ 1186 0110 03       		.uleb128 0x3
+ 1187 0111 0E       		.uleb128 0xe
+ 1188 0112 3A       		.uleb128 0x3a
+ 1189 0113 0B       		.uleb128 0xb
+ 1190 0114 3B       		.uleb128 0x3b
+ 1191 0115 0B       		.uleb128 0xb
+ 1192 0116 49       		.uleb128 0x49
+ 1193 0117 13       		.uleb128 0x13
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 27
+
+
+ 1194 0118 3F       		.uleb128 0x3f
+ 1195 0119 19       		.uleb128 0x19
+ 1196 011a 3C       		.uleb128 0x3c
+ 1197 011b 19       		.uleb128 0x19
+ 1198 011c 00       		.byte	0
+ 1199 011d 00       		.byte	0
+ 1200 011e 00       		.byte	0
+ 1201              		.section	.debug_aranges,"",%progbits
+ 1202 0000 3C000000 		.4byte	0x3c
+ 1203 0004 0200     		.2byte	0x2
+ 1204 0006 00000000 		.4byte	.Ldebug_info0
+ 1205 000a 04       		.byte	0x4
+ 1206 000b 00       		.byte	0
+ 1207 000c 0000     		.2byte	0
+ 1208 000e 0000     		.2byte	0
+ 1209 0010 00000000 		.4byte	.LFB35
+ 1210 0014 24000000 		.4byte	.LFE35-.LFB35
+ 1211 0018 00000000 		.4byte	.LFB36
+ 1212 001c 38000000 		.4byte	.LFE36-.LFB36
+ 1213 0020 00000000 		.4byte	.LFB37
+ 1214 0024 88000000 		.4byte	.LFE37-.LFB37
+ 1215 0028 00000000 		.4byte	.LFB38
+ 1216 002c 8C000000 		.4byte	.LFE38-.LFB38
+ 1217 0030 00000000 		.4byte	.LFB39
+ 1218 0034 34000000 		.4byte	.LFE39-.LFB39
+ 1219 0038 00000000 		.4byte	0
+ 1220 003c 00000000 		.4byte	0
+ 1221              		.section	.debug_ranges,"",%progbits
+ 1222              	.Ldebug_ranges0:
+ 1223 0000 00000000 		.4byte	.LFB35
+ 1224 0004 24000000 		.4byte	.LFE35
+ 1225 0008 00000000 		.4byte	.LFB36
+ 1226 000c 38000000 		.4byte	.LFE36
+ 1227 0010 00000000 		.4byte	.LFB37
+ 1228 0014 88000000 		.4byte	.LFE37
+ 1229 0018 00000000 		.4byte	.LFB38
+ 1230 001c 8C000000 		.4byte	.LFE38
+ 1231 0020 00000000 		.4byte	.LFB39
+ 1232 0024 34000000 		.4byte	.LFE39
+ 1233 0028 00000000 		.4byte	0
+ 1234 002c 00000000 		.4byte	0
+ 1235              		.section	.debug_line,"",%progbits
+ 1236              	.Ldebug_line0:
+ 1237 0000 29010000 		.section	.debug_str,"MS",%progbits,1
+ 1237      0200AC00 
+ 1237      00000201 
+ 1237      FB0E0D00 
+ 1237      01010101 
+ 1238              	.LASF95:
+ 1239 0000 4359424C 		.ascii	"CYBLE_HTS_MEASURE_INTERVAL\000"
+ 1239      455F4854 
+ 1239      535F4D45 
+ 1239      41535552 
+ 1239      455F494E 
+ 1240              	.LASF110:
+ 1241 001b 57617463 		.ascii	"WatchdogTimer_Isr\000"
+ 1241      68646F67 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 28
+
+
+ 1241      54696D65 
+ 1241      725F4973 
+ 1241      7200
+ 1242              	.LASF99:
+ 1243 002d 4359424C 		.ascii	"CYBLE_HTS_DESCR_COUNT\000"
+ 1243      455F4854 
+ 1243      535F4445 
+ 1243      5343525F 
+ 1243      434F554E 
+ 1244              	.LASF26:
+ 1245 0043 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 1245      455F4556 
+ 1245      545F4D45 
+ 1245      4D4F5259 
+ 1245      5F524551 
+ 1246              	.LASF107:
+ 1247 005c 57617463 		.ascii	"WatchdogTimer_Unlock\000"
+ 1247      68646F67 
+ 1247      54696D65 
+ 1247      725F556E 
+ 1247      6C6F636B 
+ 1248              	.LASF35:
+ 1249 0071 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 1249      455F4556 
+ 1249      545F4741 
+ 1249      505F4445 
+ 1249      56494345 
+ 1250              	.LASF24:
+ 1251 0093 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 1251      455F4556 
+ 1251      545F4843 
+ 1251      495F5354 
+ 1251      41545553 
+ 1252              	.LASF41:
+ 1253 00a8 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 1253      455F4556 
+ 1253      545F4741 
+ 1253      505F4B45 
+ 1253      59505245 
+ 1254              	.LASF2:
+ 1255 00cc 73686F72 		.ascii	"short int\000"
+ 1255      7420696E 
+ 1255      7400
+ 1256              	.LASF32:
+ 1257 00d6 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 1257      455F4556 
+ 1257      545F4741 
+ 1257      505F4155 
+ 1257      54485F46 
+ 1258              	.LASF53:
+ 1259 00f0 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 1259      455F4556 
+ 1259      545F4741 
+ 1259      54545F44 
+ 1259      4953434F 
+ 1260              	.LASF102:
+ 1261 010e 4359424C 		.ascii	"CYBLE_SRVI_CUSTOMS\000"
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 29
+
+
+ 1261      455F5352 
+ 1261      56495F43 
+ 1261      5553544F 
+ 1261      4D5300
+ 1262              	.LASF19:
+ 1263 0121 73697A65 		.ascii	"sizetype\000"
+ 1263      74797065 
+ 1263      00
+ 1264              	.LASF43:
+ 1265 012a 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 1265      455F4556 
+ 1265      545F4741 
+ 1265      505F4441 
+ 1265      54415F4C 
+ 1266              	.LASF77:
+ 1267 014b 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 1267      455F4556 
+ 1267      545F4C32 
+ 1267      4341505F 
+ 1267      434F4E4E 
+ 1268              	.LASF92:
+ 1269 0171 4359424C 		.ascii	"CYBLE_HTS_TEMP_MEASURE\000"
+ 1269      455F4854 
+ 1269      535F5445 
+ 1269      4D505F4D 
+ 1269      45415355 
+ 1270              	.LASF6:
+ 1271 0188 6C6F6E67 		.ascii	"long long int\000"
+ 1271      206C6F6E 
+ 1271      6720696E 
+ 1271      7400
+ 1272              	.LASF64:
+ 1273 0196 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 1273      455F4556 
+ 1273      545F4741 
+ 1273      5454435F 
+ 1273      57524954 
+ 1274              	.LASF57:
+ 1275 01b0 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 1275      455F4556 
+ 1275      545F4741 
+ 1275      5454435F 
+ 1275      52454144 
+ 1276              	.LASF21:
+ 1277 01d1 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 1277      455F4556 
+ 1277      545F5354 
+ 1277      41434B5F 
+ 1277      4F4E00
+ 1278              	.LASF120:
+ 1279 01e4 433A5C55 		.ascii	"C:\\Users\\User\\Desktop\\Hi\\Demo1\\TM_Mesh_System"
+ 1279      73657273 
+ 1279      5C557365 
+ 1279      725C4465 
+ 1279      736B746F 
+ 1280 0211 2E637964 		.ascii	".cydsn\000"
+ 1280      736E00
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 30
+
+
+ 1281              	.LASF50:
+ 1282 0218 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_LOC_P256_KEYS_GEN_AND_SET_COMPLET"
+ 1282      455F4556 
+ 1282      545F4741 
+ 1282      505F534D 
+ 1282      505F4C4F 
+ 1283 024b 4500     		.ascii	"E\000"
+ 1284              	.LASF54:
+ 1285 024d 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 1285      455F4556 
+ 1285      545F4741 
+ 1285      5454535F 
+ 1285      58434E48 
+ 1286              	.LASF10:
+ 1287 026b 75696E74 		.ascii	"uint16\000"
+ 1287      313600
+ 1288              	.LASF39:
+ 1289 0272 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 1289      455F4556 
+ 1289      545F4741 
+ 1289      505F4B45 
+ 1289      59494E46 
+ 1290              	.LASF62:
+ 1291 0296 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 1291      455F4556 
+ 1291      545F4741 
+ 1291      5454435F 
+ 1291      52454144 
+ 1292              	.LASF123:
+ 1293 02b5 57617463 		.ascii	"WatchdogTimer_Stop\000"
+ 1293      68646F67 
+ 1293      54696D65 
+ 1293      725F5374 
+ 1293      6F7000
+ 1294              	.LASF20:
+ 1295 02c8 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 1295      455F4556 
+ 1295      545F484F 
+ 1295      53545F49 
+ 1295      4E56414C 
+ 1296              	.LASF105:
+ 1297 02df 4359424C 		.ascii	"CYBLE_SRVI_COUNT\000"
+ 1297      455F5352 
+ 1297      56495F43 
+ 1297      4F554E54 
+ 1297      00
+ 1298              	.LASF79:
+ 1299 02f0 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 1299      455F4556 
+ 1299      545F4C32 
+ 1299      4341505F 
+ 1299      43424643 
+ 1300              	.LASF98:
+ 1301 030e 4359424C 		.ascii	"CYBLE_HTS_VRD\000"
+ 1301      455F4854 
+ 1301      535F5652 
+ 1301      4400
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 31
+
+
+ 1302              	.LASF82:
+ 1303 031c 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 1303      455F4556 
+ 1303      545F4C32 
+ 1303      4341505F 
+ 1303      43424643 
+ 1304              	.LASF112:
+ 1305 033d 77617463 		.ascii	"watchdogPeriodMs\000"
+ 1305      68646F67 
+ 1305      50657269 
+ 1305      6F644D73 
+ 1305      00
+ 1306              	.LASF108:
+ 1307 034e 436C6B53 		.ascii	"ClkSelectValue\000"
+ 1307      656C6563 
+ 1307      7456616C 
+ 1307      756500
+ 1308              	.LASF12:
+ 1309 035d 666C6F61 		.ascii	"float\000"
+ 1309      7400
+ 1310              	.LASF113:
+ 1311 0363 6E657874 		.ascii	"nextTicks\000"
+ 1311      5469636B 
+ 1311      7300
+ 1312              	.LASF40:
+ 1313 036d 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 1313      455F4556 
+ 1313      545F4741 
+ 1313      505F4E55 
+ 1313      4D455249 
+ 1314              	.LASF45:
+ 1315 0396 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 1315      455F4556 
+ 1315      545F4741 
+ 1315      50435F44 
+ 1315      49524543 
+ 1316              	.LASF7:
+ 1317 03b7 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1317      206C6F6E 
+ 1317      6720756E 
+ 1317      7369676E 
+ 1317      65642069 
+ 1318              	.LASF49:
+ 1319 03ce 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ_REPLY_ERR\000"
+ 1319      455F4556 
+ 1319      545F4741 
+ 1319      505F4155 
+ 1319      54485F52 
+ 1320              	.LASF4:
+ 1321 03ef 6C6F6E67 		.ascii	"long int\000"
+ 1321      20696E74 
+ 1321      00
+ 1322              	.LASF70:
+ 1323 03f8 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 1323      455F4556 
+ 1323      545F4741 
+ 1323      5454435F 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 32
+
+
+ 1323      48414E44 
+ 1324              	.LASF101:
+ 1325 0419 4359424C 		.ascii	"CYBLE_SRVI_GATT\000"
+ 1325      455F5352 
+ 1325      56495F47 
+ 1325      41545400 
+ 1326              	.LASF34:
+ 1327 0429 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 1327      455F4556 
+ 1327      545F4741 
+ 1327      505F4445 
+ 1327      56494345 
+ 1328              	.LASF103:
+ 1329 0448 4359424C 		.ascii	"CYBLE_SRVI_CUSTOMS_END\000"
+ 1329      455F5352 
+ 1329      56495F43 
+ 1329      5553544F 
+ 1329      4D535F45 
+ 1330              	.LASF69:
+ 1331 045f 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 1331      455F4556 
+ 1331      545F4741 
+ 1331      5454435F 
+ 1331      48414E44 
+ 1332              	.LASF25:
+ 1333 0480 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 1333      455F4556 
+ 1333      545F5354 
+ 1333      41434B5F 
+ 1333      42555359 
+ 1334              	.LASF119:
+ 1335 049c 57617463 		.ascii	"WatchdogTimer.c\000"
+ 1335      68646F67 
+ 1335      54696D65 
+ 1335      722E6300 
+ 1336              	.LASF30:
+ 1337 04ac 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 1337      455F4556 
+ 1337      545F4741 
+ 1337      505F5041 
+ 1337      53534B45 
+ 1338              	.LASF118:
+ 1339 04d2 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1339      43313120 
+ 1339      352E342E 
+ 1339      31203230 
+ 1339      31363036 
+ 1340 0505 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 1340      20726576 
+ 1340      6973696F 
+ 1340      6E203233 
+ 1340      37373135 
+ 1341 0538 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1341      66756E63 
+ 1341      74696F6E 
+ 1341      2D736563 
+ 1341      74696F6E 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 33
+
+
+ 1342              	.LASF86:
+ 1343 0560 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 1343      455F4556 
+ 1343      545F4C32 
+ 1343      4341505F 
+ 1343      43424643 
+ 1344              	.LASF80:
+ 1345 0584 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 1345      455F4556 
+ 1345      545F4C32 
+ 1345      4341505F 
+ 1345      43424643 
+ 1346              	.LASF121:
+ 1347 05a2 4F6E6557 		.ascii	"OneWire_TSensor\000"
+ 1347      6972655F 
+ 1347      5453656E 
+ 1347      736F7200 
+ 1348              	.LASF18:
+ 1349 05b2 6C6F6E67 		.ascii	"long double\000"
+ 1349      20646F75 
+ 1349      626C6500 
+ 1350              	.LASF76:
+ 1351 05be 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 1351      455F4556 
+ 1351      545F4C32 
+ 1351      4341505F 
+ 1351      434F4E4E 
+ 1352              	.LASF1:
+ 1353 05e4 756E7369 		.ascii	"unsigned char\000"
+ 1353      676E6564 
+ 1353      20636861 
+ 1353      7200
+ 1354              	.LASF66:
+ 1355 05f2 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 1355      455F4556 
+ 1355      545F4741 
+ 1355      5454535F 
+ 1355      50524550 
+ 1356              	.LASF88:
+ 1357 0611 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 1357      455F4556 
+ 1357      545F4C45 
+ 1357      5F50494E 
+ 1357      475F4155 
+ 1358              	.LASF122:
+ 1359 0630 77647450 		.ascii	"wdtPeriodMs\000"
+ 1359      6572696F 
+ 1359      644D7300 
+ 1360              	.LASF0:
+ 1361 063c 7369676E 		.ascii	"signed char\000"
+ 1361      65642063 
+ 1361      68617200 
+ 1362              	.LASF63:
+ 1363 0648 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 1363      455F4556 
+ 1363      545F4741 
+ 1363      5454535F 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 34
+
+
+ 1363      57524954 
+ 1364              	.LASF59:
+ 1365 0662 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 1365      455F4556 
+ 1365      545F4741 
+ 1365      5454435F 
+ 1365      46494E44 
+ 1366              	.LASF31:
+ 1367 0689 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 1367      455F4556 
+ 1367      545F4741 
+ 1367      505F4155 
+ 1367      54485F43 
+ 1368              	.LASF8:
+ 1369 06a5 756E7369 		.ascii	"unsigned int\000"
+ 1369      676E6564 
+ 1369      20696E74 
+ 1369      00
+ 1370              	.LASF117:
+ 1371 06b2 68747373 		.ascii	"htssInterval\000"
+ 1371      496E7465 
+ 1371      7276616C 
+ 1371      00
+ 1372              	.LASF48:
+ 1373 06bf 4359424C 		.ascii	"CYBLE_EVT_GAP_SCAN_REQ_RECVD\000"
+ 1373      455F4556 
+ 1373      545F4741 
+ 1373      505F5343 
+ 1373      414E5F52 
+ 1374              	.LASF52:
+ 1375 06dc 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 1375      455F4556 
+ 1375      545F4741 
+ 1375      54545F43 
+ 1375      4F4E4E45 
+ 1376              	.LASF5:
+ 1377 06f7 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1377      20756E73 
+ 1377      69676E65 
+ 1377      6420696E 
+ 1377      7400
+ 1378              	.LASF116:
+ 1379 0709 53797374 		.ascii	"SystemFlag\000"
+ 1379      656D466C 
+ 1379      616700
+ 1380              	.LASF28:
+ 1381 0714 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 1381      455F4556 
+ 1381      545F4741 
+ 1381      505F4155 
+ 1381      54485F52 
+ 1382              	.LASF81:
+ 1383 072b 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 1383      455F4556 
+ 1383      545F4C32 
+ 1383      4341505F 
+ 1383      43424643 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 35
+
+
+ 1384              	.LASF36:
+ 1385 074c 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 1385      455F4556 
+ 1385      545F4741 
+ 1385      505F454E 
+ 1385      43525950 
+ 1386              	.LASF47:
+ 1387 0769 4359424C 		.ascii	"CYBLE_EVT_GAP_CONN_ESTB\000"
+ 1387      455F4556 
+ 1387      545F4741 
+ 1387      505F434F 
+ 1387      4E4E5F45 
+ 1388              	.LASF60:
+ 1389 0781 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 1389      455F4556 
+ 1389      545F4741 
+ 1389      5454435F 
+ 1389      52454144 
+ 1390              	.LASF75:
+ 1391 079a 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 1391      455F4556 
+ 1391      545F4741 
+ 1391      5454435F 
+ 1391      4C4F4E47 
+ 1392              	.LASF3:
+ 1393 07bd 73686F72 		.ascii	"short unsigned int\000"
+ 1393      7420756E 
+ 1393      7369676E 
+ 1393      65642069 
+ 1393      6E7400
+ 1394              	.LASF90:
+ 1395 07d0 4359424C 		.ascii	"CYBLE_EVT_FLASH_CORRUPT\000"
+ 1395      455F4556 
+ 1395      545F464C 
+ 1395      4153485F 
+ 1395      434F5252 
+ 1396              	.LASF37:
+ 1397 07e8 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 1397      455F4556 
+ 1397      545F4741 
+ 1397      505F434F 
+ 1397      4E4E4543 
+ 1398              	.LASF46:
+ 1399 0811 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 1399      455F4556 
+ 1399      545F4741 
+ 1399      505F534D 
+ 1399      505F4E45 
+ 1400              	.LASF114:
+ 1401 0838 4F6E6557 		.ascii	"OneWire_Sensor\000"
+ 1401      6972655F 
+ 1401      53656E73 
+ 1401      6F7200
+ 1402              	.LASF14:
+ 1403 0847 63686172 		.ascii	"char\000"
+ 1403      00
+ 1404              	.LASF94:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 36
+
+
+ 1405 084c 4359424C 		.ascii	"CYBLE_HTS_INTERM_TEMP\000"
+ 1405      455F4854 
+ 1405      535F494E 
+ 1405      5445524D 
+ 1405      5F54454D 
+ 1406              	.LASF96:
+ 1407 0862 4359424C 		.ascii	"CYBLE_HTS_CHAR_COUNT\000"
+ 1407      455F4854 
+ 1407      535F4348 
+ 1407      41525F43 
+ 1407      4F554E54 
+ 1408              	.LASF78:
+ 1409 0877 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 1409      455F4556 
+ 1409      545F4C32 
+ 1409      4341505F 
+ 1409      434F4D4D 
+ 1410              	.LASF9:
+ 1411 0893 75696E74 		.ascii	"uint8\000"
+ 1411      3800
+ 1412              	.LASF104:
+ 1413 0899 4359424C 		.ascii	"CYBLE_SRVI_HTS\000"
+ 1413      455F5352 
+ 1413      56495F48 
+ 1413      545300
+ 1414              	.LASF61:
+ 1415 08a8 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 1415      455F4556 
+ 1415      545F4741 
+ 1415      5454435F 
+ 1415      52454144 
+ 1416              	.LASF100:
+ 1417 08c6 4359424C 		.ascii	"CYBLE_SRVI_GAP\000"
+ 1417      455F5352 
+ 1417      56495F47 
+ 1417      415000
+ 1418              	.LASF68:
+ 1419 08d5 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 1419      455F4556 
+ 1419      545F4741 
+ 1419      5454435F 
+ 1419      45584543 
+ 1420              	.LASF11:
+ 1421 08f4 75696E74 		.ascii	"uint32\000"
+ 1421      333200
+ 1422              	.LASF87:
+ 1423 08fb 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 1423      455F4556 
+ 1423      545F5045 
+ 1423      4E44494E 
+ 1423      475F464C 
+ 1424              	.LASF84:
+ 1425 0919 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 1425      455F4556 
+ 1425      545F4C32 
+ 1425      4341505F 
+ 1425      43424643 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 37
+
+
+ 1426              	.LASF44:
+ 1427 093c 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 1427      455F4556 
+ 1427      545F4741 
+ 1427      505F454E 
+ 1427      48414E43 
+ 1428              	.LASF13:
+ 1429 0960 646F7562 		.ascii	"double\000"
+ 1429      6C6500
+ 1430              	.LASF71:
+ 1431 0967 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 1431      455F4556 
+ 1431      545F4741 
+ 1431      5454535F 
+ 1431      48414E44 
+ 1432              	.LASF109:
+ 1433 0988 696E7465 		.ascii	"intervalTimer\000"
+ 1433      7276616C 
+ 1433      54696D65 
+ 1433      7200
+ 1434              	.LASF85:
+ 1435 0996 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 1435      455F4556 
+ 1435      545F4C32 
+ 1435      4341505F 
+ 1435      43424643 
+ 1436              	.LASF29:
+ 1437 09b9 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 1437      455F4556 
+ 1437      545F4741 
+ 1437      505F5041 
+ 1437      53534B45 
+ 1438              	.LASF106:
+ 1439 09dd 57617463 		.ascii	"WatchdogTimer_Lock\000"
+ 1439      68646F67 
+ 1439      54696D65 
+ 1439      725F4C6F 
+ 1439      636B00
+ 1440              	.LASF33:
+ 1441 09f0 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 1441      455F4556 
+ 1441      545F4741 
+ 1441      50505F41 
+ 1441      44564552 
+ 1442              	.LASF23:
+ 1443 0a18 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 1443      455F4556 
+ 1443      545F4841 
+ 1443      52445741 
+ 1443      52455F45 
+ 1444              	.LASF83:
+ 1445 0a31 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 1445      455F4556 
+ 1445      545F4C32 
+ 1445      4341505F 
+ 1445      43424643 
+ 1446              	.LASF115:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 38
+
+
+ 1447 0a50 4F6E6557 		.ascii	"OneWire_DataReady\000"
+ 1447      6972655F 
+ 1447      44617461 
+ 1447      52656164 
+ 1447      7900
+ 1448              	.LASF27:
+ 1449 0a62 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 1449      455F4556 
+ 1449      545F4741 
+ 1449      50435F53 
+ 1449      43414E5F 
+ 1450              	.LASF17:
+ 1451 0a86 70726573 		.ascii	"present\000"
+ 1451      656E7400 
+ 1452              	.LASF93:
+ 1453 0a8e 4359424C 		.ascii	"CYBLE_HTS_TEMP_TYPE\000"
+ 1453      455F4854 
+ 1453      535F5445 
+ 1453      4D505F54 
+ 1453      59504500 
+ 1454              	.LASF56:
+ 1455 0aa2 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 1455      455F4556 
+ 1455      545F4741 
+ 1455      5454435F 
+ 1455      52454144 
+ 1456              	.LASF65:
+ 1457 0ac9 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 1457      455F4556 
+ 1457      545F4741 
+ 1457      5454535F 
+ 1457      57524954 
+ 1458              	.LASF55:
+ 1459 0ae7 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 1459      455F4556 
+ 1459      545F4741 
+ 1459      5454435F 
+ 1459      5843484E 
+ 1460              	.LASF111:
+ 1461 0b05 57617463 		.ascii	"WatchdogTimer_Start\000"
+ 1461      68646F67 
+ 1461      54696D65 
+ 1461      725F5374 
+ 1461      61727400 
+ 1462              	.LASF22:
+ 1463 0b19 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 1463      455F4556 
+ 1463      545F5449 
+ 1463      4D454F55 
+ 1463      5400
+ 1464              	.LASF16:
+ 1465 0b2b 54656D70 		.ascii	"Temperature\000"
+ 1465      65726174 
+ 1465      75726500 
+ 1466              	.LASF38:
+ 1467 0b37 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 1467      455F4556 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 39
+
+
+ 1467      545F4741 
+ 1467      50435F53 
+ 1467      43414E5F 
+ 1468              	.LASF91:
+ 1469 0b56 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 1469      455F4556 
+ 1469      545F4D41 
+ 1469      5800
+ 1470              	.LASF74:
+ 1471 0b64 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 1471      455F4556 
+ 1471      545F4741 
+ 1471      5454535F 
+ 1471      52454144 
+ 1472              	.LASF58:
+ 1473 0b8d 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 1473      455F4556 
+ 1473      545F4741 
+ 1473      5454435F 
+ 1473      46494E44 
+ 1474              	.LASF73:
+ 1475 0bab 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 1475      455F4556 
+ 1475      545F4741 
+ 1475      5454435F 
+ 1475      53544F50 
+ 1476              	.LASF67:
+ 1477 0bcd 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 1477      455F4556 
+ 1477      545F4741 
+ 1477      5454535F 
+ 1477      45584543 
+ 1478              	.LASF51:
+ 1479 0bec 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 1479      455F4556 
+ 1479      545F4741 
+ 1479      5454435F 
+ 1479      4552524F 
+ 1480              	.LASF97:
+ 1481 0c06 4359424C 		.ascii	"CYBLE_HTS_CCCD\000"
+ 1481      455F4854 
+ 1481      535F4343 
+ 1481      434400
+ 1482              	.LASF15:
+ 1483 0c15 72656733 		.ascii	"reg32\000"
+ 1483      3200
+ 1484              	.LASF72:
+ 1485 0c1b 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 1485      455F4556 
+ 1485      545F4741 
+ 1485      5454535F 
+ 1485      44415441 
+ 1486              	.LASF89:
+ 1487 0c3f 4359424C 		.ascii	"CYBLE_EVT_HCI_PKT\000"
+ 1487      455F4556 
+ 1487      545F4843 
+ 1487      495F504B 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cciO9Xmq.s 			page 40
+
+
+ 1487      5400
+ 1488              	.LASF42:
+ 1489 0c51 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 1489      455F4556 
+ 1489      545F4741 
+ 1489      505F4F4F 
+ 1489      425F4745 
+ 1490              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

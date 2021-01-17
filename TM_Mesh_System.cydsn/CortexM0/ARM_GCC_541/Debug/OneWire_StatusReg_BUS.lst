@@ -1,0 +1,920 @@
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"OneWire_StatusReg_BUS.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.OneWire_StatusReg_BUS_Read,"ax",%progbits
+  20              		.align	2
+  21              		.global	OneWire_StatusReg_BUS_Read
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	OneWire_StatusReg_BUS_Read, %function
+  25              	OneWire_StatusReg_BUS_Read:
+  26              	.LFB2:
+  27              		.file 1 "Generated_Source\\PSoC4\\OneWire_StatusReg_BUS.c"
+   1:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * File Name: OneWire_StatusReg_BUS.c  
+   3:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Version 1.90
+   4:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+   5:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Description:
+   6:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  This file contains API to enable firmware to read the value of a Status 
+   7:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Register.
+   8:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+   9:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Note:
+  10:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  11:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+  12:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+  17:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  18:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** #include "OneWire_StatusReg_BUS.h"
+  19:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  20:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** #if !defined(OneWire_StatusReg_BUS_sts_sts_reg__REMOVED) /* Check for removal by optimization */
+  21:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  22:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  23:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+  24:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Function Name: OneWire_StatusReg_BUS_Read
+  25:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+  26:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  27:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Summary:
+  28:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Reads the current value assigned to the Status Register.
+  29:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  30:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Parameters:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 2
+
+
+  31:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+  32:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  33:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Return:
+  34:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  The current value in the Status Register.
+  35:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  36:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+  37:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** uint8 OneWire_StatusReg_BUS_Read(void) 
+  38:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** { 
+  28              		.loc 1 38 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+  39:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     return OneWire_StatusReg_BUS_Status;
+  38              		.loc 1 39 0
+  39 0004 024B     		ldr	r3, .L3
+  40 0006 1B78     		ldrb	r3, [r3]
+  41 0008 DBB2     		uxtb	r3, r3
+  40:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** }
+  42              		.loc 1 40 0
+  43 000a 1800     		movs	r0, r3
+  44 000c BD46     		mov	sp, r7
+  45              		@ sp needed
+  46 000e 80BD     		pop	{r7, pc}
+  47              	.L4:
+  48              		.align	2
+  49              	.L3:
+  50 0010 63000F40 		.word	1074724963
+  51              		.cfi_endproc
+  52              	.LFE2:
+  53              		.size	OneWire_StatusReg_BUS_Read, .-OneWire_StatusReg_BUS_Read
+  54              		.section	.text.OneWire_StatusReg_BUS_InterruptEnable,"ax",%progbits
+  55              		.align	2
+  56              		.global	OneWire_StatusReg_BUS_InterruptEnable
+  57              		.code	16
+  58              		.thumb_func
+  59              		.type	OneWire_StatusReg_BUS_InterruptEnable, %function
+  60              	OneWire_StatusReg_BUS_InterruptEnable:
+  61              	.LFB3:
+  41:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  42:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  43:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+  44:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Function Name: OneWire_StatusReg_BUS_InterruptEnable
+  45:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+  46:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  47:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Summary:
+  48:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Enables the Status Register interrupt.
+  49:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  50:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Parameters:
+  51:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+  52:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  53:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Return:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 3
+
+
+  54:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+  55:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  56:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+  57:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** void OneWire_StatusReg_BUS_InterruptEnable(void) 
+  58:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** {
+  62              		.loc 1 58 0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 8
+  65              		@ frame_needed = 1, uses_anonymous_args = 0
+  66 0000 90B5     		push	{r4, r7, lr}
+  67              		.cfi_def_cfa_offset 12
+  68              		.cfi_offset 4, -12
+  69              		.cfi_offset 7, -8
+  70              		.cfi_offset 14, -4
+  71 0002 83B0     		sub	sp, sp, #12
+  72              		.cfi_def_cfa_offset 24
+  73 0004 00AF     		add	r7, sp, #0
+  74              		.cfi_def_cfa_register 7
+  59:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     uint8 interruptState;
+  60:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     interruptState = CyEnterCriticalSection();
+  75              		.loc 1 60 0
+  76 0006 FC1D     		adds	r4, r7, #7
+  77 0008 FFF7FEFF 		bl	CyEnterCriticalSection
+  78 000c 0300     		movs	r3, r0
+  79 000e 2370     		strb	r3, [r4]
+  61:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     OneWire_StatusReg_BUS_Status_Aux_Ctrl |= OneWire_StatusReg_BUS_STATUS_INTR_ENBL;
+  80              		.loc 1 61 0
+  81 0010 084A     		ldr	r2, .L6
+  82 0012 084B     		ldr	r3, .L6
+  83 0014 1B78     		ldrb	r3, [r3]
+  84 0016 DBB2     		uxtb	r3, r3
+  85 0018 1021     		movs	r1, #16
+  86 001a 0B43     		orrs	r3, r1
+  87 001c DBB2     		uxtb	r3, r3
+  88 001e 1370     		strb	r3, [r2]
+  62:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     CyExitCriticalSection(interruptState);
+  89              		.loc 1 62 0
+  90 0020 FB1D     		adds	r3, r7, #7
+  91 0022 1B78     		ldrb	r3, [r3]
+  92 0024 1800     		movs	r0, r3
+  93 0026 FFF7FEFF 		bl	CyExitCriticalSection
+  63:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** }
+  94              		.loc 1 63 0
+  95 002a C046     		nop
+  96 002c BD46     		mov	sp, r7
+  97 002e 03B0     		add	sp, sp, #12
+  98              		@ sp needed
+  99 0030 90BD     		pop	{r4, r7, pc}
+ 100              	.L7:
+ 101 0032 C046     		.align	2
+ 102              	.L6:
+ 103 0034 93000F40 		.word	1074725011
+ 104              		.cfi_endproc
+ 105              	.LFE3:
+ 106              		.size	OneWire_StatusReg_BUS_InterruptEnable, .-OneWire_StatusReg_BUS_InterruptEnable
+ 107              		.section	.text.OneWire_StatusReg_BUS_InterruptDisable,"ax",%progbits
+ 108              		.align	2
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 4
+
+
+ 109              		.global	OneWire_StatusReg_BUS_InterruptDisable
+ 110              		.code	16
+ 111              		.thumb_func
+ 112              		.type	OneWire_StatusReg_BUS_InterruptDisable, %function
+ 113              	OneWire_StatusReg_BUS_InterruptDisable:
+ 114              	.LFB4:
+  64:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  65:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  66:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+  67:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Function Name: OneWire_StatusReg_BUS_InterruptDisable
+  68:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+  69:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  70:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Summary:
+  71:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Disables the Status Register interrupt.
+  72:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  73:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Parameters:
+  74:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+  75:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  76:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Return:
+  77:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+  78:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  79:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+  80:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** void OneWire_StatusReg_BUS_InterruptDisable(void) 
+  81:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** {
+ 115              		.loc 1 81 0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 8
+ 118              		@ frame_needed = 1, uses_anonymous_args = 0
+ 119 0000 90B5     		push	{r4, r7, lr}
+ 120              		.cfi_def_cfa_offset 12
+ 121              		.cfi_offset 4, -12
+ 122              		.cfi_offset 7, -8
+ 123              		.cfi_offset 14, -4
+ 124 0002 83B0     		sub	sp, sp, #12
+ 125              		.cfi_def_cfa_offset 24
+ 126 0004 00AF     		add	r7, sp, #0
+ 127              		.cfi_def_cfa_register 7
+  82:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     uint8 interruptState;
+  83:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     interruptState = CyEnterCriticalSection();
+ 128              		.loc 1 83 0
+ 129 0006 FC1D     		adds	r4, r7, #7
+ 130 0008 FFF7FEFF 		bl	CyEnterCriticalSection
+ 131 000c 0300     		movs	r3, r0
+ 132 000e 2370     		strb	r3, [r4]
+  84:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     OneWire_StatusReg_BUS_Status_Aux_Ctrl &= (uint8)(~OneWire_StatusReg_BUS_STATUS_INTR_ENBL);
+ 133              		.loc 1 84 0
+ 134 0010 084A     		ldr	r2, .L9
+ 135 0012 084B     		ldr	r3, .L9
+ 136 0014 1B78     		ldrb	r3, [r3]
+ 137 0016 DBB2     		uxtb	r3, r3
+ 138 0018 1021     		movs	r1, #16
+ 139 001a 8B43     		bics	r3, r1
+ 140 001c DBB2     		uxtb	r3, r3
+ 141 001e 1370     		strb	r3, [r2]
+  85:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     CyExitCriticalSection(interruptState);
+ 142              		.loc 1 85 0
+ 143 0020 FB1D     		adds	r3, r7, #7
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 5
+
+
+ 144 0022 1B78     		ldrb	r3, [r3]
+ 145 0024 1800     		movs	r0, r3
+ 146 0026 FFF7FEFF 		bl	CyExitCriticalSection
+  86:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** }
+ 147              		.loc 1 86 0
+ 148 002a C046     		nop
+ 149 002c BD46     		mov	sp, r7
+ 150 002e 03B0     		add	sp, sp, #12
+ 151              		@ sp needed
+ 152 0030 90BD     		pop	{r4, r7, pc}
+ 153              	.L10:
+ 154 0032 C046     		.align	2
+ 155              	.L9:
+ 156 0034 93000F40 		.word	1074725011
+ 157              		.cfi_endproc
+ 158              	.LFE4:
+ 159              		.size	OneWire_StatusReg_BUS_InterruptDisable, .-OneWire_StatusReg_BUS_InterruptDisable
+ 160              		.section	.text.OneWire_StatusReg_BUS_WriteMask,"ax",%progbits
+ 161              		.align	2
+ 162              		.global	OneWire_StatusReg_BUS_WriteMask
+ 163              		.code	16
+ 164              		.thumb_func
+ 165              		.type	OneWire_StatusReg_BUS_WriteMask, %function
+ 166              	OneWire_StatusReg_BUS_WriteMask:
+ 167              	.LFB5:
+  87:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  88:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+  89:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+  90:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Function Name: OneWire_StatusReg_BUS_WriteMask
+  91:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+  92:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  93:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Summary:
+  94:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Writes the current mask value assigned to the Status Register.
+  95:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  96:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Parameters:
+  97:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  mask:  Value to write into the mask register.
+  98:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+  99:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Return:
+ 100:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+ 101:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+ 102:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+ 103:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** void OneWire_StatusReg_BUS_WriteMask(uint8 mask) 
+ 104:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** {
+ 168              		.loc 1 104 0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 8
+ 171              		@ frame_needed = 1, uses_anonymous_args = 0
+ 172 0000 80B5     		push	{r7, lr}
+ 173              		.cfi_def_cfa_offset 8
+ 174              		.cfi_offset 7, -8
+ 175              		.cfi_offset 14, -4
+ 176 0002 82B0     		sub	sp, sp, #8
+ 177              		.cfi_def_cfa_offset 16
+ 178 0004 00AF     		add	r7, sp, #0
+ 179              		.cfi_def_cfa_register 7
+ 180 0006 0200     		movs	r2, r0
+ 181 0008 FB1D     		adds	r3, r7, #7
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 6
+
+
+ 182 000a 1A70     		strb	r2, [r3]
+ 105:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     #if(OneWire_StatusReg_BUS_INPUTS < 8u)
+ 106:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     	mask &= ((uint8)(1u << OneWire_StatusReg_BUS_INPUTS) - 1u);
+ 107:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 	#endif /* End OneWire_StatusReg_BUS_INPUTS < 8u */
+ 108:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     OneWire_StatusReg_BUS_Status_Mask = mask;
+ 183              		.loc 1 108 0
+ 184 000c 034A     		ldr	r2, .L12
+ 185 000e FB1D     		adds	r3, r7, #7
+ 186 0010 1B78     		ldrb	r3, [r3]
+ 187 0012 1370     		strb	r3, [r2]
+ 109:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** }
+ 188              		.loc 1 109 0
+ 189 0014 C046     		nop
+ 190 0016 BD46     		mov	sp, r7
+ 191 0018 02B0     		add	sp, sp, #8
+ 192              		@ sp needed
+ 193 001a 80BD     		pop	{r7, pc}
+ 194              	.L13:
+ 195              		.align	2
+ 196              	.L12:
+ 197 001c 83000F40 		.word	1074724995
+ 198              		.cfi_endproc
+ 199              	.LFE5:
+ 200              		.size	OneWire_StatusReg_BUS_WriteMask, .-OneWire_StatusReg_BUS_WriteMask
+ 201              		.section	.text.OneWire_StatusReg_BUS_ReadMask,"ax",%progbits
+ 202              		.align	2
+ 203              		.global	OneWire_StatusReg_BUS_ReadMask
+ 204              		.code	16
+ 205              		.thumb_func
+ 206              		.type	OneWire_StatusReg_BUS_ReadMask, %function
+ 207              	OneWire_StatusReg_BUS_ReadMask:
+ 208              	.LFB6:
+ 110:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+ 111:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** 
+ 112:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** /*******************************************************************************
+ 113:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Function Name: OneWire_StatusReg_BUS_ReadMask
+ 114:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** ********************************************************************************
+ 115:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+ 116:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Summary:
+ 117:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  Reads the current interrupt mask assigned to the Status Register.
+ 118:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+ 119:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Parameters:
+ 120:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  None.
+ 121:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+ 122:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** * Return:
+ 123:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *  The value of the interrupt mask of the Status Register.
+ 124:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *
+ 125:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** *******************************************************************************/
+ 126:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** uint8 OneWire_StatusReg_BUS_ReadMask(void) 
+ 127:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** {
+ 209              		.loc 1 127 0
+ 210              		.cfi_startproc
+ 211              		@ args = 0, pretend = 0, frame = 0
+ 212              		@ frame_needed = 1, uses_anonymous_args = 0
+ 213 0000 80B5     		push	{r7, lr}
+ 214              		.cfi_def_cfa_offset 8
+ 215              		.cfi_offset 7, -8
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 7
+
+
+ 216              		.cfi_offset 14, -4
+ 217 0002 00AF     		add	r7, sp, #0
+ 218              		.cfi_def_cfa_register 7
+ 128:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c ****     return OneWire_StatusReg_BUS_Status_Mask;
+ 219              		.loc 1 128 0
+ 220 0004 024B     		ldr	r3, .L16
+ 221 0006 1B78     		ldrb	r3, [r3]
+ 222 0008 DBB2     		uxtb	r3, r3
+ 129:Generated_Source\PSoC4/OneWire_StatusReg_BUS.c **** }
+ 223              		.loc 1 129 0
+ 224 000a 1800     		movs	r0, r3
+ 225 000c BD46     		mov	sp, r7
+ 226              		@ sp needed
+ 227 000e 80BD     		pop	{r7, pc}
+ 228              	.L17:
+ 229              		.align	2
+ 230              	.L16:
+ 231 0010 83000F40 		.word	1074724995
+ 232              		.cfi_endproc
+ 233              	.LFE6:
+ 234              		.size	OneWire_StatusReg_BUS_ReadMask, .-OneWire_StatusReg_BUS_ReadMask
+ 235              		.text
+ 236              	.Letext0:
+ 237              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 238              		.section	.debug_info,"",%progbits
+ 239              	.Ldebug_info0:
+ 240 0000 3E010000 		.4byte	0x13e
+ 241 0004 0400     		.2byte	0x4
+ 242 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 243 000a 04       		.byte	0x4
+ 244 000b 01       		.uleb128 0x1
+ 245 000c 75010000 		.4byte	.LASF22
+ 246 0010 0C       		.byte	0xc
+ 247 0011 3C010000 		.4byte	.LASF23
+ 248 0015 2E000000 		.4byte	.LASF24
+ 249 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 250 001d 00000000 		.4byte	0
+ 251 0021 00000000 		.4byte	.Ldebug_line0
+ 252 0025 02       		.uleb128 0x2
+ 253 0026 01       		.byte	0x1
+ 254 0027 06       		.byte	0x6
+ 255 0028 24010000 		.4byte	.LASF0
+ 256 002c 02       		.uleb128 0x2
+ 257 002d 01       		.byte	0x1
+ 258 002e 08       		.byte	0x8
+ 259 002f A1000000 		.4byte	.LASF1
+ 260 0033 02       		.uleb128 0x2
+ 261 0034 02       		.byte	0x2
+ 262 0035 05       		.byte	0x5
+ 263 0036 6B010000 		.4byte	.LASF2
+ 264 003a 02       		.uleb128 0x2
+ 265 003b 02       		.byte	0x2
+ 266 003c 07       		.byte	0x7
+ 267 003d 0E000000 		.4byte	.LASF3
+ 268 0041 02       		.uleb128 0x2
+ 269 0042 04       		.byte	0x4
+ 270 0043 05       		.byte	0x5
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 8
+
+
+ 271 0044 B4000000 		.4byte	.LASF4
+ 272 0048 02       		.uleb128 0x2
+ 273 0049 04       		.byte	0x4
+ 274 004a 07       		.byte	0x7
+ 275 004b 6D000000 		.4byte	.LASF5
+ 276 004f 02       		.uleb128 0x2
+ 277 0050 08       		.byte	0x8
+ 278 0051 05       		.byte	0x5
+ 279 0052 00000000 		.4byte	.LASF6
+ 280 0056 02       		.uleb128 0x2
+ 281 0057 08       		.byte	0x8
+ 282 0058 07       		.byte	0x7
+ 283 0059 7F000000 		.4byte	.LASF7
+ 284 005d 03       		.uleb128 0x3
+ 285 005e 04       		.byte	0x4
+ 286 005f 05       		.byte	0x5
+ 287 0060 696E7400 		.ascii	"int\000"
+ 288 0064 02       		.uleb128 0x2
+ 289 0065 04       		.byte	0x4
+ 290 0066 07       		.byte	0x7
+ 291 0067 21000000 		.4byte	.LASF8
+ 292 006b 04       		.uleb128 0x4
+ 293 006c 67000000 		.4byte	.LASF12
+ 294 0070 02       		.byte	0x2
+ 295 0071 E601     		.2byte	0x1e6
+ 296 0073 2C000000 		.4byte	0x2c
+ 297 0077 02       		.uleb128 0x2
+ 298 0078 04       		.byte	0x4
+ 299 0079 04       		.byte	0x4
+ 300 007a 96000000 		.4byte	.LASF9
+ 301 007e 02       		.uleb128 0x2
+ 302 007f 08       		.byte	0x8
+ 303 0080 04       		.byte	0x4
+ 304 0081 FE000000 		.4byte	.LASF10
+ 305 0085 02       		.uleb128 0x2
+ 306 0086 01       		.byte	0x1
+ 307 0087 08       		.byte	0x8
+ 308 0088 AF000000 		.4byte	.LASF11
+ 309 008c 04       		.uleb128 0x4
+ 310 008d 62000000 		.4byte	.LASF13
+ 311 0091 02       		.byte	0x2
+ 312 0092 9002     		.2byte	0x290
+ 313 0094 98000000 		.4byte	0x98
+ 314 0098 05       		.uleb128 0x5
+ 315 0099 6B000000 		.4byte	0x6b
+ 316 009d 02       		.uleb128 0x2
+ 317 009e 08       		.byte	0x8
+ 318 009f 04       		.byte	0x4
+ 319 00a0 30010000 		.4byte	.LASF14
+ 320 00a4 02       		.uleb128 0x2
+ 321 00a5 04       		.byte	0x4
+ 322 00a6 07       		.byte	0x7
+ 323 00a7 2A020000 		.4byte	.LASF15
+ 324 00ab 06       		.uleb128 0x6
+ 325 00ac BD000000 		.4byte	.LASF20
+ 326 00b0 01       		.byte	0x1
+ 327 00b1 25       		.byte	0x25
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 9
+
+
+ 328 00b2 6B000000 		.4byte	0x6b
+ 329 00b6 00000000 		.4byte	.LFB2
+ 330 00ba 14000000 		.4byte	.LFE2-.LFB2
+ 331 00be 01       		.uleb128 0x1
+ 332 00bf 9C       		.byte	0x9c
+ 333 00c0 07       		.uleb128 0x7
+ 334 00c1 D8000000 		.4byte	.LASF16
+ 335 00c5 01       		.byte	0x1
+ 336 00c6 39       		.byte	0x39
+ 337 00c7 00000000 		.4byte	.LFB3
+ 338 00cb 38000000 		.4byte	.LFE3-.LFB3
+ 339 00cf 01       		.uleb128 0x1
+ 340 00d0 9C       		.byte	0x9c
+ 341 00d1 E4000000 		.4byte	0xe4
+ 342 00d5 08       		.uleb128 0x8
+ 343 00d6 33020000 		.4byte	.LASF18
+ 344 00da 01       		.byte	0x1
+ 345 00db 3B       		.byte	0x3b
+ 346 00dc 6B000000 		.4byte	0x6b
+ 347 00e0 02       		.uleb128 0x2
+ 348 00e1 91       		.byte	0x91
+ 349 00e2 6F       		.sleb128 -17
+ 350 00e3 00       		.byte	0
+ 351 00e4 07       		.uleb128 0x7
+ 352 00e5 03020000 		.4byte	.LASF17
+ 353 00e9 01       		.byte	0x1
+ 354 00ea 50       		.byte	0x50
+ 355 00eb 00000000 		.4byte	.LFB4
+ 356 00ef 38000000 		.4byte	.LFE4-.LFB4
+ 357 00f3 01       		.uleb128 0x1
+ 358 00f4 9C       		.byte	0x9c
+ 359 00f5 08010000 		.4byte	0x108
+ 360 00f9 08       		.uleb128 0x8
+ 361 00fa 33020000 		.4byte	.LASF18
+ 362 00fe 01       		.byte	0x1
+ 363 00ff 52       		.byte	0x52
+ 364 0100 6B000000 		.4byte	0x6b
+ 365 0104 02       		.uleb128 0x2
+ 366 0105 91       		.byte	0x91
+ 367 0106 6F       		.sleb128 -17
+ 368 0107 00       		.byte	0
+ 369 0108 09       		.uleb128 0x9
+ 370 0109 42020000 		.4byte	.LASF19
+ 371 010d 01       		.byte	0x1
+ 372 010e 67       		.byte	0x67
+ 373 010f 00000000 		.4byte	.LFB5
+ 374 0113 20000000 		.4byte	.LFE5-.LFB5
+ 375 0117 01       		.uleb128 0x1
+ 376 0118 9C       		.byte	0x9c
+ 377 0119 2C010000 		.4byte	0x12c
+ 378 011d 0A       		.uleb128 0xa
+ 379 011e 9C000000 		.4byte	.LASF25
+ 380 0122 01       		.byte	0x1
+ 381 0123 67       		.byte	0x67
+ 382 0124 6B000000 		.4byte	0x6b
+ 383 0128 02       		.uleb128 0x2
+ 384 0129 91       		.byte	0x91
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 10
+
+
+ 385 012a 77       		.sleb128 -9
+ 386 012b 00       		.byte	0
+ 387 012c 06       		.uleb128 0x6
+ 388 012d 05010000 		.4byte	.LASF21
+ 389 0131 01       		.byte	0x1
+ 390 0132 7E       		.byte	0x7e
+ 391 0133 6B000000 		.4byte	0x6b
+ 392 0137 00000000 		.4byte	.LFB6
+ 393 013b 14000000 		.4byte	.LFE6-.LFB6
+ 394 013f 01       		.uleb128 0x1
+ 395 0140 9C       		.byte	0x9c
+ 396 0141 00       		.byte	0
+ 397              		.section	.debug_abbrev,"",%progbits
+ 398              	.Ldebug_abbrev0:
+ 399 0000 01       		.uleb128 0x1
+ 400 0001 11       		.uleb128 0x11
+ 401 0002 01       		.byte	0x1
+ 402 0003 25       		.uleb128 0x25
+ 403 0004 0E       		.uleb128 0xe
+ 404 0005 13       		.uleb128 0x13
+ 405 0006 0B       		.uleb128 0xb
+ 406 0007 03       		.uleb128 0x3
+ 407 0008 0E       		.uleb128 0xe
+ 408 0009 1B       		.uleb128 0x1b
+ 409 000a 0E       		.uleb128 0xe
+ 410 000b 55       		.uleb128 0x55
+ 411 000c 17       		.uleb128 0x17
+ 412 000d 11       		.uleb128 0x11
+ 413 000e 01       		.uleb128 0x1
+ 414 000f 10       		.uleb128 0x10
+ 415 0010 17       		.uleb128 0x17
+ 416 0011 00       		.byte	0
+ 417 0012 00       		.byte	0
+ 418 0013 02       		.uleb128 0x2
+ 419 0014 24       		.uleb128 0x24
+ 420 0015 00       		.byte	0
+ 421 0016 0B       		.uleb128 0xb
+ 422 0017 0B       		.uleb128 0xb
+ 423 0018 3E       		.uleb128 0x3e
+ 424 0019 0B       		.uleb128 0xb
+ 425 001a 03       		.uleb128 0x3
+ 426 001b 0E       		.uleb128 0xe
+ 427 001c 00       		.byte	0
+ 428 001d 00       		.byte	0
+ 429 001e 03       		.uleb128 0x3
+ 430 001f 24       		.uleb128 0x24
+ 431 0020 00       		.byte	0
+ 432 0021 0B       		.uleb128 0xb
+ 433 0022 0B       		.uleb128 0xb
+ 434 0023 3E       		.uleb128 0x3e
+ 435 0024 0B       		.uleb128 0xb
+ 436 0025 03       		.uleb128 0x3
+ 437 0026 08       		.uleb128 0x8
+ 438 0027 00       		.byte	0
+ 439 0028 00       		.byte	0
+ 440 0029 04       		.uleb128 0x4
+ 441 002a 16       		.uleb128 0x16
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 11
+
+
+ 442 002b 00       		.byte	0
+ 443 002c 03       		.uleb128 0x3
+ 444 002d 0E       		.uleb128 0xe
+ 445 002e 3A       		.uleb128 0x3a
+ 446 002f 0B       		.uleb128 0xb
+ 447 0030 3B       		.uleb128 0x3b
+ 448 0031 05       		.uleb128 0x5
+ 449 0032 49       		.uleb128 0x49
+ 450 0033 13       		.uleb128 0x13
+ 451 0034 00       		.byte	0
+ 452 0035 00       		.byte	0
+ 453 0036 05       		.uleb128 0x5
+ 454 0037 35       		.uleb128 0x35
+ 455 0038 00       		.byte	0
+ 456 0039 49       		.uleb128 0x49
+ 457 003a 13       		.uleb128 0x13
+ 458 003b 00       		.byte	0
+ 459 003c 00       		.byte	0
+ 460 003d 06       		.uleb128 0x6
+ 461 003e 2E       		.uleb128 0x2e
+ 462 003f 00       		.byte	0
+ 463 0040 3F       		.uleb128 0x3f
+ 464 0041 19       		.uleb128 0x19
+ 465 0042 03       		.uleb128 0x3
+ 466 0043 0E       		.uleb128 0xe
+ 467 0044 3A       		.uleb128 0x3a
+ 468 0045 0B       		.uleb128 0xb
+ 469 0046 3B       		.uleb128 0x3b
+ 470 0047 0B       		.uleb128 0xb
+ 471 0048 27       		.uleb128 0x27
+ 472 0049 19       		.uleb128 0x19
+ 473 004a 49       		.uleb128 0x49
+ 474 004b 13       		.uleb128 0x13
+ 475 004c 11       		.uleb128 0x11
+ 476 004d 01       		.uleb128 0x1
+ 477 004e 12       		.uleb128 0x12
+ 478 004f 06       		.uleb128 0x6
+ 479 0050 40       		.uleb128 0x40
+ 480 0051 18       		.uleb128 0x18
+ 481 0052 9742     		.uleb128 0x2117
+ 482 0054 19       		.uleb128 0x19
+ 483 0055 00       		.byte	0
+ 484 0056 00       		.byte	0
+ 485 0057 07       		.uleb128 0x7
+ 486 0058 2E       		.uleb128 0x2e
+ 487 0059 01       		.byte	0x1
+ 488 005a 3F       		.uleb128 0x3f
+ 489 005b 19       		.uleb128 0x19
+ 490 005c 03       		.uleb128 0x3
+ 491 005d 0E       		.uleb128 0xe
+ 492 005e 3A       		.uleb128 0x3a
+ 493 005f 0B       		.uleb128 0xb
+ 494 0060 3B       		.uleb128 0x3b
+ 495 0061 0B       		.uleb128 0xb
+ 496 0062 27       		.uleb128 0x27
+ 497 0063 19       		.uleb128 0x19
+ 498 0064 11       		.uleb128 0x11
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 12
+
+
+ 499 0065 01       		.uleb128 0x1
+ 500 0066 12       		.uleb128 0x12
+ 501 0067 06       		.uleb128 0x6
+ 502 0068 40       		.uleb128 0x40
+ 503 0069 18       		.uleb128 0x18
+ 504 006a 9642     		.uleb128 0x2116
+ 505 006c 19       		.uleb128 0x19
+ 506 006d 01       		.uleb128 0x1
+ 507 006e 13       		.uleb128 0x13
+ 508 006f 00       		.byte	0
+ 509 0070 00       		.byte	0
+ 510 0071 08       		.uleb128 0x8
+ 511 0072 34       		.uleb128 0x34
+ 512 0073 00       		.byte	0
+ 513 0074 03       		.uleb128 0x3
+ 514 0075 0E       		.uleb128 0xe
+ 515 0076 3A       		.uleb128 0x3a
+ 516 0077 0B       		.uleb128 0xb
+ 517 0078 3B       		.uleb128 0x3b
+ 518 0079 0B       		.uleb128 0xb
+ 519 007a 49       		.uleb128 0x49
+ 520 007b 13       		.uleb128 0x13
+ 521 007c 02       		.uleb128 0x2
+ 522 007d 18       		.uleb128 0x18
+ 523 007e 00       		.byte	0
+ 524 007f 00       		.byte	0
+ 525 0080 09       		.uleb128 0x9
+ 526 0081 2E       		.uleb128 0x2e
+ 527 0082 01       		.byte	0x1
+ 528 0083 3F       		.uleb128 0x3f
+ 529 0084 19       		.uleb128 0x19
+ 530 0085 03       		.uleb128 0x3
+ 531 0086 0E       		.uleb128 0xe
+ 532 0087 3A       		.uleb128 0x3a
+ 533 0088 0B       		.uleb128 0xb
+ 534 0089 3B       		.uleb128 0x3b
+ 535 008a 0B       		.uleb128 0xb
+ 536 008b 27       		.uleb128 0x27
+ 537 008c 19       		.uleb128 0x19
+ 538 008d 11       		.uleb128 0x11
+ 539 008e 01       		.uleb128 0x1
+ 540 008f 12       		.uleb128 0x12
+ 541 0090 06       		.uleb128 0x6
+ 542 0091 40       		.uleb128 0x40
+ 543 0092 18       		.uleb128 0x18
+ 544 0093 9742     		.uleb128 0x2117
+ 545 0095 19       		.uleb128 0x19
+ 546 0096 01       		.uleb128 0x1
+ 547 0097 13       		.uleb128 0x13
+ 548 0098 00       		.byte	0
+ 549 0099 00       		.byte	0
+ 550 009a 0A       		.uleb128 0xa
+ 551 009b 05       		.uleb128 0x5
+ 552 009c 00       		.byte	0
+ 553 009d 03       		.uleb128 0x3
+ 554 009e 0E       		.uleb128 0xe
+ 555 009f 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 13
+
+
+ 556 00a0 0B       		.uleb128 0xb
+ 557 00a1 3B       		.uleb128 0x3b
+ 558 00a2 0B       		.uleb128 0xb
+ 559 00a3 49       		.uleb128 0x49
+ 560 00a4 13       		.uleb128 0x13
+ 561 00a5 02       		.uleb128 0x2
+ 562 00a6 18       		.uleb128 0x18
+ 563 00a7 00       		.byte	0
+ 564 00a8 00       		.byte	0
+ 565 00a9 00       		.byte	0
+ 566              		.section	.debug_aranges,"",%progbits
+ 567 0000 3C000000 		.4byte	0x3c
+ 568 0004 0200     		.2byte	0x2
+ 569 0006 00000000 		.4byte	.Ldebug_info0
+ 570 000a 04       		.byte	0x4
+ 571 000b 00       		.byte	0
+ 572 000c 0000     		.2byte	0
+ 573 000e 0000     		.2byte	0
+ 574 0010 00000000 		.4byte	.LFB2
+ 575 0014 14000000 		.4byte	.LFE2-.LFB2
+ 576 0018 00000000 		.4byte	.LFB3
+ 577 001c 38000000 		.4byte	.LFE3-.LFB3
+ 578 0020 00000000 		.4byte	.LFB4
+ 579 0024 38000000 		.4byte	.LFE4-.LFB4
+ 580 0028 00000000 		.4byte	.LFB5
+ 581 002c 20000000 		.4byte	.LFE5-.LFB5
+ 582 0030 00000000 		.4byte	.LFB6
+ 583 0034 14000000 		.4byte	.LFE6-.LFB6
+ 584 0038 00000000 		.4byte	0
+ 585 003c 00000000 		.4byte	0
+ 586              		.section	.debug_ranges,"",%progbits
+ 587              	.Ldebug_ranges0:
+ 588 0000 00000000 		.4byte	.LFB2
+ 589 0004 14000000 		.4byte	.LFE2
+ 590 0008 00000000 		.4byte	.LFB3
+ 591 000c 38000000 		.4byte	.LFE3
+ 592 0010 00000000 		.4byte	.LFB4
+ 593 0014 38000000 		.4byte	.LFE4
+ 594 0018 00000000 		.4byte	.LFB5
+ 595 001c 20000000 		.4byte	.LFE5
+ 596 0020 00000000 		.4byte	.LFB6
+ 597 0024 14000000 		.4byte	.LFE6
+ 598 0028 00000000 		.4byte	0
+ 599 002c 00000000 		.4byte	0
+ 600              		.section	.debug_line,"",%progbits
+ 601              	.Ldebug_line0:
+ 602 0000 B4000000 		.section	.debug_str,"MS",%progbits,1
+ 602      02005200 
+ 602      00000201 
+ 602      FB0E0D00 
+ 602      01010101 
+ 603              	.LASF6:
+ 604 0000 6C6F6E67 		.ascii	"long long int\000"
+ 604      206C6F6E 
+ 604      6720696E 
+ 604      7400
+ 605              	.LASF3:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 14
+
+
+ 606 000e 73686F72 		.ascii	"short unsigned int\000"
+ 606      7420756E 
+ 606      7369676E 
+ 606      65642069 
+ 606      6E7400
+ 607              	.LASF8:
+ 608 0021 756E7369 		.ascii	"unsigned int\000"
+ 608      676E6564 
+ 608      20696E74 
+ 608      00
+ 609              	.LASF24:
+ 610 002e 433A5C55 		.ascii	"C:\\Users\\User\\Desktop\\Hi\\Demo1\\TM_Mesh_System"
+ 610      73657273 
+ 610      5C557365 
+ 610      725C4465 
+ 610      736B746F 
+ 611 005b 2E637964 		.ascii	".cydsn\000"
+ 611      736E00
+ 612              	.LASF13:
+ 613 0062 72656738 		.ascii	"reg8\000"
+ 613      00
+ 614              	.LASF12:
+ 615 0067 75696E74 		.ascii	"uint8\000"
+ 615      3800
+ 616              	.LASF5:
+ 617 006d 6C6F6E67 		.ascii	"long unsigned int\000"
+ 617      20756E73 
+ 617      69676E65 
+ 617      6420696E 
+ 617      7400
+ 618              	.LASF7:
+ 619 007f 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 619      206C6F6E 
+ 619      6720756E 
+ 619      7369676E 
+ 619      65642069 
+ 620              	.LASF9:
+ 621 0096 666C6F61 		.ascii	"float\000"
+ 621      7400
+ 622              	.LASF25:
+ 623 009c 6D61736B 		.ascii	"mask\000"
+ 623      00
+ 624              	.LASF1:
+ 625 00a1 756E7369 		.ascii	"unsigned char\000"
+ 625      676E6564 
+ 625      20636861 
+ 625      7200
+ 626              	.LASF11:
+ 627 00af 63686172 		.ascii	"char\000"
+ 627      00
+ 628              	.LASF4:
+ 629 00b4 6C6F6E67 		.ascii	"long int\000"
+ 629      20696E74 
+ 629      00
+ 630              	.LASF20:
+ 631 00bd 4F6E6557 		.ascii	"OneWire_StatusReg_BUS_Read\000"
+ 631      6972655F 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 15
+
+
+ 631      53746174 
+ 631      75735265 
+ 631      675F4255 
+ 632              	.LASF16:
+ 633 00d8 4F6E6557 		.ascii	"OneWire_StatusReg_BUS_InterruptEnable\000"
+ 633      6972655F 
+ 633      53746174 
+ 633      75735265 
+ 633      675F4255 
+ 634              	.LASF10:
+ 635 00fe 646F7562 		.ascii	"double\000"
+ 635      6C6500
+ 636              	.LASF21:
+ 637 0105 4F6E6557 		.ascii	"OneWire_StatusReg_BUS_ReadMask\000"
+ 637      6972655F 
+ 637      53746174 
+ 637      75735265 
+ 637      675F4255 
+ 638              	.LASF0:
+ 639 0124 7369676E 		.ascii	"signed char\000"
+ 639      65642063 
+ 639      68617200 
+ 640              	.LASF14:
+ 641 0130 6C6F6E67 		.ascii	"long double\000"
+ 641      20646F75 
+ 641      626C6500 
+ 642              	.LASF23:
+ 643 013c 47656E65 		.ascii	"Generated_Source\\PSoC4\\OneWire_StatusReg_BUS.c\000"
+ 643      72617465 
+ 643      645F536F 
+ 643      75726365 
+ 643      5C50536F 
+ 644              	.LASF2:
+ 645 016b 73686F72 		.ascii	"short int\000"
+ 645      7420696E 
+ 645      7400
+ 646              	.LASF22:
+ 647 0175 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 647      43313120 
+ 647      352E342E 
+ 647      31203230 
+ 647      31363036 
+ 648 01a8 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 648      20726576 
+ 648      6973696F 
+ 648      6E203233 
+ 648      37373135 
+ 649 01db 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 649      66756E63 
+ 649      74696F6E 
+ 649      2D736563 
+ 649      74696F6E 
+ 650              	.LASF17:
+ 651 0203 4F6E6557 		.ascii	"OneWire_StatusReg_BUS_InterruptDisable\000"
+ 651      6972655F 
+ 651      53746174 
+ 651      75735265 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc4R3vro.s 			page 16
+
+
+ 651      675F4255 
+ 652              	.LASF15:
+ 653 022a 73697A65 		.ascii	"sizetype\000"
+ 653      74797065 
+ 653      00
+ 654              	.LASF18:
+ 655 0233 696E7465 		.ascii	"interruptState\000"
+ 655      72727570 
+ 655      74537461 
+ 655      746500
+ 656              	.LASF19:
+ 657 0242 4F6E6557 		.ascii	"OneWire_StatusReg_BUS_WriteMask\000"
+ 657      6972655F 
+ 657      53746174 
+ 657      75735265 
+ 657      675F4255 
+ 658              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

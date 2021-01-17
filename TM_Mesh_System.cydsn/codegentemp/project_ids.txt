@@ -1,0 +1,7 @@
+C:\Users\User\Desktop\Hi\Demo1\TM_Mesh_System.cydsn\TM_Mesh_System.cyprj|1d5b9112-66c2-4871-9d93-c9ffc2aa0b45
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyReferenceLibrary\CyReferenceLibrary.cylib\CyReferenceLibrary.cyprj|9bdca201-ae98-4dae-a974-fad970f9b123
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|08790785-d733-4b14-9549-a14af5890ebe
+C:\Users\User\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|f6fc5191-5e05-4eea-b186-8016a05ab369
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|7e3e0618-2c20-4f0e-9e63-8096a942d287
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|c600ee9d-a551-407d-b90d-aaebbbc89341
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|ca2c7e3e-b7ff-4e66-9ec2-b900830fe280
